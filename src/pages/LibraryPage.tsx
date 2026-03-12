@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getEpisodes } from '../features/episodes/mocks'
+import { getEpisodes } from '../api'
 import type { Episode, EpisodeStatus } from '../features/episodes/types'
 import EpisodeCard from '../features/episodes/components/EpisodeCard'
 import TextInput from '../components/ui/TextInput'
@@ -32,25 +32,14 @@ export default function LibraryPage() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        getEpisodes().then((data) => {
+        setLoading(true)
+        getEpisodes({ search, status: statusFilter, type: specialFilter }).then((data) => {
             setEpisodes(data)
             setLoading(false)
         })
-    }, [])
+    }, [search, statusFilter, specialFilter])
 
-    const filtered = episodes.filter((ep) => {
-        const q = search.toLowerCase()
-        const matchSearch =
-            !q ||
-            ep.title.toLowerCase().includes(q) ||
-            ep.movies.some((m) => m.title.toLowerCase().includes(q))
-        const matchStatus = statusFilter === 'All' || ep.status === statusFilter
-        const matchSpecial =
-            specialFilter === 'All' ||
-            (specialFilter === 'Specials' && ep.isSpecial) ||
-            (specialFilter === 'Episodes' && !ep.isSpecial)
-        return matchSearch && matchStatus && matchSpecial
-    })
+    const filtered = episodes
 
     return (
         <div className="space-y-6 max-w-6xl">

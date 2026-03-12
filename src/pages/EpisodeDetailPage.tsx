@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getEpisode } from '../features/episodes/mocks'
+import { getEpisodeById } from '../api'
 import type { Episode, SlotKey } from '../features/episodes/types'
 import Panel from '../components/ui/Panel'
 import Button from '../components/ui/Button'
@@ -23,7 +23,7 @@ export default function EpisodeDetailPage() {
 
     useEffect(() => {
         if (!episodeId) return
-        getEpisode(episodeId).then((ep) => {
+        getEpisodeById(episodeId).then((ep) => {
             if (ep) {
                 setEpisode(ep)
                 setOffsets(ep.playbackConfig.offsets)
@@ -320,7 +320,7 @@ export default function EpisodeDetailPage() {
             {/* Remap Drawer / Modal */}
             {remapTarget && (
                 <div
-                    className="fixed inset-0 flex items-end justify-center z-50 p-6"
+                    className="fixed inset-0 flex items-center justify-center z-50 p-6"
                     style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}
                     onClick={(e) => e.target === e.currentTarget && setRemapTarget(null)}
                 >

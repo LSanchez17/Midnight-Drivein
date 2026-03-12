@@ -8,6 +8,25 @@ export type SourceType = 'movie' | 'segment'
 
 export type MatchStatus = 'matched' | 'low-confidence' | 'missing'
 
+/**
+ * Represents a physical file discovered on disk during a library scan.
+ * Not deleted on unmatch — persists so it can be re-matched without re-scanning.
+ */
+export interface MediaFile {
+    id: string
+    filename: string
+    /** User-editable display name; falls back to filename when null. */
+    displayName?: string
+    path: string
+    /** Which configured root: 'movies' or 'segments'. */
+    folderRoot: 'movies' | 'segments'
+    sizeBytes?: number
+    /** Null until probed. */
+    durationMs?: number
+    lastSeenAt: string
+    isMissing: boolean
+}
+
 /** One of the two source files per episode (movie or segment reel). */
 export interface FileMatch {
     fileType: SourceType
@@ -18,6 +37,8 @@ export interface FileMatch {
     confidence?: number
     status: MatchStatus
     isUserOverridden: boolean
+    /** ISO timestamp; absent if no file was ever assigned. */
+    matchedAt?: string
 }
 
 /**

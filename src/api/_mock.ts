@@ -38,7 +38,7 @@ export function getEpisodeById(id: string): Promise<Episode | undefined> {
 }
 
 export function getSettings(): Promise<AppSettings> {
-    return Promise.resolve({ moviesFolder: '', segmentsFolder: '' })
+    return Promise.resolve({ moviesFolder: '', segmentsFolder: '', scanOnStartup: false, theme: 'dark' })
 }
 
 export function saveSettings(_patch: Partial<AppSettings>): Promise<void> {

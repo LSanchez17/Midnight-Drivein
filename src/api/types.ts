@@ -11,7 +11,7 @@ export interface AppSettings {
     segmentsFolder: string
 }
 
-export interface OffsetPatch {
-    segment1: number
-    segment2: number
+export interface CutOffsetPatch {
+    cutId: string
+    offsetMs: number
 }

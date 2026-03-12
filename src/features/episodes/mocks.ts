@@ -1,4 +1,60 @@
-import type { Episode } from './types'
+import type { Episode, FileMatch, PlaybackCut } from './types'
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+function matched(
+    fileType: FileMatch['fileType'],
+    filename: string,
+    displayName: string,
+    path: string,
+    confidence: number,
+): FileMatch {
+    return { fileType, filename, displayName, path, confidence, status: 'matched', isUserOverridden: false }
+}
+
+function lowConfidence(
+    fileType: FileMatch['fileType'],
+    filename: string,
+    displayName: string,
+    path: string,
+    confidence: number,
+): FileMatch {
+    return { fileType, filename, displayName, path, confidence, status: 'low-confidence', isUserOverridden: false }
+}
+
+function missing(fileType: FileMatch['fileType']): FileMatch {
+    return { fileType, status: 'missing', isUserOverridden: false }
+}
+
+function cut(
+    id: string,
+    sortOrder: number,
+    sourceType: PlaybackCut['sourceType'],
+    startMs: number,
+    endMs: number,
+    userOffsetMs = 0,
+): PlaybackCut {
+    return { id, sortOrder, sourceType, startMs, endMs, userOffsetMs }
+}
+
+// Typical 6-cut interleave: seg → movie → seg → movie → seg → movie
+function standardCuts(prefix: string, overrides: Partial<Record<string, number>> = {}): PlaybackCut[] {
+    const cuts: PlaybackCut[] = [
+        cut(`${prefix}-c1`, 1, 'segment', 0, 300_000, overrides[`${prefix}-c1`] ?? 0),
+        cut(`${prefix}-c2`, 2, 'movie', 0, 900_000, overrides[`${prefix}-c2`] ?? 0),
+        cut(`${prefix}-c3`, 3, 'segment', 300_000, 720_000, overrides[`${prefix}-c3`] ?? 0),
+        cut(`${prefix}-c4`, 4, 'movie', 900_000, 2_100_000, overrides[`${prefix}-c4`] ?? 0),
+        cut(`${prefix}-c5`, 5, 'segment', 720_000, 1_110_000, overrides[`${prefix}-c5`] ?? 0),
+        cut(`${prefix}-c6`, 6, 'movie', 2_100_000, 4_200_000, overrides[`${prefix}-c6`] ?? 0),
+    ]
+    return cuts
+}
+
+// ---------------------------------------------------------------------------
+// Mock episodes
+// ---------------------------------------------------------------------------
 
 export const MOCK_EPISODES: Episode[] = [
     {
@@ -9,21 +65,10 @@ export const MOCK_EPISODES: Episode[] = [
         isSpecial: false,
         airDate: '1986-07-04',
         description: 'Joe Bob kicks off the summer with two mutant-packed creature features.',
-        movies: [
-            { title: 'Humanoids from the Deep', path: '/media/movies/humanoids.mkv' },
-            { title: 'Mutant', path: '/media/movies/mutant.mkv' },
-        ],
-        segments: [
-            { title: 'Intro Segment', path: '/media/segments/s01e01-intro.mkv' },
-            { title: 'Intermission Segment', path: '/media/segments/s01e01-intermission.mkv' },
-        ],
-        fileMatches: [
-            { slot: 'movie1', filename: 'humanoids.mkv', confidence: 0.97, status: 'matched' },
-            { slot: 'segment1', filename: 's01e01-intro.mkv', confidence: 0.95, status: 'matched' },
-            { slot: 'movie2', filename: 'mutant.mkv', confidence: 0.91, status: 'matched' },
-            { slot: 'segment2', filename: 's01e01-intermission.mkv', confidence: 0.93, status: 'matched' },
-        ],
-        playbackConfig: { offsets: { segment1: 0, segment2: 0 } },
+        movieMatch: matched('movie', 'humanoids.mkv', 'Humanoids from the Deep', '/media/movies/humanoids.mkv', 0.97),
+        segmentMatch: matched('segment', 's01e01-seg.mkv', 'S01E01 Segments', '/media/segments/s01e01-seg.mkv', 0.95),
+        cuts: standardCuts('s01e01'),
+        flaggedForTiming: false,
         status: 'Ready',
     },
     {
@@ -33,22 +78,11 @@ export const MOCK_EPISODES: Episode[] = [
         episode: 2,
         isSpecial: false,
         airDate: '1986-07-11',
-        description: 'The slasher season begins — but one file refuses to show up.',
-        movies: [
-            { title: 'Friday the 13th Part 2', path: '/media/movies/f13p2.mkv' },
-            { title: 'The Burning' },
-        ],
-        segments: [
-            { title: 'Intro Segment', path: '/media/segments/s01e02-intro.mkv' },
-            { title: 'Intermission Segment' },
-        ],
-        fileMatches: [
-            { slot: 'movie1', filename: 'f13p2.mkv', confidence: 0.88, status: 'matched' },
-            { slot: 'segment1', filename: 's01e02-intro.mkv', confidence: 0.76, status: 'low-confidence' },
-            { slot: 'movie2', status: 'missing' },
-            { slot: 'segment2', status: 'missing' },
-        ],
-        playbackConfig: { offsets: { segment1: 0, segment2: 0 } },
+        description: 'The slasher season begins — but the segment reel is a shaky match.',
+        movieMatch: matched('movie', 'f13p2.mkv', 'Friday the 13th Part 2', '/media/movies/f13p2.mkv', 0.88),
+        segmentMatch: lowConfidence('segment', 's01e02-seg.mkv', 'S01E02 Segments', '/media/segments/s01e02-seg.mkv', 0.76),
+        cuts: standardCuts('s01e02'),
+        flaggedForTiming: false,
         status: 'Partial Match',
     },
     {
@@ -59,21 +93,10 @@ export const MOCK_EPISODES: Episode[] = [
         isSpecial: false,
         airDate: '1986-07-18',
         description: 'The dead walk — and so does this completely unmatched episode.',
-        movies: [
-            { title: 'Zombie' },
-            { title: 'Let Sleeping Corpses Lie' },
-        ],
-        segments: [
-            { title: 'Intro Segment' },
-            { title: 'Intermission Segment' },
-        ],
-        fileMatches: [
-            { slot: 'movie1', status: 'missing' },
-            { slot: 'segment1', status: 'missing' },
-            { slot: 'movie2', status: 'missing' },
-            { slot: 'segment2', status: 'missing' },
-        ],
-        playbackConfig: { offsets: { segment1: 0, segment2: 0 } },
+        movieMatch: missing('movie'),
+        segmentMatch: missing('segment'),
+        cuts: standardCuts('s01e03'),
+        flaggedForTiming: false,
         status: 'Missing Files',
     },
     {
@@ -83,45 +106,24 @@ export const MOCK_EPISODES: Episode[] = [
         episode: 4,
         isSpecial: false,
         airDate: '1986-07-25',
-        description: 'Files matched, but the second segment is off by about 12 seconds.',
-        movies: [
-            { title: 'Halloween II', path: '/media/movies/halloween2.mkv' },
-            { title: 'Terror Train', path: '/media/movies/terrortrain.mkv' },
-        ],
-        segments: [
-            { title: 'Intro Segment', path: '/media/segments/s01e04-intro.mkv' },
-            { title: 'Intermission Segment', path: '/media/segments/s01e04-intermission.mkv' },
-        ],
-        fileMatches: [
-            { slot: 'movie1', filename: 'halloween2.mkv', confidence: 0.94, status: 'matched' },
-            { slot: 'segment1', filename: 's01e04-intro.mkv', confidence: 0.9, status: 'matched' },
-            { slot: 'movie2', filename: 'terrortrain.mkv', confidence: 0.92, status: 'matched' },
-            { slot: 'segment2', filename: 's01e04-intermission.mkv', confidence: 0.87, status: 'matched' },
-        ],
-        playbackConfig: { offsets: { segment1: 0, segment2: 12 } },
+        description: 'Files matched, but the third cut (intermission) is off by about 12 seconds.',
+        movieMatch: matched('movie', 'halloween2.mkv', 'Halloween II', '/media/movies/halloween2.mkv', 0.94),
+        segmentMatch: matched('segment', 's01e04-seg.mkv', 'S01E04 Segments', '/media/segments/s01e04-seg.mkv', 0.90),
+        cuts: standardCuts('s01e04', { 's01e04-c3': 12_000 }),
+        flaggedForTiming: false,
         status: 'Needs Timing Fix',
     },
     {
         id: 'special-halloween',
         title: 'The Drive-In Will Never Die',
+        episode: 1,
         isSpecial: true,
         airDate: '1987-10-31',
         description: 'A special Halloween broadcast — classic Drive-In all night long.',
-        movies: [
-            { title: 'The Texas Chain Saw Massacre', path: '/media/movies/tcsm.mkv' },
-            { title: 'Halloween', path: '/media/movies/halloween.mkv' },
-        ],
-        segments: [
-            { title: 'Special Intro', path: '/media/segments/special-halloween-intro.mkv' },
-            { title: 'Special Intermission', path: '/media/segments/special-halloween-inter.mkv' },
-        ],
-        fileMatches: [
-            { slot: 'movie1', filename: 'tcsm.mkv', confidence: 0.99, status: 'matched' },
-            { slot: 'segment1', filename: 'special-halloween-intro.mkv', confidence: 0.97, status: 'matched' },
-            { slot: 'movie2', filename: 'halloween.mkv', confidence: 0.99, status: 'matched' },
-            { slot: 'segment2', filename: 'special-halloween-inter.mkv', confidence: 0.96, status: 'matched' },
-        ],
-        playbackConfig: { offsets: { segment1: 0, segment2: 0 } },
+        movieMatch: matched('movie', 'tcsm.mkv', 'The Texas Chain Saw Massacre', '/media/movies/tcsm.mkv', 0.99),
+        segmentMatch: matched('segment', 'special-halloween-seg.mkv', 'Special Halloween Segments', '/media/segments/special-halloween-seg.mkv', 0.97),
+        cuts: standardCuts('special-halloween'),
+        flaggedForTiming: false,
         status: 'Ready',
     },
 ]

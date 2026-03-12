@@ -4,30 +4,34 @@ export type EpisodeStatus =
     | 'Missing Files'
     | 'Needs Timing Fix'
 
-export interface MovieSlot {
-    title: string
-    path?: string
-}
+export type SourceType = 'movie' | 'segment'
 
-export interface SegmentSlot {
-    title: string
-    path?: string
-}
+export type MatchStatus = 'matched' | 'low-confidence' | 'missing'
 
-export type SlotKey = 'movie1' | 'segment1' | 'movie2' | 'segment2'
-
+/** One of the two source files per episode (movie or segment reel). */
 export interface FileMatch {
-    slot: SlotKey
+    fileType: SourceType
     filename?: string
+    /** User-editable display name; falls back to filename when null. */
+    displayName?: string
+    path?: string
     confidence?: number
-    status: 'matched' | 'missing' | 'low-confidence'
+    status: MatchStatus
+    isUserOverridden: boolean
 }
 
-export interface PlaybackConfig {
-    offsets: {
-        segment1: number
-        segment2: number
-    }
+/**
+ * One timed cut into a source file. Cuts are played in sort_order sequence,
+ * producing the interleaved segment → movie → segment → movie experience.
+ * Timestamps stored as integer milliseconds; displayed as HH:MM:SS in the UI.
+ */
+export interface PlaybackCut {
+    id: string
+    sortOrder: number
+    sourceType: SourceType
+    startMs: number
+    endMs: number
+    userOffsetMs: number
 }
 
 export interface Episode {
@@ -37,10 +41,10 @@ export interface Episode {
     episode?: number
     isSpecial: boolean
     airDate?: string
-    description: string
-    movies: [MovieSlot, MovieSlot]
-    segments: [SegmentSlot, SegmentSlot]
-    fileMatches: FileMatch[]
-    playbackConfig: PlaybackConfig
+    description?: string
+    movieMatch: FileMatch
+    segmentMatch: FileMatch
+    cuts: PlaybackCut[]
+    flaggedForTiming: boolean
     status: EpisodeStatus
 }

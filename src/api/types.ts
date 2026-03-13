@@ -9,9 +9,11 @@ export interface EpisodeFilters {
 export interface AppSettings {
     moviesFolder: string
     segmentsFolder: string
+    scanOnStartup: boolean
+    theme: 'dark'
 }
 
-export interface OffsetPatch {
-    segment1: number
-    segment2: number
+export interface CutOffsetPatch {
+    cutId: string
+    offsetMs: number
 }

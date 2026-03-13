@@ -1,6 +1,6 @@
 import { MOCK_EPISODES } from '../features/episodes/mocks'
 import type { Episode } from '../features/episodes/types'
-import type { EpisodeFilters, AppSettings, OffsetPatch } from './types'
+import type { EpisodeFilters, AppSettings, CutOffsetPatch } from './types'
 
 export function getEpisodes(filters?: EpisodeFilters): Promise<Episode[]> {
     return new Promise((resolve) =>
@@ -12,7 +12,7 @@ export function getEpisodes(filters?: EpisodeFilters): Promise<Episode[]> {
                 results = results.filter(
                     (e) =>
                         e.title.toLowerCase().includes(q) ||
-                        e.movies.some((m) => m.title.toLowerCase().includes(q)),
+                        (e.movieMatch.displayName ?? e.movieMatch.filename ?? '').toLowerCase().includes(q),
                 )
             }
 
@@ -38,14 +38,14 @@ export function getEpisodeById(id: string): Promise<Episode | undefined> {
 }
 
 export function getSettings(): Promise<AppSettings> {
-    return Promise.resolve({ moviesFolder: '', segmentsFolder: '' })
+    return Promise.resolve({ moviesFolder: '', segmentsFolder: '', scanOnStartup: false, theme: 'dark' })
 }
 
 export function saveSettings(_patch: Partial<AppSettings>): Promise<void> {
     return Promise.resolve()
 }
 
-export function updateOffsets(_episodeId: string, _offsets: OffsetPatch): Promise<void> {
+export function updateOffsets(_episodeId: string, _offsets: CutOffsetPatch[]): Promise<void> {
     return Promise.resolve()
 }
 

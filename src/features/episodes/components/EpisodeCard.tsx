@@ -45,8 +45,7 @@ export default function EpisodeCard({ episode }: { episode: Episode }) {
             </div>
 
             <div className="text-xs space-y-0.5" style={{ color: '#dfa51d' }}>
-                <p>🎬 {episode.movies[0].title}</p>
-                <p>🎬 {episode.movies[1].title}</p>
+                <p>🎬 {episode.movieMatch.displayName ?? episode.movieMatch.filename ?? 'Unknown Film'}</p>
             </div>
 
             {episode.airDate && (

@@ -2,20 +2,6 @@ import Panel from '../components/ui/Panel'
 import Button from '../components/ui/Button'
 import TextInput from '../components/ui/TextInput'
 
-function SectionHeader({ children }: { children: React.ReactNode }) {
-    return (
-        <h2
-            className="text-2xl uppercase tracking-[0.15em]"
-            style={{
-                color: '#f3ebd2',
-                fontFamily: 'Impact, "Arial Narrow", sans-serif',
-            }}
-        >
-            {children}
-        </h2>
-    )
-}
-
 function Label({ children }: { children: React.ReactNode }) {
     return (
         <p

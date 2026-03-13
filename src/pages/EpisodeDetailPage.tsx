@@ -1,24 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getEpisodeById } from '../api'
-import type { Episode, SlotKey } from '../features/episodes/types'
+import type { Episode, SourceType } from '../features/episodes/types'
 import Panel from '../components/ui/Panel'
 import Button from '../components/ui/Button'
 import StatusPill from '../components/ui/StatusPill'
-
-const SLOT_LABEL: Record<SlotKey, string> = {
-    movie1: 'Movie 1',
-    segment1: 'Segment 1',
-    movie2: 'Movie 2',
-    segment2: 'Segment 2',
-}
+import { msToHMS } from '../utils/Time'
 
 export default function EpisodeDetailPage() {
     const { episodeId } = useParams<{ episodeId: string }>()
     const navigate = useNavigate()
     const [episode, setEpisode] = useState<Episode | null>(null)
-    const [offsets, setOffsets] = useState({ segment1: 0, segment2: 0 })
-    const [remapTarget, setRemapTarget] = useState<SlotKey | null>(null)
+    const [offsets, setOffsets] = useState<Record<string, number>>({})
+    const [remapTarget, setRemapTarget] = useState<SourceType | null>(null)
     const [notFound, setNotFound] = useState(false)
 
     useEffect(() => {
@@ -26,7 +20,12 @@ export default function EpisodeDetailPage() {
         getEpisodeById(episodeId).then((ep) => {
             if (ep) {
                 setEpisode(ep)
-                setOffsets(ep.playbackConfig.offsets)
+                setOffsets(
+                    ep.cuts.reduce<Record<string, number>>(
+                        (acc, c) => ({ ...acc, [c.id]: c.userOffsetMs }),
+                        {},
+                    ),
+                )
             } else {
                 setNotFound(true)
             }
@@ -59,8 +58,8 @@ export default function EpisodeDetailPage() {
         )
     }
 
-    const adjust = (key: 'segment1' | 'segment2', delta: number) =>
-        setOffsets((o) => ({ ...o, [key]: o[key] + delta }))
+    const adjust = (cutId: string, delta: number) =>
+        setOffsets((o) => ({ ...o, [cutId]: (o[cutId] ?? 0) + delta }))
 
     const episodeLabel = episode.isSpecial
         ? '★ Special'
@@ -130,54 +129,45 @@ export default function EpisodeDetailPage() {
             {/* File Mapping */}
             <Panel title="File Mapping">
                 <div className="space-y-3">
-                    {episode.fileMatches.map((match) => {
-                        const slotIndex = match.slot.startsWith('movie')
-                            ? parseInt(match.slot.replace('movie', '')) - 1
-                            : parseInt(match.slot.replace('segment', '')) - 1
-                        const contextTitle = match.slot.startsWith('movie')
-                            ? episode.movies[slotIndex]?.title
-                            : episode.segments[slotIndex]?.title
-
-                        return (
-                            <div
-                                key={match.slot}
-                                className="flex items-center justify-between gap-4 text-sm pb-3 last:pb-0"
-                                style={{ borderBottom: '1px solid #2a2a33' }}
-                            >
-                                <div className="min-w-0">
-                                    <p
-                                        className="text-[10px] uppercase tracking-[0.15em] mb-0.5"
-                                        style={{ color: '#b8b1a1' }}
-                                    >
-                                        {SLOT_LABEL[match.slot]} — {contextTitle}
-                                    </p>
-                                    <p
-                                        className="truncate"
-                                        style={{
-                                            color: match.status === 'missing' ? '#f87171' : '#f3ebd2',
-                                        }}
-                                    >
-                                        {match.filename ?? 'No file matched'}
-                                    </p>
-                                    {match.confidence !== undefined && (
-                                        <p className="text-[10px] mt-0.5" style={{ color: '#b8b1a1' }}>
-                                            Confidence: {Math.round(match.confidence * 100)}%
-                                            {match.status === 'low-confidence' && (
-                                                <span style={{ color: '#fdba74' }}> · Low confidence</span>
-                                            )}
-                                        </p>
-                                    )}
-                                </div>
-                                <Button
-                                    variant="ghost"
-                                    className="text-xs px-3 py-1 shrink-0"
-                                    onClick={() => setRemapTarget(match.slot)}
+                    {[episode.movieMatch, episode.segmentMatch].map((match) => (
+                        <div
+                            key={match.fileType}
+                            className="flex items-center justify-between gap-4 text-sm pb-3 last:pb-0"
+                            style={{ borderBottom: '1px solid #2a2a33' }}
+                        >
+                            <div className="min-w-0">
+                                <p
+                                    className="text-[10px] uppercase tracking-[0.15em] mb-0.5"
+                                    style={{ color: '#b8b1a1' }}
                                 >
-                                    Remap
-                                </Button>
+                                    {match.fileType === 'movie' ? 'Movie File' : 'Segment File'}
+                                </p>
+                                <p
+                                    className="truncate"
+                                    style={{
+                                        color: match.status === 'missing' ? '#f87171' : '#f3ebd2',
+                                    }}
+                                >
+                                    {match.displayName ?? match.filename ?? 'No file matched'}
+                                </p>
+                                {match.confidence !== undefined && (
+                                    <p className="text-[10px] mt-0.5" style={{ color: '#b8b1a1' }}>
+                                        Confidence: {Math.round(match.confidence * 100)}%
+                                        {match.status === 'low-confidence' && (
+                                            <span style={{ color: '#fdba74' }}> · Low confidence</span>
+                                        )}
+                                    </p>
+                                )}
                             </div>
-                        )
-                    })}
+                            <Button
+                                variant="ghost"
+                                className="text-xs px-3 py-1 shrink-0"
+                                onClick={() => setRemapTarget(match.fileType)}
+                            >
+                                Remap
+                            </Button>
+                        </div>
+                    ))}
                 </div>
             </Panel>
 
@@ -203,7 +193,7 @@ export default function EpisodeDetailPage() {
                         {episode.title}
                     </p>
                     <p className="text-sm" style={{ color: '#b8b1a1' }}>
-                        ▶ {episode.movies[0].title}
+                        ▶ {episode.movieMatch.displayName ?? episode.movieMatch.filename ?? 'Unknown Film'}
                     </p>
                     <div className="flex gap-3">
                         <Button variant="ghost">⏮</Button>
@@ -230,7 +220,7 @@ export default function EpisodeDetailPage() {
             <Panel title="Timeline">
                 <div className="space-y-2">
                     <div className="flex gap-1 h-8 rounded overflow-hidden">
-                        {(['Segment 1', 'Movie 1', 'Segment 2', 'Movie 2'] as const).map((label, i) => (
+                        {episode.cuts.map((cut, i) => (
                             <div
                                 key={i}
                                 className="flex-1 flex items-center justify-center text-[9px] uppercase tracking-widest"
@@ -240,12 +230,13 @@ export default function EpisodeDetailPage() {
                                     border: i % 2 === 0 ? '1px solid #8b1e2d' : '1px solid #2a2a33',
                                 }}
                             >
-                                {label}
+                                {cut.sourceType === 'segment' ? 'Seg' : 'Mov'} {cut.sortOrder}
                             </div>
                         ))}
                     </div>
-                    <p className="text-[10px]" style={{ color: '#2a2a33' }}>
-                        Playback order: segment → movie → segment → movie
+                    <p className="text-[10px]" style={{ color: '#ffffff' }}>
+                        {/* TODO: This playback order should eventually come from the metadata. Long term scenario is clickable which lets user skip to a specific segment if needed */}
+                        Playback order: Seg 1 → Mov 2 → Seg 3 → Mov 4 → Seg 5 → Mov 6
                     </p>
                 </div>
             </Panel>
@@ -253,10 +244,13 @@ export default function EpisodeDetailPage() {
             {/* Offset Controls */}
             <Panel title="Offset Adjustment">
                 <div className="space-y-4 text-sm">
-                    {(['segment1', 'segment2'] as const).map((key) => (
-                        <div key={key} className="flex items-center justify-between gap-4">
+                    {episode.cuts.map((cut) => (
+                        <div key={cut.id} className="flex items-center justify-between gap-4">
                             <span style={{ color: '#b8b1a1' }}>
-                                {key === 'segment1' ? 'Segment 1' : 'Segment 2'}
+                                {cut.sourceType === 'segment' ? 'Seg' : 'Mov'} {cut.sortOrder}{' '}
+                                <span style={{ color: '#2a2a33' }}>
+                                    ({msToHMS(cut.startMs)}–{msToHMS(cut.endMs)})
+                                </span>
                             </span>
                             <div className="flex items-center gap-2">
                                 {[-10, -5].map((d) => (
@@ -264,7 +258,7 @@ export default function EpisodeDetailPage() {
                                         key={d}
                                         variant="ghost"
                                         className="px-2 py-1 text-xs"
-                                        onClick={() => adjust(key, d)}
+                                        onClick={() => adjust(cut.id, d * 1000)}
                                     >
                                         {d}s
                                     </Button>
@@ -272,29 +266,31 @@ export default function EpisodeDetailPage() {
                                 <span
                                     className="w-16 text-center text-xs px-2 py-1 rounded"
                                     style={{
-                                        color: offsets[key] !== 0 ? '#fdba74' : '#f3ebd2',
+                                        color: (offsets[cut.id] ?? 0) !== 0 ? '#fdba74' : '#f3ebd2',
                                         backgroundColor: '#0b0b0f',
                                         border: '1px solid #2a2a33',
                                     }}
                                 >
-                                    {offsets[key] >= 0 ? '+' : ''}
-                                    {offsets[key]}s
+                                    {(offsets[cut.id] ?? 0) >= 0 ? '+' : ''}
+                                    {Math.round((offsets[cut.id] ?? 0) / 1000)}s
                                 </span>
                                 {[5, 10].map((d) => (
                                     <Button
                                         key={d}
                                         variant="ghost"
                                         className="px-2 py-1 text-xs"
-                                        onClick={() => adjust(key, d)}
+                                        onClick={() => adjust(cut.id, d * 1000)}
                                     >
                                         +{d}s
                                     </Button>
                                 ))}
-                                {offsets[key] !== 0 && (
+                                {(offsets[cut.id] ?? 0) !== 0 && (
                                     <button
                                         className="text-[10px] underline"
                                         style={{ color: '#b8b1a1' }}
-                                        onClick={() => setOffsets((o) => ({ ...o, [key]: 0 }))}
+                                        onClick={() =>
+                                            setOffsets((o) => ({ ...o, [cut.id]: 0 }))
+                                        }
                                     >
                                         reset
                                     </button>
@@ -311,7 +307,15 @@ export default function EpisodeDetailPage() {
                 <Button variant="ghost">Save Offsets</Button>
                 <Button
                     variant="danger"
-                    onClick={() => episode && setOffsets(episode.playbackConfig.offsets)}
+                    onClick={() =>
+                        episode &&
+                        setOffsets(
+                            episode.cuts.reduce<Record<string, number>>(
+                                (acc, c) => ({ ...acc, [c.id]: 0 }),
+                                {},
+                            ),
+                        )
+                    }
                 >
                     Reset
                 </Button>
@@ -338,7 +342,7 @@ export default function EpisodeDetailPage() {
                                 fontFamily: 'Impact, "Arial Narrow", sans-serif',
                             }}
                         >
-                            Remap — {SLOT_LABEL[remapTarget]}
+                            Remap — {remapTarget === 'movie' ? 'Movie File' : 'Segment File'}
                         </h2>
                         <p className="text-sm" style={{ color: '#b8b1a1' }}>
                             Select a replacement file for this slot. File picker will be connected in a later

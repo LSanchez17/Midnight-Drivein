@@ -1,6 +1,6 @@
 import { MOCK_EPISODES } from '../features/episodes/mocks'
-import type { Episode } from '../features/episodes/types'
-import type { EpisodeFilters, AppSettings, CutOffsetPatch } from './types'
+import type { Episode, SourceType } from '../features/episodes/types'
+import type { EpisodeFilters, AppSettings, AppSettingsPatch } from './types'
 
 export function getEpisodes(filters?: EpisodeFilters): Promise<Episode[]> {
     return new Promise((resolve) =>
@@ -38,17 +38,25 @@ export function getEpisodeById(id: string): Promise<Episode | undefined> {
 }
 
 export function getSettings(): Promise<AppSettings> {
-    return Promise.resolve({ moviesFolder: '', segmentsFolder: '', scanOnStartup: false, theme: 'dark' })
+    return Promise.resolve({ moviesFolder: null, segmentsFolder: null, scanOnStartup: false, theme: 'dark' })
 }
 
-export function saveSettings(_patch: Partial<AppSettings>): Promise<void> {
+export function saveSettings(_patch: AppSettingsPatch): Promise<void> {
     return Promise.resolve()
 }
 
-export function updateOffsets(_episodeId: string, _offsets: CutOffsetPatch[]): Promise<void> {
+export function saveCutOffset(_cutId: string, _offsetMs: number): Promise<void> {
     return Promise.resolve()
 }
 
-export function triggerScan(): Promise<void> {
+export function savePlaybackOverride(_episodeId: string, _flaggedForTiming: boolean): Promise<void> {
+    return Promise.resolve()
+}
+
+export function remapFile(_episodeId: string, _fileType: SourceType, _mediaFileId: string): Promise<void> {
+    return Promise.resolve()
+}
+
+export function scanLibrary(): Promise<void> {
     return Promise.resolve()
 }

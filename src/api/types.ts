@@ -7,13 +7,15 @@ export interface EpisodeFilters {
 }
 
 export interface AppSettings {
-    moviesFolder: string
-    segmentsFolder: string
+    moviesFolder: string | null
+    segmentsFolder: string | null
     scanOnStartup: boolean
     theme: 'dark'
 }
 
-export interface CutOffsetPatch {
-    cutId: string
-    offsetMs: number
+export interface AppSettingsPatch {
+    moviesFolder?: string | null
+    segmentsFolder?: string | null
+    scanOnStartup?: boolean
+    theme?: 'dark'
 }

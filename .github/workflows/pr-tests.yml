@@ -1,0 +1,36 @@
+name: PR Tests
+
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install Node dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: TypeScript typecheck
+        run: yarn tsc --noEmit
+
+      - name: Run JavaScript tests (Vitest)
+        run: yarn test
+
+      - name: Setup Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Run Rust tests
+        working-directory: src-tauri
+        run: cargo test --verbose

@@ -1,4 +1,5 @@
 import { invoke } from '@tauri-apps/api/core'
+import { open } from '@tauri-apps/plugin-dialog'
 import { deriveEpisodeStatus } from '../lib/derive/episodeStatus'
 import type { Episode, FileMatch, PlaybackCut, SourceType, MatchStatus } from '../features/episodes/types'
 import type { AppSettings, AppSettingsPatch, EpisodeFilters } from './types'
@@ -163,6 +164,16 @@ export async function remapFile(
 ): Promise<void> {
     try {
         await invoke<void>('remap_file', { episodeId, fileType, mediaFileId })
+    } catch (e) {
+        throw parseError(e)
+    }
+}
+
+export async function selectLibraryRoot(): Promise<string | null> {
+    try {
+        const selected = await open({ directory: true, multiple: false })
+        if (selected === null || selected === undefined) return null
+        return selected as string
     } catch (e) {
         throw parseError(e)
     }

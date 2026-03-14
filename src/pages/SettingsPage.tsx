@@ -1,6 +1,10 @@
+import { useState } from 'react'
 import Panel from '../components/ui/Panel'
 import Button from '../components/ui/Button'
 import TextInput from '../components/ui/TextInput'
+import { useSettings } from '../context/SettingsContext'
+import { saveSettings, selectLibraryRoot, scanLibrary } from '../api'
+import { ApiError } from '../api/errors'
 
 function Label({ children }: { children: React.ReactNode }) {
     return (
@@ -13,7 +17,88 @@ function Label({ children }: { children: React.ReactNode }) {
     )
 }
 
+function FieldError({ message }: { message: string | null }) {
+    if (!message) return null
+    return (
+        <p className="text-xs mt-1" style={{ color: '#f87171' }}>
+            {message}
+        </p>
+    )
+}
+
+function FolderRow({
+    label,
+    value,
+    placeholder,
+    ariaLabel,
+    disabled,
+    onChoose,
+    error,
+}: {
+    label: string
+    value: string | null | undefined
+    placeholder: string
+    ariaLabel: string
+    disabled: boolean
+    onChoose: () => void
+    error: string | null
+}) {
+    return (
+        <div>
+            <Label>{label}</Label>
+            <div className="flex gap-2">
+                <TextInput
+                    placeholder={placeholder}
+                    readOnly
+                    value={value ?? ''}
+                    className="flex-1"
+                    aria-label={ariaLabel}
+                    style={{ opacity: disabled ? 0.5 : 1 }}
+                />
+                <Button variant="ghost" onClick={onChoose} disabled={disabled}>
+                    {value ? 'Change Folder' : 'Choose Folder'}
+                </Button>
+            </div>
+            <FieldError message={error} />
+        </div>
+    )
+}
+
 export default function SettingsPage() {
+    const { settings, isLoading, reloadSettings } = useSettings()
+
+    const [moviesFolderError, setMoviesFolderError] = useState<string | null>(null)
+    const [segmentsFolderError, setSegmentsFolderError] = useState<string | null>(null)
+    const [scanToggleError, setScanToggleError] = useState<string | null>(null)
+
+    async function handleChooseFolder(field: 'moviesFolder' | 'segmentsFolder') {
+        const setError = field === 'moviesFolder' ? setMoviesFolderError : setSegmentsFolderError
+        setError(null)
+        try {
+            const path = await selectLibraryRoot()
+
+            // cancelled dialog is not an error, but we shouldn't try to save null to settings
+            if (path === null) return
+
+            await saveSettings({ [field]: path })
+            reloadSettings()
+        } catch (e) {
+            setError(e instanceof ApiError ? e.message : String(e))
+        }
+    }
+
+    async function handleScanOnStartupChange(checked: boolean) {
+        setScanToggleError(null)
+        try {
+            await saveSettings({ scanOnStartup: checked })
+            reloadSettings()
+        } catch (e) {
+            setScanToggleError(e instanceof ApiError ? e.message : String(e))
+        }
+    }
+
+    const bothFoldersSet = Boolean(settings?.moviesFolder && settings?.segmentsFolder)
+
     return (
         <div className="space-y-6 max-w-2xl">
             <h1
@@ -29,41 +114,55 @@ export default function SettingsPage() {
             {/* Library Root */}
             <Panel title="Library Root">
                 <div className="space-y-4 text-sm">
-                    <div>
-                        <Label>Movies Folder</Label>
-                        <div className="flex gap-2">
-                            <TextInput
-                                placeholder="C:\Users\you\Movies"
-                                readOnly
-                                defaultValue=""
-                                className="flex-1"
-                                aria-label="Movies folder path"
-                            />
-                            <Button variant="ghost">Choose Folder</Button>
-                        </div>
-                    </div>
-                    <div>
-                        <Label>Segments Folder</Label>
-                        <div className="flex gap-2">
-                            <TextInput
-                                placeholder="C:\Users\you\Segments"
-                                readOnly
-                                defaultValue=""
-                                className="flex-1"
-                                aria-label="Segments folder path"
-                            />
-                            <Button variant="ghost">Choose Folder</Button>
-                        </div>
-                    </div>
-                    <Button variant="primary">Rescan Library</Button>
+                    <FolderRow
+                        label="Movies Folder"
+                        value={settings?.moviesFolder}
+                        placeholder="e.g. /Users/you/Movies"
+                        ariaLabel="Movies folder path"
+                        disabled={isLoading}
+                        onChoose={() => handleChooseFolder('moviesFolder')}
+                        error={moviesFolderError}
+                    />
+                    <FolderRow
+                        label="Segments Folder"
+                        value={settings?.segmentsFolder}
+                        placeholder="e.g. /Users/you/NonMovieSegments"
+                        ariaLabel="Segments folder path"
+                        disabled={isLoading}
+                        onChoose={() => handleChooseFolder('segmentsFolder')}
+                        error={segmentsFolderError}
+                    />
+                    <Button
+                        variant="primary"
+                        disabled={!bothFoldersSet}
+                        title={bothFoldersSet ? undefined : 'Configure both folders first'}
+                        onClick={() => {
+                            if (bothFoldersSet) scanLibrary().catch(() => {/* stub — spec 0008 */ })
+                        }}
+                    >
+                        Rescan Library
+                    </Button>
                 </div>
             </Panel>
 
             {/* Scan Preferences */}
             <Panel title="Scan Preferences">
-                <p className="text-sm" style={{ color: '#b8b1a1' }}>
-                    Fuzzy-match thresholds and scan settings will appear here in a future phase.
-                </p>
+                <div className="space-y-2 text-sm">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={settings?.scanOnStartup ?? false}
+                            disabled={isLoading}
+                            onChange={(e) => handleScanOnStartupChange(e.target.checked)}
+                            className="w-4 h-4 accent-[#8b1e2d] cursor-pointer"
+                        />
+                        <span style={{ color: '#f3ebd2' }}>Scan library on startup</span>
+                    </label>
+                    <FieldError message={scanToggleError} />
+                    <p className="text-xs" style={{ color: '#b8b1a1' }}>
+                        Fuzzy-match thresholds and additional scan settings will appear here in a future phase.
+                    </p>
+                </div>
             </Panel>
 
             {/* Metadata */}
@@ -98,12 +197,6 @@ export default function SettingsPage() {
                     <p className="leading-relaxed">
                         This application is a personal tool for organizing files you already own. Use it
                         responsibly and in accordance with applicable copyright law.
-                    </p>
-                    <p
-                        className="text-[10px] pt-2"
-                        style={{ borderTop: '1px solid #2a2a33', color: '#ffffff' }}
-                    >
-                        v0.1.0 · Phase 1 UI Shell · Local-first · No network required
                     </p>
                 </div>
             </Panel>

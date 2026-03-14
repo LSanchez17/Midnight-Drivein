@@ -48,6 +48,10 @@ jobs:
         with:
           workspaces: src-tauri
 
+      - name: Check Rust compilation
+        working-directory: src-tauri
+        run: cargo check --verbose
+
       - name: Run Rust tests
         working-directory: src-tauri
         run: cargo test --verbose

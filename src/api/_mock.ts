@@ -60,3 +60,7 @@ export function remapFile(_episodeId: string, _fileType: SourceType, _mediaFileI
 export function scanLibrary(): Promise<void> {
     return Promise.resolve()
 }
+
+export function selectLibraryRoot(): Promise<string | null> {
+    return Promise.resolve('/mock/movies')
+}

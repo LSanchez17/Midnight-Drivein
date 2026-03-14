@@ -20,6 +20,9 @@ function makeRow(id: string, title: string) {
         isSpecial: false,
         airDate: null,
         description: null,
+        hostLabel: null,
+        movieTitle: null,
+        movieYear: null,
         movieMatch: {
             fileType: 'movie',
             filename: null,

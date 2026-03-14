@@ -51,7 +51,7 @@ export interface PlaybackCut {
     sortOrder: number
     sourceType: SourceType
     startMs: number
-    endMs: number
+    endMs: number | undefined
     userOffsetMs: number
 }
 
@@ -63,6 +63,9 @@ export interface Episode {
     isSpecial: boolean
     airDate?: string
     description?: string
+    hostLabel?: string
+    movieTitle?: string
+    movieYear?: number
     movieMatch: FileMatch
     segmentMatch: FileMatch
     cuts: PlaybackCut[]

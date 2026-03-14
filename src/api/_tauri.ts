@@ -34,7 +34,7 @@ interface PlaybackCutWire {
     sortOrder: number
     sourceType: SourceType
     startMs: number
-    endMs: number
+    endMs: number | null
     userOffsetMs: number
 }
 
@@ -46,6 +46,9 @@ interface EpisodeRowWire {
     isSpecial: boolean
     airDate: string | null
     description: string | null
+    hostLabel: string | null
+    movieTitle: string | null
+    movieYear: number | null
     movieMatch: FileMatchWire
     segmentMatch: FileMatchWire
     cuts: PlaybackCutWire[]
@@ -72,7 +75,7 @@ function toCut(w: PlaybackCutWire): PlaybackCut {
         sortOrder: w.sortOrder,
         sourceType: w.sourceType,
         startMs: w.startMs,
-        endMs: w.endMs,
+        endMs: w.endMs ?? undefined,
         userOffsetMs: w.userOffsetMs,
     }
 }
@@ -86,6 +89,9 @@ function toEpisode(row: EpisodeRowWire): Episode {
         isSpecial: row.isSpecial,
         airDate: row.airDate ?? undefined,
         description: row.description ?? undefined,
+        hostLabel: row.hostLabel ?? undefined,
+        movieTitle: row.movieTitle ?? undefined,
+        movieYear: row.movieYear ?? undefined,
         movieMatch: toFileMatch(row.movieMatch),
         segmentMatch: toFileMatch(row.segmentMatch),
         cuts: row.cuts.map(toCut),

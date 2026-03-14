@@ -1,3 +1,5 @@
+pub mod seed;
+
 use sqlx::{
     sqlite::{SqliteConnectOptions, SqlitePoolOptions},
     SqlitePool,

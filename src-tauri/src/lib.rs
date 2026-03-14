@@ -28,6 +28,17 @@ pub fn run() {
             ))
             .expect("failed to initialise database");
 
+            let json_path = app
+                .path()
+                .resource_dir()
+                .expect("resource dir unavailable")
+                .join("episodes.json");
+
+            tauri::async_runtime::block_on(
+                db::seed::seed_episodes_if_empty(&pool, &json_path),
+            )
+            .expect("episode seed failed");
+
             app.manage(pool);
             app.manage(Arc::new(AtomicBool::new(false)));
             Ok(())

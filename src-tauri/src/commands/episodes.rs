@@ -26,7 +26,7 @@ pub struct PlaybackCutRow {
     pub sort_order: i64,
     pub source_type: String,
     pub start_ms: i64,
-    pub end_ms: i64,
+    pub end_ms: Option<i64>,
     pub user_offset_ms: i64,
 }
 
@@ -40,6 +40,9 @@ pub struct EpisodeRow {
     pub is_special: bool,
     pub air_date: Option<String>,
     pub description: Option<String>,
+    pub host_label: Option<String>,
+    pub movie_title: Option<String>,
+    pub movie_year: Option<i64>,
     pub movie_match: FileMatchRow,
     pub segment_match: FileMatchRow,
     pub cuts: Vec<PlaybackCutRow>,
@@ -56,6 +59,9 @@ struct EpisodeFileRow {
     is_special: bool,
     air_date: Option<String>,
     description: Option<String>,
+    host_label: Option<String>,
+    movie_title: Option<String>,
+    movie_year: Option<i64>,
     flagged_for_timing: bool,
 
     // movie match columns (prefixed)
@@ -86,7 +92,7 @@ struct CutRow {
     sort_order: i64,
     source_type: String,
     start_ms: i64,
-    end_ms: i64,
+    end_ms: Option<i64>,
     user_offset_ms: i64,
 }
 
@@ -120,6 +126,9 @@ pub async fn get_episodes_inner(pool: &SqlitePool) -> Result<Vec<EpisodeRow>, St
             CAST(e.is_special AS BOOLEAN) AS is_special,
             e.air_date,
             e.description,
+            e.host_label,
+            e.movie_title,
+            e.movie_year,
             CAST(COALESCE(po.flagged_for_timing, 0) AS BOOLEAN) AS flagged_for_timing,
 
             fm_movie.file_type        AS movie_file_type,
@@ -234,6 +243,9 @@ pub async fn get_episodes_inner(pool: &SqlitePool) -> Result<Vec<EpisodeRow>, St
                 is_special: row.is_special,
                 air_date: row.air_date,
                 description: row.description,
+                host_label: row.host_label,
+                movie_title: row.movie_title,
+                movie_year: row.movie_year,
                 movie_match,
                 segment_match,
                 cuts,

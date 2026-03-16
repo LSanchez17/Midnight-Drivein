@@ -1,11 +1,11 @@
 import { clsx } from 'clsx'
 import type { HTMLAttributes } from 'react'
 
-interface Props extends HTMLAttributes<HTMLDivElement> {
+interface PanelProps extends HTMLAttributes<HTMLDivElement> {
     title?: string
 }
 
-export default function Panel({ title, className, children, style, ...props }: Props) {
+export default function Panel({ title, className, children, style, ...props }: PanelProps) {
     return (
         <div
             className={clsx('rounded-lg overflow-hidden', className)}

@@ -1,70 +1,13 @@
 import { useState, useEffect } from 'react'
 import Panel from '../components/ui/Panel'
 import Button from '../components/ui/Button'
-import TextInput from '../components/ui/TextInput'
 import ScanSummaryPanel from '../components/ui/ScanSummaryPanel'
 import { useSettings } from '../context/SettingsContext'
 import { saveSettings, selectLibraryRoot, scanLibrary, getScanSummary } from '../api'
 import { ApiError } from '../api/errors'
 import type { ScanResult } from '../api/types'
-
-function Label({ children }: { children: React.ReactNode }) {
-    return (
-        <p
-            className="text-[10px] uppercase tracking-[0.2em] mb-1"
-            style={{ color: '#b8b1a1' }}
-        >
-            {children}
-        </p>
-    )
-}
-
-function FieldError({ message }: { message: string | null }) {
-    if (!message) return null
-    return (
-        <p className="text-xs mt-1" style={{ color: '#f87171' }}>
-            {message}
-        </p>
-    )
-}
-
-function FolderRow({
-    label,
-    value,
-    placeholder,
-    ariaLabel,
-    disabled,
-    onChoose,
-    error,
-}: {
-    label: string
-    value: string | null | undefined
-    placeholder: string
-    ariaLabel: string
-    disabled: boolean
-    onChoose: () => void
-    error: string | null
-}) {
-    return (
-        <div>
-            <Label>{label}</Label>
-            <div className="flex gap-2">
-                <TextInput
-                    placeholder={placeholder}
-                    readOnly
-                    value={value ?? ''}
-                    className="flex-1"
-                    aria-label={ariaLabel}
-                    style={{ opacity: disabled ? 0.5 : 1 }}
-                />
-                <Button variant="ghost" onClick={onChoose} disabled={disabled}>
-                    {value ? 'Change Folder' : 'Choose Folder'}
-                </Button>
-            </div>
-            <FieldError message={error} />
-        </div>
-    )
-}
+import FieldError from '../components/ui/FieldError'
+import FolderRow from '../components/ui/FolderRow'
 
 export default function SettingsPage() {
     const { settings, isLoading, reloadSettings } = useSettings()
@@ -137,7 +80,6 @@ export default function SettingsPage() {
                 Settings
             </h1>
 
-            {/* Library Root */}
             <Panel title="Library Root">
                 <div className="space-y-4 text-sm">
                     <FolderRow
@@ -171,7 +113,6 @@ export default function SettingsPage() {
                 </div>
             </Panel>
 
-            {/* Scan Preferences */}
             <Panel title="Scan Preferences">
                 <div className="space-y-2 text-sm">
                     <label className="flex items-center gap-3 cursor-pointer">
@@ -191,7 +132,6 @@ export default function SettingsPage() {
                 </div>
             </Panel>
 
-            {/* Metadata */}
             <Panel title="Metadata">
                 <div className="space-y-3 text-sm">
                     <div className="flex gap-3">
@@ -205,14 +145,12 @@ export default function SettingsPage() {
                 </div>
             </Panel>
 
-            {/* Appearance */}
             <Panel title="Appearance">
                 <p className="text-sm" style={{ color: '#b8b1a1' }}>
                     Theme options will appear here in a future phase.
                 </p>
             </Panel>
 
-            {/* About / Legal */}
             <Panel title="About">
                 <div className="space-y-3 text-sm" style={{ color: '#b8b1a1' }}>
                     <p className="leading-relaxed">

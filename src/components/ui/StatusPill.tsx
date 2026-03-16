@@ -35,12 +35,12 @@ const STATUS_MAP: Record<EpisodeStatus, StatusConfig> = {
     },
 }
 
-interface Props {
+interface StatusPillProps {
     status: EpisodeStatus
     className?: string
 }
 
-export default function StatusPill({ status, className }: Props) {
+export default function StatusPill({ status, className }: StatusPillProps) {
     const cfg = STATUS_MAP[status]
     return (
         <span

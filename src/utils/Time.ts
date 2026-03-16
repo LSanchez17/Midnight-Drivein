@@ -9,4 +9,18 @@ function msToHMS(ms: number | undefined): string {
     return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
 }
 
-export { msToHMS }
+function formatDate(iso: string): string {
+    try {
+        return new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+        }).format(new Date(iso))
+    } catch {
+        return iso
+    }
+}
+
+export { msToHMS, formatDate }

@@ -1,36 +1,13 @@
 import type { ScanResult } from '../../api/types'
+import { formatDate } from '../../utils/Time'
+import Row from './Row'
 
-interface Props {
+interface ScanSummaryPanelProps {
     result: ScanResult | null
     isScanning: boolean
 }
 
-function Row({ label, value }: { label: string; value: React.ReactNode }) {
-    return (
-        <div className="flex justify-between items-baseline gap-4">
-            <span style={{ color: '#b8b1a1' }}>{label}</span>
-            <span style={{ color: '#f3ebd2' }} className="tabular-nums">
-                {value}
-            </span>
-        </div>
-    )
-}
-
-function formatDate(iso: string): string {
-    try {
-        return new Intl.DateTimeFormat('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-        }).format(new Date(iso))
-    } catch {
-        return iso
-    }
-}
-
-export default function ScanSummaryPanel({ result, isScanning }: Props) {
+export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPanelProps) {
     if (isScanning) {
         return (
             <p className="text-sm mt-3" style={{ color: '#b8b1a1' }}>
@@ -52,14 +29,12 @@ export default function ScanSummaryPanel({ result, isScanning }: Props) {
 
     return (
         <div className="mt-4 space-y-3 text-sm">
-            {/* File counts */}
             <div className="space-y-1">
                 <Row label="Last scan" value={formatDate(result.lastScanAt)} />
                 <Row label="Movie files" value={result.movieFileCount} />
                 <Row label="Segment files" value={result.segmentFileCount} />
             </div>
 
-            {/* Missing folders — shown as a separate section, always expanded */}
             {hasMissingFolders && (
                 <div>
                     <p
@@ -82,7 +57,6 @@ export default function ScanSummaryPanel({ result, isScanning }: Props) {
                 </div>
             )}
 
-            {/* Per-file / walk warnings — collapsed by default */}
             {hasWarnings && (
                 <details>
                     <summary

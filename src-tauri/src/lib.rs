@@ -50,6 +50,7 @@ pub fn run() {
             commands::episodes::get_episodes,
             commands::episodes::get_episode_by_id,
             commands::scan::scan_library,
+            commands::scan::get_scan_summary,
             commands::playback::save_cut_offset,
             commands::playback::save_playback_override,
             commands::playback::remap_file,

@@ -27,6 +27,8 @@ tauri-plugin-dialog = "2"
 sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "macros", "migrate"] }
 tokio = { version = "1", features = ["rt-multi-thread"] }
 chrono = { version = "0.4", features = ["serde"] }
+walkdir = "2"
+uuid = { version = "1", features = ["v4"] }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["rt", "macros"] }

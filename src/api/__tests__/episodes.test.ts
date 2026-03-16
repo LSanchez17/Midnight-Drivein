@@ -20,26 +20,36 @@ function makeRow(id: string, title: string) {
         isSpecial: false,
         airDate: null,
         description: null,
-        movieMatch: {
-            fileType: 'movie',
-            filename: null,
-            displayName: null,
-            path: null,
-            confidence: null,
-            status: 'missing',
-            isUserOverridden: false,
-            matchedAt: null,
-        },
-        segmentMatch: {
-            fileType: 'segment',
-            filename: null,
-            displayName: null,
-            path: null,
-            confidence: null,
-            status: 'missing',
-            isUserOverridden: false,
-            matchedAt: null,
-        },
+        guests: null,
+        slots: [],
+    }
+}
+
+/** A slot wire object with both matches present (status driven by args). */
+function makeSlotRow(
+    episodeId: string,
+    slotLetter: string,
+    movieStatus: string,
+    segmentStatus: string,
+) {
+    const makeMatch = (fileType: string, status: string) => ({
+        fileType,
+        filename: status !== 'missing' ? 'file.mp4' : null,
+        displayName: null,
+        path: status !== 'missing' ? '/path/file.mp4' : null,
+        confidence: status === 'matched' ? 0.95 : status === 'low-confidence' ? 0.65 : null,
+        status,
+        isUserOverridden: false,
+        matchedAt: status !== 'missing' ? '2024-01-01T00:00:00Z' : null,
+    })
+    return {
+        id: `${episodeId}-${slotLetter}`,
+        slot: slotLetter,
+        hostLabel: null,
+        movieTitle: null,
+        movieYear: null,
+        movieMatch: makeMatch('movie', movieStatus),
+        segmentMatch: makeMatch('segment', segmentStatus),
         cuts: [],
         flaggedForTiming: false,
     }
@@ -62,37 +72,23 @@ describe('getEpisodes', () => {
         expect(episodes[0].status).toBeDefined()
     })
 
-    it('derives Missing Files status when both matches are missing', async () => {
+    it('derives Missing Files status when slots array is empty', async () => {
         mockInvoke.mockResolvedValueOnce([makeRow('ep-1', 'Pilot')])
 
         const episodes = await getEpisodes()
         expect(episodes[0].status).toBe('Missing Files')
     })
 
-    it('derives Ready status when both files are matched and no offsets', async () => {
-        const row = {
-            ...makeRow('ep-1', 'Pilot'),
-            movieMatch: {
-                fileType: 'movie',
-                filename: 'movie.mp4',
-                displayName: null,
-                path: '/movies/movie.mp4',
-                confidence: 0.95,
-                status: 'matched',
-                isUserOverridden: false,
-                matchedAt: '2024-01-01T00:00:00Z',
-            },
-            segmentMatch: {
-                fileType: 'segment',
-                filename: 'seg.mp4',
-                displayName: null,
-                path: '/segments/seg.mp4',
-                confidence: 0.95,
-                status: 'matched',
-                isUserOverridden: false,
-                matchedAt: '2024-01-01T00:00:00Z',
-            },
-        }
+    it('derives Missing Files when a slot has missing matches', async () => {
+        const row = { ...makeRow('ep-1', 'Pilot'), slots: [makeSlotRow('ep-1', 'a', 'missing', 'missing')] }
+        mockInvoke.mockResolvedValueOnce([row])
+
+        const episodes = await getEpisodes()
+        expect(episodes[0].status).toBe('Missing Files')
+    })
+
+    it('derives Ready status when all slots have matched files and no offsets', async () => {
+        const row = { ...makeRow('ep-1', 'Pilot'), slots: [makeSlotRow('ep-1', 'a', 'matched', 'matched')] }
         mockInvoke.mockResolvedValueOnce([row])
 
         const episodes = await getEpisodes()

@@ -45,7 +45,19 @@ export default function EpisodeCard({ episode }: { episode: Episode }) {
             </div>
 
             <div className="text-xs space-y-0.5" style={{ color: '#dfa51d' }}>
-                <p>🎬 {episode.movieMatch.displayName ?? episode.movieMatch.filename ?? 'Unknown Film'}</p>
+                {episode.slots.length === 0 ? (
+                    <p>🎬 Unknown Film</p>
+                ) : (
+                    episode.slots.map((s) => (
+                        <p key={s.id}>
+                            🎬{' '}
+                            {s.movieTitle ??
+                                s.movieMatch.displayName ??
+                                s.movieMatch.filename ??
+                                'Unknown Film'}
+                        </p>
+                    ))
+                )}
             </div>
 
             {episode.airDate && (

@@ -42,17 +42,17 @@ describe('saveCutOffset', () => {
 describe('savePlaybackOverride', () => {
     it('resolves on success', async () => {
         mockInvoke.mockResolvedValueOnce(undefined)
-        await expect(savePlaybackOverride('ep-1', true)).resolves.toBeUndefined()
+        await expect(savePlaybackOverride('s01e01-a', true)).resolves.toBeUndefined()
         expect(mockInvoke).toHaveBeenCalledWith('save_playback_override', {
-            episodeId: 'ep-1',
+            slotId: 's01e01-a',
             flaggedForTiming: true,
         })
     })
 
-    it('throws ApiError with NOT_FOUND on missing episode', async () => {
-        mockInvoke.mockRejectedValueOnce("NOT_FOUND: episode with id 'ep-999' does not exist")
+    it('throws ApiError with NOT_FOUND on missing slot', async () => {
+        mockInvoke.mockRejectedValueOnce("NOT_FOUND: movie_slot with id 'bad-slot' does not exist")
 
-        await expect(savePlaybackOverride('ep-999', false)).rejects.toMatchObject({
+        await expect(savePlaybackOverride('bad-slot', false)).rejects.toMatchObject({
             name: 'ApiError',
             code: 'NOT_FOUND',
         })
@@ -62,9 +62,9 @@ describe('savePlaybackOverride', () => {
 describe('remapFile', () => {
     it('resolves on success', async () => {
         mockInvoke.mockResolvedValueOnce(undefined)
-        await expect(remapFile('ep-1', 'movie', 'mf-1')).resolves.toBeUndefined()
+        await expect(remapFile('s01e01-a', 'movie', 'mf-1')).resolves.toBeUndefined()
         expect(mockInvoke).toHaveBeenCalledWith('remap_file', {
-            episodeId: 'ep-1',
+            slotId: 's01e01-a',
             fileType: 'movie',
             mediaFileId: 'mf-1',
         })
@@ -73,7 +73,7 @@ describe('remapFile', () => {
     it('throws ApiError with NOT_FOUND when mediaFileId is invalid', async () => {
         mockInvoke.mockRejectedValueOnce("NOT_FOUND: media_file with id 'mf-999' does not exist")
 
-        await expect(remapFile('ep-1', 'movie', 'mf-999')).rejects.toMatchObject({
+        await expect(remapFile('s01e01-a', 'movie', 'mf-999')).rejects.toMatchObject({
             name: 'ApiError',
             code: 'NOT_FOUND',
         })

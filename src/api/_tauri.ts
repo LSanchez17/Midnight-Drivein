@@ -1,7 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { open } from '@tauri-apps/plugin-dialog'
 import { deriveEpisodeStatus } from '../lib/derive/episodeStatus'
-import type { Episode, FileMatch, PlaybackCut, SourceType, MatchStatus } from '../features/episodes/types'
+import type { Episode, MovieSlot, FileMatch, PlaybackCut, SourceType, MatchStatus } from '../features/episodes/types'
 import type { AppSettings, AppSettingsPatch, EpisodeFilters } from './types'
 import { ApiError, type ErrorCode } from './errors'
 
@@ -34,8 +34,20 @@ interface PlaybackCutWire {
     sortOrder: number
     sourceType: SourceType
     startMs: number
-    endMs: number
+    endMs: number | null
     userOffsetMs: number
+}
+
+interface MovieSlotWire {
+    id: string
+    slot: string
+    hostLabel: string | null
+    movieTitle: string | null
+    movieYear: number | null
+    movieMatch: FileMatchWire
+    segmentMatch: FileMatchWire
+    cuts: PlaybackCutWire[]
+    flaggedForTiming: boolean
 }
 
 interface EpisodeRowWire {
@@ -46,10 +58,8 @@ interface EpisodeRowWire {
     isSpecial: boolean
     airDate: string | null
     description: string | null
-    movieMatch: FileMatchWire
-    segmentMatch: FileMatchWire
-    cuts: PlaybackCutWire[]
-    flaggedForTiming: boolean
+    guests: string[] | null
+    slots: MovieSlotWire[]
 }
 
 // Domain type conversions
@@ -66,14 +76,28 @@ function toFileMatch(w: FileMatchWire): FileMatch {
     }
 }
 
-function toCut(w: PlaybackCutWire): PlaybackCut {
+function toCut(wire: PlaybackCutWire): PlaybackCut {
     return {
-        id: w.id,
-        sortOrder: w.sortOrder,
-        sourceType: w.sourceType,
-        startMs: w.startMs,
-        endMs: w.endMs,
-        userOffsetMs: w.userOffsetMs,
+        id: wire.id,
+        sortOrder: wire.sortOrder,
+        sourceType: wire.sourceType,
+        startMs: wire.startMs,
+        endMs: wire.endMs ?? undefined,
+        userOffsetMs: wire.userOffsetMs,
+    }
+}
+
+function toSlot(wire: MovieSlotWire): MovieSlot {
+    return {
+        id: wire.id,
+        slot: wire.slot,
+        hostLabel: wire.hostLabel ?? undefined,
+        movieTitle: wire.movieTitle ?? undefined,
+        movieYear: wire.movieYear ?? undefined,
+        movieMatch: toFileMatch(wire.movieMatch),
+        segmentMatch: toFileMatch(wire.segmentMatch),
+        cuts: wire.cuts.map(toCut),
+        flaggedForTiming: wire.flaggedForTiming,
     }
 }
 
@@ -86,10 +110,8 @@ function toEpisode(row: EpisodeRowWire): Episode {
         isSpecial: row.isSpecial,
         airDate: row.airDate ?? undefined,
         description: row.description ?? undefined,
-        movieMatch: toFileMatch(row.movieMatch),
-        segmentMatch: toFileMatch(row.segmentMatch),
-        cuts: row.cuts.map(toCut),
-        flaggedForTiming: row.flaggedForTiming,
+        guests: row.guests ?? [],
+        slots: row.slots.map(toSlot),
         status: 'Ready' as const,
     }
     return { ...partial, status: deriveEpisodeStatus(partial) }
@@ -147,23 +169,23 @@ export async function saveCutOffset(cutId: string, offsetMs: number): Promise<vo
 }
 
 export async function savePlaybackOverride(
-    episodeId: string,
+    slotId: string,
     flaggedForTiming: boolean,
 ): Promise<void> {
     try {
-        await invoke<void>('save_playback_override', { episodeId, flaggedForTiming })
+        await invoke<void>('save_playback_override', { slotId, flaggedForTiming })
     } catch (e) {
         throw parseError(e)
     }
 }
 
 export async function remapFile(
-    episodeId: string,
+    slotId: string,
     fileType: SourceType,
     mediaFileId: string,
 ): Promise<void> {
     try {
-        await invoke<void>('remap_file', { episodeId, fileType, mediaFileId })
+        await invoke<void>('remap_file', { slotId, fileType, mediaFileId })
     } catch (e) {
         throw parseError(e)
     }

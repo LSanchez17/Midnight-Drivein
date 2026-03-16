@@ -1,0 +1,3534 @@
+[
+    {
+        "id": "s01e01",
+        "season": 1,
+        "episode": 1,
+        "is_special": false,
+        "title": "Season 1 Episode 1",
+        "description": "Week 1",
+        "air_date": "2019-03-29",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S01E01A Segments",
+                "movie": {
+                    "title": "C.H.U.D.",
+                    "year": 1984,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S01E01B Segments",
+                "movie": {
+                    "title": "Castle Freak",
+                    "year": 1995,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s01e02",
+        "season": 1,
+        "episode": 2,
+        "is_special": false,
+        "title": "Season 1 Episode 2",
+        "description": "Week 2",
+        "air_date": "2019-04-05",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S01E02A Segments",
+                "movie": {
+                    "title": "Q: The Winged Serpent",
+                    "year": 1982,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S01E02B Segments",
+                "movie": {
+                    "title": "Society",
+                    "year": 1989,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s01e03",
+        "season": 1,
+        "episode": 3,
+        "is_special": false,
+        "title": "Season 1 Episode 3",
+        "description": "Week 3",
+        "air_date": "2019-04-12",
+        "guests": [
+            "Felissa Rose"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S01E03A Segments",
+                "movie": {
+                    "title": "Deathgasm",
+                    "year": 2015,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S01E03B Segments",
+                "movie": {
+                    "title": "The Changeling",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s01e04",
+        "season": 1,
+        "episode": 4,
+        "is_special": false,
+        "title": "Season 1 Episode 4",
+        "description": "Week 4",
+        "air_date": "2019-04-19",
+        "guests": [
+            "Yuki Nakamura"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S01E04A Segments",
+                "movie": {
+                    "title": "Madman",
+                    "year": 1982,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S01E04B Segments",
+                "movie": {
+                    "title": "Wolfguy: Enraged Lycanthrope",
+                    "year": 1975,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s01e05",
+        "season": 1,
+        "episode": 5,
+        "is_special": false,
+        "title": "Season 1 Episode 5",
+        "description": "Week 5",
+        "air_date": "2019-04-26",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S01E05A Segments",
+                "movie": {
+                    "title": "Demon Wind",
+                    "year": 1990,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S01E05B Segments",
+                "movie": {
+                    "title": "The House of the Devil",
+                    "year": 2009,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s01e06",
+        "season": 1,
+        "episode": 6,
+        "is_special": false,
+        "title": "Season 1 Episode 6",
+        "description": "Week 6",
+        "air_date": "2019-05-03",
+        "guests": [
+            "Felissa Rose",
+            "John McNaughton"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S01E06A Segments",
+                "movie": {
+                    "title": "WolfCop",
+                    "year": 2014,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S01E06B Segments",
+                "movie": {
+                    "title": "Henry: Portrait of a Serial Killer",
+                    "year": 1986,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s01e07",
+        "season": 1,
+        "episode": 7,
+        "is_special": false,
+        "title": "Season 1 Episode 7",
+        "description": "Week 7",
+        "air_date": "2019-05-10",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S01E07A Segments",
+                "movie": {
+                    "title": "Contamination",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S01E07B Segments",
+                "movie": {
+                    "title": "A Girl Walks Home Alone at Night",
+                    "year": 2014,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s01e08",
+        "season": 1,
+        "episode": 8,
+        "is_special": false,
+        "title": "Season 1 Episode 8",
+        "description": "Week 8",
+        "air_date": "2019-05-17",
+        "guests": [
+            "Felissa Rose"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S01E08A Segments",
+                "movie": {
+                    "title": "The Stuff",
+                    "year": 1985,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S01E08B Segments",
+                "movie": {
+                    "title": "Street Trash",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s01e09",
+        "season": 1,
+        "episode": 9,
+        "is_special": false,
+        "title": "Season 1 Episode 9",
+        "description": "Week 9",
+        "air_date": "2019-05-24",
+        "guests": [
+            "Justin Martell",
+            "Bucks Burnett"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S01E09A Segments",
+                "movie": {
+                    "title": "Blood Harvest",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S01E09B Segments",
+                "movie": {
+                    "title": "Hello Mary Lou: Prom Night II",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e01",
+        "season": 2,
+        "episode": 1,
+        "is_special": false,
+        "title": "Season 2 Episode 1",
+        "description": "Week 1 - Silver Bolo Award Winner: Count Gore De Vol",
+        "air_date": "2020-04-24",
+        "guests": [
+            "Kelli Maroney",
+            "Chris Jerico"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E01A Segments",
+                "movie": {
+                    "title": "Chopping Mall",
+                    "year": 1986,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E01B Segments",
+                "movie": {
+                    "title": "Bloodsucking Freaks",
+                    "year": 1976,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e02",
+        "season": 2,
+        "episode": 2,
+        "is_special": false,
+        "title": "Season 2 Episode 2",
+        "description": "Week 2 - Silver Bolo Award Winner: The Collinsport Historical Society",
+        "air_date": "2020-05-01",
+        "guests": [
+            "Tom Savini"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E02A Segments",
+                "movie": {
+                    "title": "Maniac",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E02B Segments",
+                "movie": {
+                    "title": "Heathers",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e03",
+        "season": 2,
+        "episode": 3,
+        "is_special": false,
+        "title": "Season 2 Episode 3",
+        "description": "Week 3 - Silver Bolo Award Winner: Dead Meat",
+        "air_date": "2020-05-08",
+        "guests": [
+            "Felissa Rose"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E03A Segments",
+                "movie": {
+                    "title": "Brain Damage",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E03B Segments",
+                "movie": {
+                    "title": "Deep Red",
+                    "year": 1975,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e04",
+        "season": 2,
+        "episode": 4,
+        "is_special": false,
+        "title": "Season 2 Episode 4",
+        "description": "Week 4 - Silver Bolo Award Winner: Monster Kid Radio",
+        "air_date": "2020-05-15",
+        "guests": [
+            "Lloyd Kaufman",
+            "Pat Swinney Kaufman"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E04A Segments",
+                "movie": {
+                    "title": "Troma's War",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E04B Segments",
+                "movie": {
+                    "title": "One Cut of the Dead",
+                    "year": 2017,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e05",
+        "season": 2,
+        "episode": 5,
+        "is_special": false,
+        "title": "Season 2 Episode 5",
+        "description": "Week 5 - Silver Bolo Award Winner: The Horror Movie Podcast",
+        "air_date": "2020-05-22",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E05A Segments",
+                "movie": {
+                    "title": "The Exorcist III",
+                    "year": 1990,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E05B Segments",
+                "movie": {
+                    "title": "Deadbeat at Dawn",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e06",
+        "season": 2,
+        "episode": 6,
+        "is_special": false,
+        "title": "Season 2 Episode 6",
+        "description": "Week 6 - Silver Bolo Award Winner: The Homicidal Homemaker",
+        "air_date": "2020-05-29",
+        "guests": [
+            "Felissa Rose"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E06A Segments",
+                "movie": {
+                    "title": "Dead Heat",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E06B Segments",
+                "movie": {
+                    "title": "Cannibal Holocaust",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e07",
+        "season": 2,
+        "episode": 7,
+        "is_special": false,
+        "title": "Season 2 Episode 7",
+        "description": "Week 7 - Silver Bolo Award Winner: Witch Finger",
+        "air_date": "2020-06-05",
+        "guests": [
+            "Felissa Rose"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E07A Segments",
+                "movie": {
+                    "title": "Mayhem",
+                    "year": 2017,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E07B Segments",
+                "movie": {
+                    "title": "Tetsuo: The Iron Man",
+                    "year": 1989,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e08",
+        "season": 2,
+        "episode": 8,
+        "is_special": false,
+        "title": "Season 2 Episode 8",
+        "description": "Week 8 - Silver Bolo Award Winner: The Signal Podcast",
+        "air_date": "2020-06-12",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E08A Segments",
+                "movie": {
+                    "title": "Scare Package",
+                    "year": 2020,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E08B Segments",
+                "movie": {
+                    "title": "Hogzilla",
+                    "year": 2020,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e09",
+        "season": 2,
+        "episode": 9,
+        "is_special": false,
+        "title": "Season 2 Episode 9",
+        "description": "Week 9 - Silver Bolo Award Winner: The Horrors of It All",
+        "air_date": "2020-06-19",
+        "guests": [
+            "Ashley Laurence",
+            "Doug Bradley"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E09A Segments",
+                "movie": {
+                    "title": "Hellbound: Hellraiser II",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E09B Segments",
+                "movie": {
+                    "title": "Hell Comes to Frogtown",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s02e10",
+        "season": 2,
+        "episode": 10,
+        "is_special": false,
+        "title": "Season 2 Episode 10",
+        "description": "Summer Sleepover - Silver Bolo Award: Cinemassacre",
+        "air_date": "2020-08-14",
+        "guests": [
+            "Felissa Rose",
+            "Adam Green",
+            "Kane Hodder",
+            "Brian Quinn",
+            "Tiffany Shepis"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S02E10A Segments",
+                "movie": {
+                    "title": "Slumber Party Massacre II",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S02E10B Segments",
+                "movie": {
+                    "title": "Victor Crowley",
+                    "year": 2017,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e01",
+        "season": 3,
+        "episode": 1,
+        "is_special": false,
+        "title": "Season 3 Episode 1",
+        "description": "Week 1 - Silver Bolo Award Winner: Screaming Soup!",
+        "air_date": "2021-04-16",
+        "guests": [
+            "Eli Roth"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E01A Segments",
+                "movie": {
+                    "title": "Mother's Day",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E01B Segments",
+                "movie": {
+                    "title": "The House by the Cemetery",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e02",
+        "season": 3,
+        "episode": 2,
+        "is_special": false,
+        "title": "Season 3 Episode 2",
+        "description": "Week 2 - Silver Bolo Award Winner: Zombie Joe's Underground",
+        "air_date": "2021-04-23",
+        "guests": [
+            "Yuki Nakamura"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E02A Segments",
+                "movie": {
+                    "title": "Audition",
+                    "year": 1999,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E02B Segments",
+                "movie": {
+                    "title": "Class of 1984",
+                    "year": 1982,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e03",
+        "season": 3,
+        "episode": 3,
+        "is_special": false,
+        "title": "Season 3 Episode 3",
+        "description": "Week 3 - Silver Bolo Award Winner: The Losers' Club",
+        "air_date": "2021-04-30",
+        "guests": [
+            "Jeffrey Combs"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E03A Segments",
+                "movie": {
+                    "title": "Bride of Re-Animator",
+                    "year": 1990,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E03B Segments",
+                "movie": {
+                    "title": "Next of Kin",
+                    "year": 1982,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e04",
+        "season": 3,
+        "episode": 4,
+        "is_special": false,
+        "title": "Season 3 Episode 4",
+        "description": "Week 4 - Silver Bolo Award Winner: Doctor Wolfula",
+        "air_date": "2021-05-07",
+        "guests": [
+            "Felissa Rose"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E04A Segments",
+                "movie": {
+                    "title": "Ginger Snaps",
+                    "year": 2000,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E04B Segments",
+                "movie": {
+                    "title": "Fried Barry",
+                    "year": 2020,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e05",
+        "season": 3,
+        "episode": 5,
+        "is_special": false,
+        "title": "Season 3 Episode 5",
+        "description": "Week 5 - Silver Bolo Award Winner: Knight Light",
+        "air_date": "2021-05-14",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E05A Segments",
+                "movie": {
+                    "title": "Mandy",
+                    "year": 2018,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E05B Segments",
+                "movie": {
+                    "title": "Dead & Buried",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e06",
+        "season": 3,
+        "episode": 6,
+        "is_special": false,
+        "title": "Season 3 Episode 6",
+        "description": "Week 6 - Silver Bolo Award Winner: CadaverCast",
+        "air_date": "2021-05-21",
+        "guests": [
+            "Bruce Campbell",
+            "Wiliam Lustig"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E06A Segments",
+                "movie": {
+                    "title": "Maniac Cop",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E06B Segments",
+                "movie": {
+                    "title": "Maniac Cop 2",
+                    "year": 1990,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e07",
+        "season": 3,
+        "episode": 7,
+        "is_special": false,
+        "title": "Season 3 Episode 7",
+        "description": "Week 7 - Silver Bolo Award Winner: Ghastly Grinning",
+        "air_date": "2021-05-28",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E07A Segments",
+                "movie": {
+                    "title": "Train to Busan",
+                    "year": 2016,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E07B Segments",
+                "movie": {
+                    "title": "Spookies",
+                    "year": 1986,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e08",
+        "season": 3,
+        "episode": 8,
+        "is_special": false,
+        "title": "Season 3 Episode 8",
+        "description": "Week 8 - Silver Bolo Award Winner: SOV Horror",
+        "air_date": "2021-06-04",
+        "guests": [
+            "Chris Jericho"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E08A Segments",
+                "movie": {
+                    "title": "Sledgehammer",
+                    "year": 1983,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E08B Segments",
+                "movie": {
+                    "title": "Things",
+                    "year": 1989,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e09",
+        "season": 3,
+        "episode": 9,
+        "is_special": false,
+        "title": "Season 3 Episode 9",
+        "description": "Week 9 - Silver Bolo Award Winner: Bloodbath and Beyond",
+        "air_date": "2021-06-11",
+        "guests": [
+            "Clint Howard"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E09A Segments",
+                "movie": {
+                    "title": "Evilspeak",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E09B Segments",
+                "movie": {
+                    "title": "The Day of the Beast",
+                    "year": 1995,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s03e10",
+        "season": 3,
+        "episode": 10,
+        "is_special": false,
+        "title": "Season 3 Episode 10",
+        "description": "Week 10 - Silver Bolo Award Winner: Good Bad Flicks",
+        "air_date": "2021-06-18",
+        "guests": [
+            "Roger Corman"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S03E10A Segments",
+                "movie": {
+                    "title": "The Little Shop of Horrors",
+                    "year": 1960,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S03E10B Segments",
+                "movie": {
+                    "title": "Humanoids from the Deep",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e01",
+        "season": 4,
+        "episode": 1,
+        "is_special": false,
+        "title": "Season 4 Episode 1",
+        "description": "Week 1",
+        "air_date": "2022-04-19",
+        "guests": [
+            "Svengoolie",
+            "Honey Michelle Gregory"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E01A Segments",
+                "movie": {
+                    "title": "Night of the Living Dead",
+                    "year": 1968,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E01B Segments",
+                "movie": {
+                    "title": "Antropophagus",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e02",
+        "season": 4,
+        "episode": 2,
+        "is_special": false,
+        "title": "Season 4 Episode 2",
+        "description": "Week 2",
+        "air_date": "2022-05-06",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E02A Segments",
+                "movie": {
+                    "title": "Black Sunday",
+                    "year": 1960,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E02B Segments",
+                "movie": {
+                    "title": "Def by Temptation",
+                    "year": 1990,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e03",
+        "season": 4,
+        "episode": 3,
+        "is_special": false,
+        "title": "Season 4 Episode 3",
+        "description": "Week 3",
+        "air_date": "2022-05-13",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E03A Segments",
+                "movie": {
+                    "title": "The Little Girl Who Lives Down the Lane",
+                    "year": 1976,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E03B Segments",
+                "movie": {
+                    "title": "Housebound",
+                    "year": 2014,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e04",
+        "season": 4,
+        "episode": 4,
+        "is_special": false,
+        "title": "Season 4 Episode 4",
+        "description": "Week 4",
+        "air_date": "2022-05-20",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E04A Segments",
+                "movie": {
+                    "title": "Nosferatu",
+                    "year": 1922,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E04B Segments",
+                "movie": {
+                    "title": "Nosferatu the Vampyre",
+                    "year": 1979,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e05",
+        "season": 4,
+        "episode": 5,
+        "is_special": false,
+        "title": "Season 4 Episode 5",
+        "description": "Week 5",
+        "air_date": "2022-05-27",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E05A Segments",
+                "movie": {
+                    "title": "Slaughterhouse",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E05B Segments",
+                "movie": {
+                    "title": "Tenebrae",
+                    "year": 1982,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e06",
+        "season": 4,
+        "episode": 6,
+        "is_special": false,
+        "title": "Season 4 Episode 6",
+        "description": "Week 6",
+        "air_date": "2022-06-03",
+        "guests": [
+            "John Adams",
+            "Toby Poser",
+            "Zelda Adams"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E06A Segments",
+                "movie": {
+                    "title": "The Monster Club",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E06B Segments",
+                "movie": {
+                    "title": "Hellbender",
+                    "year": 2021,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e07",
+        "season": 4,
+        "episode": 7,
+        "is_special": false,
+        "title": "Season 4 Episode 7",
+        "description": "Week 7",
+        "air_date": "2022-06-10",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E07A Segments",
+                "movie": {
+                    "title": "Butcher, Baker, Nightmare Maker",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E07B Segments",
+                "movie": {
+                    "title": "The Baby",
+                    "year": 1973,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e08",
+        "season": 4,
+        "episode": 8,
+        "is_special": false,
+        "title": "Season 4 Episode 8",
+        "description": "Week 8",
+        "air_date": "2022-06-17",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E08A Segments",
+                "movie": {
+                    "title": "The Stepfather",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E08B Segments",
+                "movie": {
+                    "title": "The Freakmaker",
+                    "year": 1974,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e09",
+        "season": 4,
+        "episode": 9,
+        "is_special": false,
+        "title": "Season 4 Episode 9",
+        "description": "Week 9",
+        "air_date": "2022-06-24",
+        "guests": [
+            "Charles Band",
+            "Larry Fessenden"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E09A Segments",
+                "movie": {
+                    "title": "Head of the Family",
+                    "year": 1996,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E09B Segments",
+                "movie": {
+                    "title": "Habit",
+                    "year": 1997,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s04e10",
+        "season": 4,
+        "episode": 10,
+        "is_special": false,
+        "title": "Season 4 Episode 10",
+        "description": "Week 10",
+        "air_date": "2022-07-01",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S04E10A Segments",
+                "movie": {
+                    "title": "Uncle Sam",
+                    "year": 1996,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S04E10B Segments",
+                "movie": {
+                    "title": "Nightbreed",
+                    "year": 1990,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e01",
+        "season": 5,
+        "episode": 1,
+        "is_special": false,
+        "title": "Season 5 Episode 1",
+        "description": "Week 1",
+        "air_date": "2023-04-21",
+        "guests": [
+            "David Dastmalchian",
+            "Peaches Christ",
+            "Danhausen",
+            "Ian McCulloch",
+            "Felissa Rose",
+            "Bobcat Goldthwait"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E01A Segments",
+                "movie": {
+                    "title": "Zombi 2",
+                    "year": 1979,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E01B Segments",
+                "movie": {
+                    "title": "The Beyond",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e02",
+        "season": 5,
+        "episode": 2,
+        "is_special": false,
+        "title": "Season 5 Episode 2",
+        "description": "Week 2",
+        "air_date": "2023-04-28",
+        "guests": [
+            "Robert Murch"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E02A Segments",
+                "movie": {
+                    "title": "Witchboard",
+                    "year": 1986,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E02B Segments",
+                "movie": {
+                    "title": "The Devil's Rain",
+                    "year": 1975,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e03",
+        "season": 5,
+        "episode": 3,
+        "is_special": false,
+        "title": "Season 5 Episode 3",
+        "description": "Week 3",
+        "air_date": "2023-05-05",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E03A Segments",
+                "movie": {
+                    "title": "Don't Panic",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E03B Segments",
+                "movie": {
+                    "title": "Tigers Are Not Afraid",
+                    "year": 2017,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e04",
+        "season": 5,
+        "episode": 4,
+        "is_special": false,
+        "title": "Season 5 Episode 4",
+        "description": "Week 4",
+        "air_date": "2023-05-12",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E04A Segments",
+                "movie": {
+                    "title": "The Babadook",
+                    "year": 2014,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E04B Segments",
+                "movie": {
+                    "title": "The Muthers",
+                    "year": 1976,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e05",
+        "season": 5,
+        "episode": 5,
+        "is_special": false,
+        "title": "Season 5 Episode 5",
+        "description": "Week 5",
+        "air_date": "2023-05-19",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E05A Segments",
+                "movie": {
+                    "title": "The Mutilator",
+                    "year": 1984,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E05B Segments",
+                "movie": {
+                    "title": "Possession",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e06",
+        "season": 5,
+        "episode": 6,
+        "is_special": false,
+        "title": "Season 5 Episode 6",
+        "description": "Week 6",
+        "air_date": "2023-06-23",
+        "guests": [
+            "Anthony C. Ferrante"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E06A Segments",
+                "movie": {
+                    "title": "Sharknado",
+                    "year": 2013,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E06B Segments",
+                "movie": {
+                    "title": "Amsterdamned",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e07",
+        "season": 5,
+        "episode": 7,
+        "is_special": false,
+        "title": "Season 5 Episode 7",
+        "description": "Week 7",
+        "air_date": "2023-06-30",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E07A Segments",
+                "movie": {
+                    "title": "Dark Night of the Scarecrow",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E07B Segments",
+                "movie": {
+                    "title": "Beyond the Door III",
+                    "year": 1989,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e08",
+        "season": 5,
+        "episode": 8,
+        "is_special": false,
+        "title": "Season 5 Episode 8",
+        "description": "Week 8",
+        "air_date": "2023-07-07",
+        "guests": [
+            "Phil Tippett"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E08A Segments",
+                "movie": {
+                    "title": "Mad God",
+                    "year": 2021,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E08B Segments",
+                "movie": {
+                    "title": "Perfect Blue",
+                    "year": 1997,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e09",
+        "season": 5,
+        "episode": 9,
+        "is_special": false,
+        "title": "Season 5 Episode 9",
+        "description": "Week 9",
+        "air_date": "2023-07-14",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E09A Segments",
+                "movie": {
+                    "title": "Alligator",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E09B Segments",
+                "movie": {
+                    "title": "Grizzly",
+                    "year": 1976,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s05e10",
+        "season": 5,
+        "episode": 10,
+        "is_special": false,
+        "title": "Season 5 Episode 10",
+        "description": "Season Finale",
+        "air_date": "2023-07-21",
+        "guests": [
+            "Lori Cardille",
+            "Terry Alexander",
+            "Jarlath Conroy"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S05E10A Segments",
+                "movie": {
+                    "title": "The Living Dead at Manchester Morgue",
+                    "year": 1974,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S05E10B Segments",
+                "movie": {
+                    "title": "Day of the Dead",
+                    "year": 1985,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e01",
+        "season": 6,
+        "episode": 1,
+        "is_special": false,
+        "title": "Season 6 Episode 1",
+        "description": "Week 1 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-03-29",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E01 Segments",
+                "movie": {
+                    "title": "Rottentail",
+                    "year": 2019,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e02",
+        "season": 6,
+        "episode": 2,
+        "is_special": false,
+        "title": "Season 6 Episode 2",
+        "description": "Week 2 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-04-12",
+        "guests": [
+            "Lloyd Kaufman",
+            "James T. Mills",
+            "Lisa Buss"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E02 Segments",
+                "movie": {
+                    "title": "The Toxic Avenger",
+                    "year": 1984,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e03",
+        "season": 6,
+        "episode": 3,
+        "is_special": false,
+        "title": "Season 6 Episode 3",
+        "description": "Week 3 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-04-26",
+        "guests": [
+            "Eric Garcia",
+            "Ian Goldberg",
+            "Richard Naing"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E03 Segments",
+                "movie": {
+                    "title": "The Autopsy of Jane Doe",
+                    "year": 2016,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e04",
+        "season": 6,
+        "episode": 4,
+        "is_special": false,
+        "title": "Season 6 Episode 4",
+        "description": "Week 4 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-05-10",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E04 Segments",
+                "movie": {
+                    "title": "Death Spa",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e05",
+        "season": 6,
+        "episode": 5,
+        "is_special": false,
+        "title": "Season 6 Episode 5",
+        "description": "Week 5 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-05-24",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E05 Segments",
+                "movie": {
+                    "title": "Graduation Day",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e06",
+        "season": 6,
+        "episode": 6,
+        "is_special": false,
+        "title": "Season 6 Episode 6",
+        "description": "Week 6 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-06-07",
+        "guests": [
+            "Bob Berney"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E06 Segments",
+                "movie": {
+                    "title": "Donnie Darko",
+                    "year": 2001,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e07",
+        "season": 6,
+        "episode": 7,
+        "is_special": false,
+        "title": "Season 6 Episode 7",
+        "description": "Week 7 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-06-21",
+        "guests": [
+            "Joe Lynch"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E07 Segments",
+                "movie": {
+                    "title": "Suitable Flesh",
+                    "year": 2023,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e08",
+        "season": 6,
+        "episode": 8,
+        "is_special": false,
+        "title": "Season 6 Episode 8",
+        "description": "Week 8 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-07-05",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E08 Segments",
+                "movie": {
+                    "title": "Dr. Giggles",
+                    "year": 1992,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e09",
+        "season": 6,
+        "episode": 9,
+        "is_special": false,
+        "title": "Season 6 Episode 9",
+        "description": "Week 9 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-07-19",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E09 Segments",
+                "movie": {
+                    "title": "Carnival of Souls",
+                    "year": 1962,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e10",
+        "season": 6,
+        "episode": 10,
+        "is_special": false,
+        "title": "Season 6 Episode 10",
+        "description": "Week 10 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-08-02",
+        "guests": [
+            "Colleen Camp"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E10 Segments",
+                "movie": {
+                    "title": "Death Game",
+                    "year": 1977,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s06e11",
+        "season": 6,
+        "episode": 11,
+        "is_special": false,
+        "title": "Season 6 Episode 11",
+        "description": "Week 11 - Bi-Weekly Single Episode Format",
+        "air_date": "2024-08-16",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S06E11 Segments",
+                "movie": {
+                    "title": "Cemetery Man",
+                    "year": 1994,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e01",
+        "season": 7,
+        "episode": 1,
+        "is_special": false,
+        "title": "Season 7 Episode 1",
+        "description": "Week 1",
+        "air_date": "2025-03-07",
+        "guests": [
+            "Spencer Charnas",
+            "Shane Morton"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E01A Segments",
+                "movie": {
+                    "title": "The Phantom of the Opera",
+                    "year": 1925,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E01B Segments",
+                "movie": {
+                    "title": "Opera",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e02",
+        "season": 7,
+        "episode": 2,
+        "is_special": false,
+        "title": "Season 7 Episode 2",
+        "description": "Week 2",
+        "air_date": "2025-04-04",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E02A Segments",
+                "movie": {
+                    "title": "Intruder",
+                    "year": 1989,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E02B Segments",
+                "movie": {
+                    "title": "In a Violent Nature",
+                    "year": 2024,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e03",
+        "season": 7,
+        "episode": 3,
+        "is_special": false,
+        "title": "Season 7 Episode 3",
+        "description": "Week 3",
+        "air_date": "2025-05-02",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E03A Segments",
+                "movie": {
+                    "title": "The City of the Dead",
+                    "year": 1960,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E03B Segments",
+                "movie": {
+                    "title": "Ringu",
+                    "year": 1998,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e04",
+        "season": 7,
+        "episode": 4,
+        "is_special": false,
+        "title": "Season 7 Episode 4",
+        "description": "Week 4",
+        "air_date": "2025-06-06",
+        "guests": [
+            "Lowell Dean"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E04A Segments",
+                "movie": {
+                    "title": "Earth vs. the Spider",
+                    "year": 1958,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E04B Segments",
+                "movie": {
+                    "title": "Dark Match",
+                    "year": 2024,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e05",
+        "season": 7,
+        "episode": 5,
+        "is_special": false,
+        "title": "Season 7 Episode 5",
+        "description": "Week 5",
+        "air_date": "2025-07-11",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E05A Segments",
+                "movie": {
+                    "title": "Dog Soldiers",
+                    "year": 2002,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E05B Segments",
+                "movie": {
+                    "title": "Bad Moon",
+                    "year": 1996,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e06",
+        "season": 7,
+        "episode": 6,
+        "is_special": false,
+        "title": "Season 7 Episode 6",
+        "description": "Week 6",
+        "air_date": "2025-08-01",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E06A Segments",
+                "movie": {
+                    "title": "Piranha",
+                    "year": 1978,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E06B Segments",
+                "movie": {
+                    "title": "Crocodile",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e07",
+        "season": 7,
+        "episode": 7,
+        "is_special": false,
+        "title": "Season 7 Episode 7",
+        "description": "Week 7",
+        "air_date": "2025-09-05",
+        "guests": [
+            "Raymond Castile"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E07A Segments",
+                "movie": {
+                    "title": "This Night I'll Possess Your Corpse",
+                    "year": 1967,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E07B Segments",
+                "movie": {
+                    "title": "The Church",
+                    "year": 1989,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e08",
+        "season": 7,
+        "episode": 8,
+        "is_special": false,
+        "title": "Season 7 Episode 8",
+        "description": "Week 8",
+        "air_date": "2025-10-03",
+        "guests": [
+            "C. Robert Cargill"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E08A Segments",
+                "movie": {
+                    "title": "Mute Witness",
+                    "year": 1995,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E08B Segments",
+                "movie": {
+                    "title": "The Final Terror",
+                    "year": 1983,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e09",
+        "season": 7,
+        "episode": 9,
+        "is_special": false,
+        "title": "Season 7 Episode 9",
+        "description": "Week 9",
+        "air_date": "2025-11-07",
+        "guests": [
+            "Claire Donner",
+            "Troy Howarth",
+            "Lars Nilsen",
+            "Sam Zimmerman"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E09A Segments",
+                "movie": {
+                    "title": "The Bird with the Crystal Plumage",
+                    "year": 1970,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E09B Segments",
+                "movie": {
+                    "title": "Blood and Black Lace",
+                    "year": 1964,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e10",
+        "season": 7,
+        "episode": 10,
+        "is_special": false,
+        "title": "Season 7 Episode 10",
+        "description": "Week 10",
+        "air_date": "2026-01-09",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E10A Segments",
+                "movie": {
+                    "title": "Don't Torture a Duckling",
+                    "year": 1972,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E10B Segments",
+                "movie": {
+                    "title": "Don't Go in the Woods",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e11",
+        "season": 7,
+        "episode": 11,
+        "is_special": false,
+        "title": "Season 7 Episode 11",
+        "description": "Week 11",
+        "air_date": "2026-02-06",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E11A Segments",
+                "movie": {
+                    "title": "House on Haunted Hill",
+                    "year": 1959,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E11B Segments",
+                "movie": {
+                    "title": "The Innkeepers",
+                    "year": 2011,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "s07e12",
+        "season": 7,
+        "episode": 12,
+        "is_special": false,
+        "title": "Season 7 Episode 12",
+        "description": "Series Finale",
+        "air_date": "2026-03-06",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "S07E12A Segments",
+                "movie": {
+                    "title": "Messiah of Evil",
+                    "year": 1974,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "S07E12B Segments",
+                "movie": {
+                    "title": "The Last Horror Film",
+                    "year": 1982,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp01",
+        "season": null,
+        "episode": 1,
+        "is_special": true,
+        "title": "July 2018 Marathon",
+        "description": "24 Hour Marathon",
+        "air_date": "2018-07-13",
+        "guests": [
+            "Felissa Rose",
+            "Lyle Blackburn"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP01A Segments",
+                "movie": {
+                    "title": "Tourist Trap",
+                    "year": 1979,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP01B Segments",
+                "movie": {
+                    "title": "Sleepaway Camp",
+                    "year": 1983,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "c",
+                "host_label": "SP01C Segments",
+                "movie": {
+                    "title": "Rabid",
+                    "year": 1977,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "d",
+                "host_label": "SP01D Segments",
+                "movie": {
+                    "title": "The Prowler",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "e",
+                "host_label": "SP01E Segments",
+                "movie": {
+                    "title": "Sorority Babes in the Slimeball Bowl-O-Rama",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "f",
+                "host_label": "SP01F Segments",
+                "movie": {
+                    "title": "Daughters of Darkness",
+                    "year": 1971,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "g",
+                "host_label": "SP01G Segments",
+                "movie": {
+                    "title": "Blood Feast",
+                    "year": 1963,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "h",
+                "host_label": "SP01H Segments",
+                "movie": {
+                    "title": "Basket Case",
+                    "year": 1982,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "i",
+                "host_label": "SP01I Segments",
+                "movie": {
+                    "title": "Re-Animator",
+                    "year": 1985,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "j",
+                "host_label": "SP01J Segments",
+                "movie": {
+                    "title": "Demons",
+                    "year": 1985,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "k",
+                "host_label": "SP01K Segments",
+                "movie": {
+                    "title": "The Legend of Boggy Creek",
+                    "year": 1972,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "l",
+                "host_label": "SP01L Segments",
+                "movie": {
+                    "title": "Hellraiser",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "m",
+                "host_label": "SP01M Segments",
+                "movie": {
+                    "title": "Pieces",
+                    "year": 1982,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp02",
+        "season": null,
+        "episode": 2,
+        "is_special": true,
+        "title": "Joe Bob's Dinners of Death",
+        "description": "",
+        "air_date": "2018-11-22",
+        "guests": [
+            "Michael Berryman",
+            "Felissa Rose"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP02A Segments",
+                "movie": {
+                    "title": "The Texas Chain Saw Massacre",
+                    "year": 1974,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP02B Segments",
+                "movie": {
+                    "title": "The Hills Have Eyes",
+                    "year": 1977,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "c",
+                "host_label": "SP02C Segments",
+                "movie": {
+                    "title": "Dead or Alive",
+                    "year": 1999,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "d",
+                "host_label": "SP02D Segments",
+                "movie": {
+                    "title": "Blood Rage",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp03",
+        "season": null,
+        "episode": 3,
+        "is_special": true,
+        "title": "A Very Joe Bob Christmas",
+        "description": "",
+        "air_date": "2018-12-21",
+        "guests": [
+            "Reggie Bannister",
+            "Gigi Bannister"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP03A Segments",
+                "movie": {
+                    "title": "Phantasm",
+                    "year": 1979,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP03B Segments",
+                "movie": {
+                    "title": "Phantasm III: Lord of the Dead",
+                    "year": 1994,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "c",
+                "host_label": "SP03C Segments",
+                "movie": {
+                    "title": "Phantasm IV: Oblivion",
+                    "year": 1998,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "d",
+                "host_label": "SP03D Segments",
+                "movie": {
+                    "title": "Phantasm: Ravager",
+                    "year": 2016,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp04",
+        "season": null,
+        "episode": 4,
+        "is_special": true,
+        "title": "Joe Bob's Halloween Hootenanny",
+        "description": "",
+        "air_date": "2019-10-25",
+        "guests": [
+            "Tom Atkins"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP04A Segments",
+                "movie": {
+                    "title": "Halloween",
+                    "year": 1978,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP04B Segments",
+                "movie": {
+                    "title": "Halloween 4: The Return of Michael Myers",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "c",
+                "host_label": "SP04C Segments",
+                "movie": {
+                    "title": "Halloween 5: The Revenge of Michael Myers",
+                    "year": 1989,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp05",
+        "season": null,
+        "episode": 5,
+        "is_special": true,
+        "title": "Joe Bob's Red Christmas",
+        "description": "Silver Bolo Award Winner: Dinosaur Dracula",
+        "air_date": "2019-12-13",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP05A Segments",
+                "movie": {
+                    "title": "Black Christmas",
+                    "year": 1974,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP05B Segments",
+                "movie": {
+                    "title": "Jack Frost",
+                    "year": 1997,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "c",
+                "host_label": "SP05C Segments",
+                "movie": {
+                    "title": "Silent Night Deadly Night Part 2",
+                    "year": 1987,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp06",
+        "season": null,
+        "episode": 6,
+        "is_special": true,
+        "title": "Joe Bob's Halloween Hideaway",
+        "description": "Silver Bolo Award Winner: StabbyTime Tv",
+        "air_date": "2020-10-23",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP06A Segments",
+                "movie": {
+                    "title": "Haunt",
+                    "year": 2019,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP06B Segments",
+                "movie": {
+                    "title": "Hack-O-Lantern",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp07",
+        "season": null,
+        "episode": 7,
+        "is_special": true,
+        "title": "Joe Bob Saves Christmas",
+        "description": "Silver Bolo Award Winner: Geeks Who Eat",
+        "air_date": "2020-12-11",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP07A Segments",
+                "movie": {
+                    "title": "Dial Code Santa Claus",
+                    "year": 1989,
+                    "aliases": [
+                        "3615 code Père Noël",
+                        "Deadly Games",
+                        "Game Over",
+                        "Hide and Freak"
+                    ]
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP07B Segments",
+                "movie": {
+                    "title": "Christmas Evil",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp08",
+        "season": null,
+        "episode": 8,
+        "is_special": true,
+        "title": "Joe Bob Put a Spell on You",
+        "description": "Silver Bolo Award Winner: The Real Queen of Horror",
+        "air_date": "2021-02-12",
+        "guests": [
+            "Anna Biller"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP08A Segments",
+                "movie": {
+                    "title": "Tammy and the T-Rex",
+                    "year": 1994,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP08B Segments",
+                "movie": {
+                    "title": "The Love Witch",
+                    "year": 2016,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp09",
+        "season": null,
+        "episode": 9,
+        "is_special": true,
+        "title": "Joe Bob's Halloween Hoedown",
+        "description": "",
+        "air_date": "2021-10-08",
+        "guests": [
+            "David Gordon Green",
+            "Jason Blum"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP09A Segments",
+                "movie": {
+                    "title": "Angel",
+                    "year": 1984,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP09B Segments",
+                "movie": {
+                    "title": "Terror Train",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp10",
+        "season": null,
+        "episode": 10,
+        "is_special": true,
+        "title": "The Last Drive-in: The Walking Dead",
+        "description": "",
+        "air_date": "2021-10-29",
+        "guests": [
+            "Greg Nicotero",
+            "Carey Jones"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP10A Segments",
+                "movie": {
+                    "title": "Days Gone Bye",
+                    "year": 2010,
+                    "aliases": [
+                        "The Walking Dead Pilot",
+                        "The Walking Dead"
+                    ]
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP10B Segments",
+                "movie": {
+                    "title": "Guts",
+                    "year": 2010,
+                    "aliases": [
+                        "The Walking Dead Pilot",
+                        "The Walking Dead"
+                    ]
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp11",
+        "season": null,
+        "episode": 11,
+        "is_special": true,
+        "title": "Joe Bob Ruins Christmas",
+        "description": "",
+        "air_date": "2021-12-17",
+        "guests": [
+            "Felissa Rose"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP11A Segments",
+                "movie": {
+                    "title": "Ice Cream Man",
+                    "year": 1995,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP11B Segments",
+                "movie": {
+                    "title": "'Gator Bait",
+                    "year": 1974,
+                    "aliases": [
+                        "Swamp Bait"
+                    ]
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp12",
+        "season": null,
+        "episode": 12,
+        "is_special": true,
+        "title": "Joe Bob's Heartbreak Trailer Park",
+        "description": "",
+        "air_date": "2022-02-11",
+        "guests": [
+            "Boulet Brothers",
+            "Frank Henenlotter",
+            "James Lorinz"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP12A Segments",
+                "movie": {
+                    "title": "Black Roses",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP12B Segments",
+                "movie": {
+                    "title": "Frankenhooker",
+                    "year": 1990,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp13",
+        "season": null,
+        "episode": 13,
+        "is_special": true,
+        "title": "Joe Bob's Halloween Hangout",
+        "description": "",
+        "air_date": "2022-10-21",
+        "guests": [
+            "Cassandra Peterson",
+            "Jill Schoelen"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP13A Segments",
+                "movie": {
+                    "title": "Elvira's Haunted Hills",
+                    "year": 2001,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP13B Segments",
+                "movie": {
+                    "title": "Popcorn",
+                    "year": 1991,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp14",
+        "season": null,
+        "episode": 14,
+        "is_special": true,
+        "title": "Joe Bob's Ghoultide Get-Together",
+        "description": "",
+        "air_date": "2022-12-16",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP14A Segments",
+                "movie": {
+                    "title": "Don't Open till Christmas",
+                    "year": 1984,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP14B Segments",
+                "movie": {
+                    "title": "A Christmas Horror Story",
+                    "year": 2015,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp15",
+        "season": null,
+        "episode": 15,
+        "is_special": true,
+        "title": "Joe Bob's Vicious Vegas Valentine",
+        "description": "",
+        "air_date": "2023-02-13",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP15A Segments",
+                "movie": {
+                    "title": "Phantom of the Mall: Eric's Revenge",
+                    "year": 1989,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP15B Segments",
+                "movie": {
+                    "title": "Nekromantik",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp16",
+        "season": null,
+        "episode": 16,
+        "is_special": true,
+        "title": "The Last Drive-in: The Walking Dead: Dead City Special",
+        "description": "",
+        "air_date": "2023-06-18",
+        "guests": [
+            "Eli Jorne"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP16 Segments",
+                "movie": {
+                    "title": "Old Acquaintences",
+                    "year": 2023,
+                    "aliases": [
+                        "The Walking Dead: Dead City",
+                        "Dead City"
+                    ]
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp17",
+        "season": null,
+        "episode": 17,
+        "is_special": true,
+        "title": "Live From The Jamboree",
+        "description": "",
+        "air_date": "2023-09-08",
+        "guests": [
+            "Linnea Quigley",
+            "Amelia Kinkade"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP17 Segments",
+                "movie": {
+                    "title": "Night of the Demons",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp18",
+        "season": null,
+        "episode": 18,
+        "is_special": true,
+        "title": "The Last Drive-in: The Walking Dead: Daryl Dixon",
+        "description": "",
+        "air_date": "2023-09-15",
+        "guests": [
+            "Greg Nicotero"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP18 Segments",
+                "movie": {
+                    "title": "L'ame Perdue",
+                    "year": 2023,
+                    "aliases": [
+                        "The Walking Dead: Daryl Dixon",
+                        "Daryl Dixon"
+                    ]
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp19",
+        "season": null,
+        "episode": 19,
+        "is_special": true,
+        "title": "The Last Drive-In Fear Fest: Halloween 1978",
+        "description": "AMC Live Special",
+        "air_date": "2023-10-10",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP19 Segments",
+                "movie": {
+                    "title": "Halloween",
+                    "year": 1978,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp20",
+        "season": null,
+        "episode": 20,
+        "is_special": true,
+        "title": "Joe Bob's Helloween",
+        "description": "",
+        "air_date": "2023-10-20",
+        "guests": [
+            "Danhausen"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP20A Segments",
+                "movie": {
+                    "title": "Demons 2",
+                    "year": 1986,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP20B Segments",
+                "movie": {
+                    "title": "All Hallows' Eve",
+                    "year": 2013,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp21",
+        "season": null,
+        "episode": 21,
+        "is_special": true,
+        "title": "Joe Bob's Creepy Christmas",
+        "description": "",
+        "air_date": "2023-12-15",
+        "guests": [
+            "Robin Sydney"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP21A Segments",
+                "movie": {
+                    "title": "The Brain",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP21B Segments",
+                "movie": {
+                    "title": "The Gingerdead Man",
+                    "year": 2005,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp22",
+        "season": null,
+        "episode": 22,
+        "is_special": true,
+        "title": "Joe Bob's Very Violent Valentine",
+        "description": "",
+        "air_date": "2024-02-09",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP22A Segments",
+                "movie": {
+                    "title": "Freeway",
+                    "year": 1996,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP22B Segments",
+                "movie": {
+                    "title": "Vamp",
+                    "year": 1986,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp23",
+        "season": null,
+        "episode": 23,
+        "is_special": true,
+        "title": "The Last Drive-in: The Walking Dead: The Ones Who Live",
+        "description": "",
+        "air_date": "2024-03-01",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP23A Segments",
+                "movie": {
+                    "title": "Years",
+                    "year": 2024,
+                    "aliases": [
+                        "The Walking Dead: The Ones Who Live",
+                        "The Walking Dead"
+                    ]
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp24",
+        "season": null,
+        "episode": 24,
+        "is_special": true,
+        "title": "The Last Drive-In Live: A Tribute to Roger Corman",
+        "description": "",
+        "air_date": "2024-03-15",
+        "guests": [
+            "Jule Corman",
+            "Roger Corman",
+            "Bruce Dern"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP24A Segments",
+                "movie": {
+                    "title": "A Bucket of Blood",
+                    "year": 1959,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP24B Segments",
+                "movie": {
+                    "title": "Deathstalker",
+                    "year": 1983,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp25",
+        "season": null,
+        "episode": 25,
+        "is_special": true,
+        "title": "The Last Drive-IN: Nightmareathon",
+        "description": "",
+        "air_date": "2024-08-30",
+        "guests": [
+            "Rhonda Shear",
+            "Felissa Rose",
+            "Dave Sheridan",
+            "Robin Sydney"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP25A Segments",
+                "movie": {
+                    "title": "The Slumber Party Massacre",
+                    "year": 1982,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP25B Segments",
+                "movie": {
+                    "title": "When Evil Lurks",
+                    "year": 2023,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "c",
+                "host_label": "SP25C Segments",
+                "movie": {
+                    "title": "Bloody Muscle Body Builder in Hell",
+                    "year": 1995,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "d",
+                "host_label": "SP25D Segments",
+                "movie": {
+                    "title": "Fade to Black",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "e",
+                "host_label": "SP25E Segments",
+                "movie": {
+                    "title": "Children of the Corn",
+                    "year": 1984,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "f",
+                "host_label": "SP25F Segments",
+                "movie": {
+                    "title": "Galaxy of Terror",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp26",
+        "season": null,
+        "episode": 26,
+        "is_special": true,
+        "title": "The Last Drive-IN Fear Fest: Friday the 13th",
+        "description": "AMC Live Special",
+        "air_date": "2024-10-09",
+        "guests": [
+            "Adrienne King"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP26A Segments",
+                "movie": {
+                    "title": "Friday the 13th",
+                    "year": 1980,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP26B Segments",
+                "movie": {
+                    "title": "Friday the 13th Part 2",
+                    "year": 1981,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp27",
+        "season": null,
+        "episode": 27,
+        "is_special": true,
+        "title": "Joe Bob's Beelzebub Bash",
+        "description": "",
+        "air_date": "2024-10-25",
+        "guests": [
+            "Jeff Lieberman",
+            "David Dastmalchian"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP27A Segments",
+                "movie": {
+                    "title": "Satan's Little Helper",
+                    "year": 2004,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP27B Segments",
+                "movie": {
+                    "title": "Late Night with the Devil",
+                    "year": 2023,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp28",
+        "season": null,
+        "episode": 28,
+        "is_special": true,
+        "title": "Joe Bob's Christmas Carnage",
+        "description": "",
+        "air_date": "2024-12-13",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP28A Segments",
+                "movie": {
+                    "title": "Rare Exports: A Christmas Tale",
+                    "year": 2010,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP28B Segments",
+                "movie": {
+                    "title": "It's a Wonderful Knife",
+                    "year": 2023,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp29",
+        "season": null,
+        "episode": 29,
+        "is_special": true,
+        "title": "The Last Drive-IN on Fear Fest 2025",
+        "description": "AMC Live Special",
+        "air_date": "2025-10-08",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP29A Segments",
+                "movie": {
+                    "title": "A Nightmare on Elm Street",
+                    "year": 1984,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP29B Segments",
+                "movie": {
+                    "title": "Freddy vs. Jason",
+                    "year": 2003,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp30",
+        "season": null,
+        "episode": 30,
+        "is_special": true,
+        "title": "Joe Bob's Splatterween",
+        "description": "",
+        "air_date": "2025-10-24",
+        "guests": [
+            "Gwar",
+            "Adam Cesare",
+            "Eli Craig"
+        ],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP30A Segments",
+                "movie": {
+                    "title": "Clown in a Cornfield",
+                    "year": 2025,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP30B Segments",
+                "movie": {
+                    "title": "Jack-O",
+                    "year": 1995,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    },
+    {
+        "id": "sp31",
+        "season": null,
+        "episode": 31,
+        "is_special": true,
+        "title": "Joe Bob's Cold Cruel Christmas",
+        "description": "",
+        "air_date": "2025-12-19",
+        "guests": [],
+        "movies": [
+            {
+                "slot": "a",
+                "host_label": "SP31A Segments",
+                "movie": {
+                    "title": "Curtains",
+                    "year": 1983,
+                    "aliases": []
+                },
+                "cuts": []
+            },
+            {
+                "slot": "b",
+                "host_label": "SP31B Segments",
+                "movie": {
+                    "title": "Iced",
+                    "year": 1988,
+                    "aliases": []
+                },
+                "cuts": []
+            }
+        ]
+    }
+]

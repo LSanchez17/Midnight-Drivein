@@ -10,23 +10,21 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install Linux system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y \
             pkg-config \
-            libglib2.0-dev \
-            libgtk-3-dev \
-            libwebkit2gtk-4.1-dev \
-            libayatana-appindicator3-dev \
             build-essential \
             libssl-dev \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
             librsvg2-dev
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: 'yarn'
@@ -34,13 +32,12 @@ jobs:
       - name: Install Node dependencies
         run: yarn install --frozen-lockfile
 
-      - name: TypeScript typecheck
-        run: yarn tsc --noEmit
+      - name: TypeScript typecheck & run tests
+        run: |
+          yarn tsc --noEmit
+          yarn test
 
-      - name: Run JavaScript tests (Vitest)
-        run: yarn test
-
-      - name: Setup Rust toolchain
+      - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
 
       - name: Setup Rust cache
@@ -48,10 +45,6 @@ jobs:
         with:
           workspaces: src-tauri
 
-      - name: Check Rust compilation
-        working-directory: src-tauri
-        run: cargo check --verbose
-
       - name: Run Rust tests
         working-directory: src-tauri
-        run: cargo test --verbose
+        run: cargo test

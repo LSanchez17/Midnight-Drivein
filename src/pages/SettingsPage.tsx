@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Panel from '../components/ui/Panel'
 import Button from '../components/ui/Button'
 import TextInput from '../components/ui/TextInput'
+import ScanSummaryPanel from '../components/ui/ScanSummaryPanel'
 import { useSettings } from '../context/SettingsContext'
-import { saveSettings, selectLibraryRoot, scanLibrary } from '../api'
+import { saveSettings, selectLibraryRoot, scanLibrary, getScanSummary } from '../api'
 import { ApiError } from '../api/errors'
+import type { ScanResult } from '../api/types'
 
 function Label({ children }: { children: React.ReactNode }) {
     return (
@@ -70,6 +72,17 @@ export default function SettingsPage() {
     const [moviesFolderError, setMoviesFolderError] = useState<string | null>(null)
     const [segmentsFolderError, setSegmentsFolderError] = useState<string | null>(null)
     const [scanToggleError, setScanToggleError] = useState<string | null>(null)
+    const [scanError, setScanError] = useState<string | null>(null)
+    const [lastScan, setLastScan] = useState<ScanResult | null>(null)
+    const [isScanning, setIsScanning] = useState(false)
+
+    useEffect(() => {
+        getScanSummary()
+            .then(setLastScan)
+            .catch(() => {
+                // empty state on failure  
+            })
+    }, [])
 
     async function handleChooseFolder(field: 'moviesFolder' | 'segmentsFolder') {
         const setError = field === 'moviesFolder' ? setMoviesFolderError : setSegmentsFolderError
@@ -84,6 +97,19 @@ export default function SettingsPage() {
             reloadSettings()
         } catch (e) {
             setError(e instanceof ApiError ? e.message : String(e))
+        }
+    }
+
+    async function handleScan() {
+        setScanError(null)
+        setIsScanning(true)
+        try {
+            const result = await scanLibrary()
+            setLastScan(result)
+        } catch (e) {
+            setScanError(e instanceof ApiError ? e.message : String(e))
+        } finally {
+            setIsScanning(false)
         }
     }
 
@@ -134,14 +160,14 @@ export default function SettingsPage() {
                     />
                     <Button
                         variant="primary"
-                        disabled={!bothFoldersSet}
+                        disabled={isScanning || !bothFoldersSet}
                         title={bothFoldersSet ? undefined : 'Configure both folders first'}
-                        onClick={() => {
-                            if (bothFoldersSet) scanLibrary().catch(() => {/* stub — spec 0008 */ })
-                        }}
+                        onClick={handleScan}
                     >
-                        Rescan Library
+                        {isScanning ? 'Scanning…' : 'Rescan Library'}
                     </Button>
+                    <FieldError message={scanError} />
+                    <ScanSummaryPanel result={lastScan} isScanning={isScanning} />
                 </div>
             </Panel>
 

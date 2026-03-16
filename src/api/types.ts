@@ -19,3 +19,11 @@ export interface AppSettingsPatch {
     scanOnStartup?: boolean
     theme?: 'dark'
 }
+
+export interface ScanResult {
+    lastScanAt:       string
+    movieFileCount:   number
+    segmentFileCount: number
+    errors:           string[]
+    missingFolders:   string[]
+}

@@ -2,7 +2,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { open } from '@tauri-apps/plugin-dialog'
 import { deriveEpisodeStatus } from '../lib/derive/episodeStatus'
 import type { Episode, MovieSlot, FileMatch, PlaybackCut, SourceType, MatchStatus } from '../features/episodes/types'
-import type { AppSettings, AppSettingsPatch, EpisodeFilters } from './types'
+import type { AppSettings, AppSettingsPatch, EpisodeFilters, ScanResult } from './types'
 import { ApiError, type ErrorCode } from './errors'
 
 // Error parsing — Rust errors use "ERROR_CODE: message" prefix convention
@@ -152,9 +152,18 @@ export async function getEpisodeById(id: string): Promise<Episode | undefined> {
     }
 }
 
-export async function scanLibrary(): Promise<void> {
+export async function scanLibrary(): Promise<ScanResult> {
     try {
-        await invoke<void>('scan_library')
+        return await invoke<ScanResult>('scan_library')
+    } catch (e) {
+        throw parseError(e)
+    }
+}
+
+export async function getScanSummary(): Promise<ScanResult | null> {
+    try {
+        const result = await invoke<ScanResult | null>('get_scan_summary')
+        return result ?? null
     } catch (e) {
         throw parseError(e)
     }

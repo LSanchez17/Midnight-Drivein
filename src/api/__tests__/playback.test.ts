@@ -81,9 +81,16 @@ describe('remapFile', () => {
 })
 
 describe('scanLibrary', () => {
-    it('resolves on success', async () => {
-        mockInvoke.mockResolvedValueOnce(undefined)
-        await expect(scanLibrary()).resolves.toBeUndefined()
+    it('resolves with ScanResult on success', async () => {
+        const mockResult = {
+            lastScanAt: '2026-03-16T00:00:00Z',
+            movieFileCount: 2,
+            segmentFileCount: 1,
+            errors: [],
+            missingFolders: [],
+        }
+        mockInvoke.mockResolvedValueOnce(mockResult)
+        await expect(scanLibrary()).resolves.toEqual(mockResult)
         expect(mockInvoke).toHaveBeenCalledWith('scan_library')
     })
 
@@ -114,8 +121,12 @@ describe('mock shape compatibility', () => {
         await expect(mockSaveCut('cut-1', 100)).resolves.toBeUndefined()
     })
 
-    it('scanLibrary from _mock.ts resolves void', async () => {
+    it('scanLibrary from _mock.ts resolves with ScanResult', async () => {
         const { scanLibrary: mockScan } = await import('../_mock')
-        await expect(mockScan()).resolves.toBeUndefined()
+        const result = await mockScan()
+        expect(typeof result.movieFileCount).toBe('number')
+        expect(typeof result.segmentFileCount).toBe('number')
+        expect(Array.isArray(result.errors)).toBe(true)
+        expect(Array.isArray(result.missingFolders)).toBe(true)
     })
 })

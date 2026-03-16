@@ -96,6 +96,8 @@ dependencies = [
  "tauri-plugin-log",
  "tempfile",
  "tokio",
+ "uuid",
+ "walkdir",
 ]
 
 [[package]]

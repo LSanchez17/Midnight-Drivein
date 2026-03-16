@@ -1,6 +1,6 @@
 import { MOCK_EPISODES } from '../features/episodes/mocks'
 import type { Episode, SourceType } from '../features/episodes/types'
-import type { EpisodeFilters, AppSettings, AppSettingsPatch } from './types'
+import type { EpisodeFilters, AppSettings, AppSettingsPatch, ScanResult } from './types'
 
 export function getEpisodes(filters?: EpisodeFilters): Promise<Episode[]> {
     return new Promise((resolve) =>
@@ -60,8 +60,18 @@ export function remapFile(_slotId: string, _fileType: SourceType, _mediaFileId: 
     return Promise.resolve()
 }
 
-export function scanLibrary(): Promise<void> {
-    return Promise.resolve()
+export function scanLibrary(): Promise<ScanResult> {
+    return Promise.resolve({
+        lastScanAt: new Date().toISOString(),
+        movieFileCount: 3,
+        segmentFileCount: 2,
+        errors: [],
+        missingFolders: [],
+    })
+}
+
+export function getScanSummary(): Promise<ScanResult | null> {
+    return Promise.resolve(null)
 }
 
 export function selectLibraryRoot(): Promise<string | null> {

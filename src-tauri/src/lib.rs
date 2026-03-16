@@ -32,6 +32,7 @@ pub fn run() {
                 .path()
                 .resource_dir()
                 .expect("resource dir unavailable")
+                .join("resources")
                 .join("episodes.json");
 
             tauri::async_runtime::block_on(

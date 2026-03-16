@@ -12,7 +12,10 @@ export function getEpisodes(filters?: EpisodeFilters): Promise<Episode[]> {
                 results = results.filter(
                     (e) =>
                         e.title.toLowerCase().includes(q) ||
-                        (e.movieMatch.displayName ?? e.movieMatch.filename ?? '').toLowerCase().includes(q),
+                        e.slots.some((s) =>
+                            (s.movieTitle ?? '').toLowerCase().includes(q) ||
+                            (s.movieMatch.displayName ?? s.movieMatch.filename ?? '').toLowerCase().includes(q),
+                        ),
                 )
             }
 
@@ -49,11 +52,11 @@ export function saveCutOffset(_cutId: string, _offsetMs: number): Promise<void> 
     return Promise.resolve()
 }
 
-export function savePlaybackOverride(_episodeId: string, _flaggedForTiming: boolean): Promise<void> {
+export function savePlaybackOverride(_slotId: string, _flaggedForTiming: boolean): Promise<void> {
     return Promise.resolve()
 }
 
-export function remapFile(_episodeId: string, _fileType: SourceType, _mediaFileId: string): Promise<void> {
+export function remapFile(_slotId: string, _fileType: SourceType, _mediaFileId: string): Promise<void> {
     return Promise.resolve()
 }
 

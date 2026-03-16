@@ -15,8 +15,18 @@ struct EpisodeJson {
     is_special: bool,
     title: String,
     description: Option<String>,
+    air_date: Option<String>,
+    #[serde(default)]
+    guests: Vec<String>,
+    movies: Vec<SlotJson>,
+}
+
+#[derive(Deserialize)]
+struct SlotJson {
+    slot: String,
     host_label: Option<String>,
     movie: Option<MovieJson>,
+    #[serde(default)]
     cuts: Vec<CutJson>,
 }
 
@@ -62,21 +72,14 @@ pub async fn seed_episodes_if_empty(
 
     for ep in episodes {
         let description = ep.description.filter(|s| !s.is_empty());
-
-        let (movie_title, movie_year, movie_aliases_json) = match ep.movie {
-            Some(m) => {
-                let aliases = serde_json::to_string(&m.aliases)?;
-                (Some(m.title), m.year, Some(aliases))
-            }
-            None => (None, None, None),
-        };
+        let guests_json = serde_json::to_string(&ep.guests)?;
 
         sqlx::query(
             r#"
             INSERT OR IGNORE INTO episode
                 (id, title, season, episode, is_special, description,
-                 host_label, movie_title, movie_year, movie_aliases_json, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 air_date, guests_json, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             "#,
         )
         .bind(&ep.id)
@@ -85,33 +88,61 @@ pub async fn seed_episodes_if_empty(
         .bind(ep.episode)
         .bind(ep.is_special as i64)
         .bind(&description)
-        .bind(&ep.host_label)
-        .bind(&movie_title)
-        .bind(movie_year)
-        .bind(&movie_aliases_json)
+        .bind(&ep.air_date)
+        .bind(&guests_json)
         .bind(&now)
         .execute(&mut *tx)
         .await?;
 
-        for (i, cut) in ep.cuts.iter().enumerate() {
-            let sort_order = (i + 1) as i64;
-            let cut_id = format!("{}-c{}", ep.id, sort_order);
+        for slot_entry in &ep.movies {
+            let slot_id = format!("{}-{}", ep.id, slot_entry.slot);
+
+            let (movie_title, movie_year, movie_aliases_json) = match &slot_entry.movie {
+                Some(m) => {
+                    let aliases = serde_json::to_string(&m.aliases)?;
+                    (Some(m.title.clone()), m.year, Some(aliases))
+                }
+                None => (None, None, None),
+            };
 
             sqlx::query(
                 r#"
-                INSERT OR IGNORE INTO playback_cut
-                    (id, episode_id, sort_order, source_type, start_ms, end_ms, user_offset_ms)
-                VALUES (?, ?, ?, ?, ?, ?, 0)
+                INSERT OR IGNORE INTO movie_slot
+                    (id, episode_id, slot, host_label,
+                     movie_title, movie_year, movie_aliases_json)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 "#,
             )
-            .bind(&cut_id)
+            .bind(&slot_id)
             .bind(&ep.id)
-            .bind(sort_order)
-            .bind(&cut.source)
-            .bind(cut.start_ms)
-            .bind(cut.end_ms)
+            .bind(&slot_entry.slot)
+            .bind(&slot_entry.host_label)
+            .bind(&movie_title)
+            .bind(movie_year)
+            .bind(&movie_aliases_json)
             .execute(&mut *tx)
             .await?;
+
+            for (i, cut) in slot_entry.cuts.iter().enumerate() {
+                let sort_order = (i + 1) as i64;
+                let cut_id = format!("{}-c{}", slot_id, sort_order);
+
+                sqlx::query(
+                    r#"
+                    INSERT OR IGNORE INTO playback_cut
+                        (id, slot_id, sort_order, source_type, start_ms, end_ms, user_offset_ms)
+                    VALUES (?, ?, ?, ?, ?, ?, 0)
+                    "#,
+                )
+                .bind(&cut_id)
+                .bind(&slot_id)
+                .bind(sort_order)
+                .bind(&cut.source)
+                .bind(cut.start_ms)
+                .bind(cut.end_ms)
+                .execute(&mut *tx)
+                .await?;
+            }
         }
     }
 
@@ -157,30 +188,65 @@ mod tests {
         "is_special": false,
         "title": "Test Episode",
         "description": "A test.",
-        "host_label": "S01E01 Segments",
-        "movie": { "title": "Tourist Trap", "year": 1979, "aliases": ["Tourist Trap 1979"] },
-        "cuts": [
-          { "source": "segment", "start_ms": 0,      "end_ms": 185000  },
-          { "source": "movie",   "start_ms": 0,      "end_ms": 4120000 },
-          { "source": "segment", "start_ms": 185000, "end_ms": null    }
+        "air_date": "2019-03-29",
+        "guests": ["Felissa Rose"],
+        "movies": [
+          {
+            "slot": "a",
+            "host_label": "S01E01A Segments",
+            "movie": { "title": "Tourist Trap", "year": 1979, "aliases": ["Tourist Trap 1979"] },
+            "cuts": [
+              { "source": "segment", "start_ms": 0,      "end_ms": 185000  },
+              { "source": "movie",   "start_ms": 0,      "end_ms": 4120000 },
+              { "source": "segment", "start_ms": 185000, "end_ms": null    }
+            ]
+          },
+          {
+            "slot": "b",
+            "host_label": "S01E01B Segments",
+            "movie": { "title": "Castle Freak", "year": 1995, "aliases": [] },
+            "cuts": []
+          }
         ]
       }
     ]"#;
 
     #[tokio::test]
-    async fn seeds_episodes_from_json() {
+    async fn seeds_episodes_and_slots_from_json() {
         let pool = setup().await;
         let file = write_fixture(FIXTURE);
 
         seed_episodes_if_empty(&pool, file.path()).await.unwrap();
 
-        let count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM episode")
+        let ep_count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM episode")
             .fetch_one(&pool)
             .await
             .unwrap();
-        assert_eq!(count.0, 1);
+        assert_eq!(ep_count.0, 1);
 
-        // Verify one cut has end_ms IS NULL
+        let slot_count: (i64,) = sqlx::query_as("SELECT COUNT(*) FROM movie_slot")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert_eq!(slot_count.0, 2);
+
+        // Slot IDs are deterministic
+        let slot_id: (String,) =
+            sqlx::query_as("SELECT id FROM movie_slot WHERE episode_id = 's01e01' AND slot = 'a'")
+                .fetch_one(&pool)
+                .await
+                .unwrap();
+        assert_eq!(slot_id.0, "s01e01-a");
+
+        // 3 cuts on slot a, 0 on slot b
+        let cut_count: (i64,) =
+            sqlx::query_as("SELECT COUNT(*) FROM playback_cut WHERE slot_id = 's01e01-a'")
+                .fetch_one(&pool)
+                .await
+                .unwrap();
+        assert_eq!(cut_count.0, 3);
+
+        // One cut has end_ms IS NULL
         let null_cut: (i64,) =
             sqlx::query_as("SELECT COUNT(*) FROM playback_cut WHERE end_ms IS NULL")
                 .fetch_one(&pool)
@@ -202,5 +268,20 @@ mod tests {
             .await
             .unwrap();
         assert_eq!(count.0, 1);
+    }
+
+    #[tokio::test]
+    async fn seeds_guests_json() {
+        let pool = setup().await;
+        let file = write_fixture(FIXTURE);
+
+        seed_episodes_if_empty(&pool, file.path()).await.unwrap();
+
+        let guests: (String,) =
+            sqlx::query_as("SELECT guests_json FROM episode WHERE id = 's01e01'")
+                .fetch_one(&pool)
+                .await
+                .unwrap();
+        assert_eq!(guests.0, r#"["Felissa Rose"]"#);
     }
 }

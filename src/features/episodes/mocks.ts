@@ -1,4 +1,4 @@
-import type { Episode, FileMatch, PlaybackCut } from './types'
+import type { Episode, MovieSlot, FileMatch, PlaybackCut } from './types'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -52,6 +52,30 @@ function standardCuts(prefix: string, overrides: Partial<Record<string, number>>
     return cuts
 }
 
+function slot(
+    episodeId: string,
+    slotLetter: string,
+    hostLabel: string,
+    movieTitle: string,
+    movieYear: number,
+    movieMatch: FileMatch,
+    segmentMatch: FileMatch,
+    cuts: PlaybackCut[],
+    flaggedForTiming = false,
+): MovieSlot {
+    return {
+        id: `${episodeId}-${slotLetter}`,
+        slot: slotLetter,
+        hostLabel,
+        movieTitle,
+        movieYear,
+        movieMatch,
+        segmentMatch,
+        cuts,
+        flaggedForTiming,
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Mock episodes
 // ---------------------------------------------------------------------------
@@ -65,13 +89,17 @@ export const MOCK_EPISODES: Episode[] = [
         isSpecial: false,
         airDate: '1986-07-04',
         description: 'Joe Bob kicks off the summer with two mutant-packed creature features.',
-        hostLabel: 'S01E01 Segments',
-        movieTitle: 'Humanoids from the Deep',
-        movieYear: 1980,
-        movieMatch: matched('movie', 'humanoids.mkv', 'Humanoids from the Deep', '/media/movies/humanoids.mkv', 0.97),
-        segmentMatch: matched('segment', 's01e01-seg.mkv', 'S01E01 Segments', '/media/segments/s01e01-seg.mkv', 0.95),
-        cuts: standardCuts('s01e01'),
-        flaggedForTiming: false,
+        guests: [],
+        slots: [
+            slot(
+                's01e01', 'a',
+                'S01E01A Segments',
+                'Humanoids from the Deep', 1980,
+                matched('movie', 'humanoids.mkv', 'Humanoids from the Deep', '/media/movies/humanoids.mkv', 0.97),
+                matched('segment', 's01e01a-seg.mkv', 'S01E01A Segments', '/media/segments/s01e01a-seg.mkv', 0.95),
+                standardCuts('s01e01-a'),
+            ),
+        ],
         status: 'Ready',
     },
     {
@@ -82,13 +110,17 @@ export const MOCK_EPISODES: Episode[] = [
         isSpecial: false,
         airDate: '1986-07-11',
         description: 'The slasher season begins — but the segment reel is a shaky match.',
-        hostLabel: 'S01E02 Segments',
-        movieTitle: 'Friday the 13th Part 2',
-        movieYear: 1981,
-        movieMatch: matched('movie', 'f13p2.mkv', 'Friday the 13th Part 2', '/media/movies/f13p2.mkv', 0.88),
-        segmentMatch: lowConfidence('segment', 's01e02-seg.mkv', 'S01E02 Segments', '/media/segments/s01e02-seg.mkv', 0.76),
-        cuts: standardCuts('s01e02'),
-        flaggedForTiming: false,
+        guests: [],
+        slots: [
+            slot(
+                's01e02', 'a',
+                'S01E02A Segments',
+                'Friday the 13th Part 2', 1981,
+                matched('movie', 'f13p2.mkv', 'Friday the 13th Part 2', '/media/movies/f13p2.mkv', 0.88),
+                lowConfidence('segment', 's01e02a-seg.mkv', 'S01E02A Segments', '/media/segments/s01e02a-seg.mkv', 0.76),
+                standardCuts('s01e02-a'),
+            ),
+        ],
         status: 'Partial Match',
     },
     {
@@ -99,11 +131,17 @@ export const MOCK_EPISODES: Episode[] = [
         isSpecial: false,
         airDate: '1986-07-18',
         description: 'The dead walk — and so does this completely unmatched episode.',
-        hostLabel: 'S01E03 Segments',
-        movieMatch: missing('movie'),
-        segmentMatch: missing('segment'),
-        cuts: standardCuts('s01e03'),
-        flaggedForTiming: false,
+        guests: [],
+        slots: [
+            slot(
+                's01e03', 'a',
+                'S01E03A Segments',
+                'Zombie', 1979,
+                missing('movie'),
+                missing('segment'),
+                standardCuts('s01e03-a'),
+            ),
+        ],
         status: 'Missing Files',
     },
     {
@@ -114,13 +152,17 @@ export const MOCK_EPISODES: Episode[] = [
         isSpecial: false,
         airDate: '1986-07-25',
         description: 'Files matched, but the third cut (intermission) is off by about 12 seconds.',
-        hostLabel: 'S01E04 Segments',
-        movieTitle: 'Halloween II',
-        movieYear: 1981,
-        movieMatch: matched('movie', 'halloween2.mkv', 'Halloween II', '/media/movies/halloween2.mkv', 0.94),
-        segmentMatch: matched('segment', 's01e04-seg.mkv', 'S01E04 Segments', '/media/segments/s01e04-seg.mkv', 0.90),
-        cuts: standardCuts('s01e04', { 's01e04-c3': 12_000 }),
-        flaggedForTiming: false,
+        guests: [],
+        slots: [
+            slot(
+                's01e04', 'a',
+                'S01E04A Segments',
+                'Halloween II', 1981,
+                matched('movie', 'halloween2.mkv', 'Halloween II', '/media/movies/halloween2.mkv', 0.94),
+                matched('segment', 's01e04a-seg.mkv', 'S01E04A Segments', '/media/segments/s01e04a-seg.mkv', 0.90),
+                standardCuts('s01e04-a', { 's01e04-a-c3': 12_000 }),
+            ),
+        ],
         status: 'Needs Timing Fix',
     },
     {
@@ -130,13 +172,17 @@ export const MOCK_EPISODES: Episode[] = [
         isSpecial: true,
         airDate: '1987-10-31',
         description: 'A special Halloween broadcast — classic Drive-In all night long.',
-        hostLabel: 'Special Halloween Segments',
-        movieTitle: 'The Texas Chain Saw Massacre',
-        movieYear: 1974,
-        movieMatch: matched('movie', 'tcsm.mkv', 'The Texas Chain Saw Massacre', '/media/movies/tcsm.mkv', 0.99),
-        segmentMatch: matched('segment', 'special-halloween-seg.mkv', 'Special Halloween Segments', '/media/segments/special-halloween-seg.mkv', 0.97),
-        cuts: standardCuts('special-halloween'),
-        flaggedForTiming: false,
+        guests: [],
+        slots: [
+            slot(
+                'special-halloween', 'a',
+                'Special Halloween Segments',
+                'The Texas Chain Saw Massacre', 1974,
+                matched('movie', 'tcsm.mkv', 'The Texas Chain Saw Massacre', '/media/movies/tcsm.mkv', 0.99),
+                matched('segment', 'special-halloween-a-seg.mkv', 'Special Halloween Segments', '/media/segments/special-halloween-a-seg.mkv', 0.97),
+                standardCuts('special-halloween-a'),
+            ),
+        ],
         status: 'Ready',
     },
 ]

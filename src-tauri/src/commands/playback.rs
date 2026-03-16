@@ -37,32 +37,32 @@ pub async fn save_cut_offset_inner(
 
 pub async fn save_playback_override_inner(
     pool: &SqlitePool,
-    episode_id: &str,
+    slot_id: &str,
     flagged_for_timing: bool,
 ) -> Result<(), String> {
-    // Verify the episode exists.
+    // Verify the slot exists.
     let exists: Option<(String,)> =
-        sqlx::query_as("SELECT id FROM episode WHERE id = ?")
-            .bind(episode_id)
+        sqlx::query_as("SELECT id FROM movie_slot WHERE id = ?")
+            .bind(slot_id)
             .fetch_optional(pool)
             .await
             .map_err(|e| e.to_string())?;
 
     if exists.is_none() {
         return Err(format!(
-            "NOT_FOUND: episode with id '{episode_id}' does not exist"
+            "NOT_FOUND: movie_slot with id '{slot_id}' does not exist"
         ));
     }
 
     let now = chrono::Utc::now().to_rfc3339();
     sqlx::query(
-        "INSERT INTO playback_override (episode_id, flagged_for_timing, created_at, updated_at)
+        "INSERT INTO playback_override (slot_id, flagged_for_timing, created_at, updated_at)
          VALUES (?, ?, ?, ?)
-         ON CONFLICT (episode_id) DO UPDATE SET
+         ON CONFLICT (slot_id) DO UPDATE SET
              flagged_for_timing = excluded.flagged_for_timing,
              updated_at = excluded.updated_at",
     )
-    .bind(episode_id)
+    .bind(slot_id)
     .bind(flagged_for_timing)
     .bind(&now)
     .bind(&now)
@@ -75,21 +75,21 @@ pub async fn save_playback_override_inner(
 
 pub async fn remap_file_inner(
     pool: &SqlitePool,
-    episode_id: &str,
+    slot_id: &str,
     file_type: &str,
     media_file_id: &str,
 ) -> Result<(), String> {
-    // Verify episode exists.
-    let ep_exists: Option<(String,)> =
-        sqlx::query_as("SELECT id FROM episode WHERE id = ?")
-            .bind(episode_id)
+    // Verify slot exists.
+    let slot_exists: Option<(String,)> =
+        sqlx::query_as("SELECT id FROM movie_slot WHERE id = ?")
+            .bind(slot_id)
             .fetch_optional(pool)
             .await
             .map_err(|e| e.to_string())?;
 
-    if ep_exists.is_none() {
+    if slot_exists.is_none() {
         return Err(format!(
-            "NOT_FOUND: episode with id '{episode_id}' does not exist"
+            "NOT_FOUND: movie_slot with id '{slot_id}' does not exist"
         ));
     }
 
@@ -111,16 +111,16 @@ pub async fn remap_file_inner(
 
     // Upsert the file_match row with is_user_overridden = true and status = 'matched'.
     sqlx::query(
-        "INSERT INTO file_match (episode_id, file_type, media_file_id, match_status, confidence, is_user_overridden, matched_at)
+        "INSERT INTO file_match (slot_id, file_type, media_file_id, match_status, confidence, is_user_overridden, matched_at)
          VALUES (?, ?, ?, 'matched', 1.0, 1, ?)
-         ON CONFLICT (episode_id, file_type) DO UPDATE SET
+         ON CONFLICT (slot_id, file_type) DO UPDATE SET
              media_file_id      = excluded.media_file_id,
              match_status       = 'matched',
              confidence         = 1.0,
              is_user_overridden = 1,
              matched_at         = excluded.matched_at",
     )
-    .bind(episode_id)
+    .bind(slot_id)
     .bind(file_type)
     .bind(media_file_id)
     .bind(&now)
@@ -147,20 +147,20 @@ pub async fn save_cut_offset(
 #[tauri::command]
 pub async fn save_playback_override(
     pool: State<'_, SqlitePool>,
-    episode_id: String,
+    slot_id: String,
     flagged_for_timing: bool,
 ) -> Result<(), String> {
-    save_playback_override_inner(pool.inner(), &episode_id, flagged_for_timing).await
+    save_playback_override_inner(pool.inner(), &slot_id, flagged_for_timing).await
 }
 
 #[tauri::command]
 pub async fn remap_file(
     pool: State<'_, SqlitePool>,
-    episode_id: String,
+    slot_id: String,
     file_type: String,
     media_file_id: String,
 ) -> Result<(), String> {
-    remap_file_inner(pool.inner(), &episode_id, &file_type, &media_file_id).await
+    remap_file_inner(pool.inner(), &slot_id, &file_type, &media_file_id).await
 }
 
 // ---------------------------------------------------------------------------
@@ -196,13 +196,27 @@ mod tests {
         .unwrap();
     }
 
-    async fn seed_cut(pool: &SqlitePool, episode_id: &str, cut_id: &str) {
+    async fn seed_slot(pool: &SqlitePool, episode_id: &str, slot: &str) -> String {
+        let slot_id = format!("{}-{}", episode_id, slot);
         sqlx::query(
-            "INSERT INTO playback_cut (id, episode_id, sort_order, source_type, start_ms, end_ms, user_offset_ms)
-             VALUES (?, ?, 0, 'movie', 0, 1000, 0)",
+            "INSERT INTO movie_slot (id, episode_id, slot) VALUES (?, ?, ?)",
+        )
+        .bind(&slot_id)
+        .bind(episode_id)
+        .bind(slot)
+        .execute(pool)
+        .await
+        .unwrap();
+        slot_id
+    }
+
+    async fn seed_cut(pool: &SqlitePool, slot_id: &str, cut_id: &str) {
+        sqlx::query(
+            "INSERT INTO playback_cut (id, slot_id, sort_order, source_type, start_ms, end_ms, user_offset_ms)
+             VALUES (?, ?, 1, 'movie', 0, 1000, 0)",
         )
         .bind(cut_id)
-        .bind(episode_id)
+        .bind(slot_id)
         .execute(pool)
         .await
         .unwrap();
@@ -225,7 +239,8 @@ mod tests {
     async fn save_cut_offset_persists() {
         let pool = setup().await;
         seed_episode(&pool, "ep-1").await;
-        seed_cut(&pool, "ep-1", "cut-1").await;
+        let slot_id = seed_slot(&pool, "ep-1", "a").await;
+        seed_cut(&pool, &slot_id, "cut-1").await;
 
         save_cut_offset_inner(&pool, "cut-1", 500).await.unwrap();
 
@@ -258,21 +273,22 @@ mod tests {
     async fn save_playback_override_upserts() {
         let pool = setup().await;
         seed_episode(&pool, "ep-1").await;
+        let slot_id = seed_slot(&pool, "ep-1", "a").await;
 
-        save_playback_override_inner(&pool, "ep-1", true).await.unwrap();
+        save_playback_override_inner(&pool, &slot_id, true).await.unwrap();
         let row: (bool,) =
-            sqlx::query_as("SELECT CAST(flagged_for_timing AS BOOLEAN) FROM playback_override WHERE episode_id = ?")
-                .bind("ep-1")
+            sqlx::query_as("SELECT CAST(flagged_for_timing AS BOOLEAN) FROM playback_override WHERE slot_id = ?")
+                .bind(&slot_id)
                 .fetch_one(&pool)
                 .await
                 .unwrap();
         assert!(row.0);
 
         // Upsert again — should update, not duplicate.
-        save_playback_override_inner(&pool, "ep-1", false).await.unwrap();
+        save_playback_override_inner(&pool, &slot_id, false).await.unwrap();
         let row2: (bool,) =
-            sqlx::query_as("SELECT CAST(flagged_for_timing AS BOOLEAN) FROM playback_override WHERE episode_id = ?")
-                .bind("ep-1")
+            sqlx::query_as("SELECT CAST(flagged_for_timing AS BOOLEAN) FROM playback_override WHERE slot_id = ?")
+                .bind(&slot_id)
                 .fetch_one(&pool)
                 .await
                 .unwrap();
@@ -283,15 +299,16 @@ mod tests {
     async fn remap_file_sets_user_overridden() {
         let pool = setup().await;
         seed_episode(&pool, "ep-1").await;
+        let slot_id = seed_slot(&pool, "ep-1", "a").await;
         seed_media_file(&pool, "mf-1").await;
 
-        remap_file_inner(&pool, "ep-1", "movie", "mf-1").await.unwrap();
+        remap_file_inner(&pool, &slot_id, "movie", "mf-1").await.unwrap();
 
         let row: (bool, String) =
             sqlx::query_as(
-                "SELECT CAST(is_user_overridden AS BOOLEAN), match_status FROM file_match WHERE episode_id = ? AND file_type = 'movie'",
+                "SELECT CAST(is_user_overridden AS BOOLEAN), match_status FROM file_match WHERE slot_id = ? AND file_type = 'movie'",
             )
-            .bind("ep-1")
+            .bind(&slot_id)
             .fetch_one(&pool)
             .await
             .unwrap();

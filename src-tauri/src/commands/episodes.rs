@@ -6,7 +6,7 @@ use tauri::State;
 // Types
 // ---------------------------------------------------------------------------
 
-#[derive(Serialize, sqlx::FromRow, Clone)]
+#[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct FileMatchRow {
     pub file_type: String,
@@ -32,14 +32,9 @@ pub struct PlaybackCutRow {
 
 #[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
-pub struct EpisodeRow {
+pub struct MovieSlotRow {
     pub id: String,
-    pub title: String,
-    pub season: Option<i64>,
-    pub episode: Option<i64>,
-    pub is_special: bool,
-    pub air_date: Option<String>,
-    pub description: Option<String>,
+    pub slot: String,
     pub host_label: Option<String>,
     pub movie_title: Option<String>,
     pub movie_year: Option<i64>,
@@ -49,9 +44,27 @@ pub struct EpisodeRow {
     pub flagged_for_timing: bool,
 }
 
-/// Flat DB row for the episode+file_match join query.
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct EpisodeRow {
+    pub id: String,
+    pub title: String,
+    pub season: Option<i64>,
+    pub episode: Option<i64>,
+    pub is_special: bool,
+    pub air_date: Option<String>,
+    pub description: Option<String>,
+    pub guests: Option<String>,
+    pub slots: Vec<MovieSlotRow>,
+}
+
+// ---------------------------------------------------------------------------
+// Private flat row structs for query mapping
+// ---------------------------------------------------------------------------
+
+/// One row from the episode table (no joins).
 #[derive(sqlx::FromRow)]
-struct EpisodeFileRow {
+struct EpRow {
     id: String,
     title: String,
     season: Option<i64>,
@@ -59,6 +72,15 @@ struct EpisodeFileRow {
     is_special: bool,
     air_date: Option<String>,
     description: Option<String>,
+    guests_json: Option<String>,
+}
+
+/// Flat row from the movie_slot + file_match + playback_override join.
+#[derive(sqlx::FromRow)]
+struct SlotFileRow {
+    slot_id: String,
+    episode_id: String,
+    slot: String,
     host_label: Option<String>,
     movie_title: Option<String>,
     movie_year: Option<i64>,
@@ -87,7 +109,7 @@ struct EpisodeFileRow {
 
 #[derive(sqlx::FromRow)]
 struct CutRow {
-    episode_id: String,
+    slot_id: String,
     id: String,
     sort_order: i64,
     source_type: String,
@@ -100,8 +122,6 @@ struct CutRow {
 // Inner functions
 // ---------------------------------------------------------------------------
 
-/// Assemble a default "missing" FileMatchRow for the given file_type when no
-/// file_match row exists yet.
 fn missing_match(file_type: &str) -> FileMatchRow {
     FileMatchRow {
         file_type: file_type.to_string(),
@@ -116,7 +136,8 @@ fn missing_match(file_type: &str) -> FileMatchRow {
 }
 
 pub async fn get_episodes_inner(pool: &SqlitePool) -> Result<Vec<EpisodeRow>, String> {
-    let rows: Vec<EpisodeFileRow> = sqlx::query_as(
+    // fetch episode rows with no joins, preserving the desired order
+    let ep_rows: Vec<EpRow> = sqlx::query_as(
         r#"
         SELECT
             e.id,
@@ -126,9 +147,32 @@ pub async fn get_episodes_inner(pool: &SqlitePool) -> Result<Vec<EpisodeRow>, St
             CAST(e.is_special AS BOOLEAN) AS is_special,
             e.air_date,
             e.description,
-            e.host_label,
-            e.movie_title,
-            e.movie_year,
+            e.guests_json
+        FROM episode e
+        ORDER BY e.season ASC NULLS LAST, e.episode ASC NULLS LAST, e.title ASC
+        "#,
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| e.to_string())?;
+
+    if ep_rows.is_empty() {
+        return Ok(vec![]);
+    }
+
+    let episode_ids: Vec<String> = ep_rows.iter().map(|r| r.id.clone()).collect();
+    let ep_placeholders = episode_ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
+
+    // fetch all slots with their file matches and override flag.
+    let slot_sql = format!(
+        r#"
+        SELECT
+            ms.id        AS slot_id,
+            ms.episode_id,
+            ms.slot,
+            ms.host_label,
+            ms.movie_title,
+            ms.movie_year,
             CAST(COALESCE(po.flagged_for_timing, 0) AS BOOLEAN) AS flagged_for_timing,
 
             fm_movie.file_type        AS movie_file_type,
@@ -149,92 +193,114 @@ pub async fn get_episodes_inner(pool: &SqlitePool) -> Result<Vec<EpisodeRow>, St
             CAST(fm_seg.is_user_overridden AS BOOLEAN) AS segment_is_user_overridden,
             fm_seg.matched_at         AS segment_matched_at
 
-        FROM episode e
-        LEFT JOIN playback_override po ON po.episode_id = e.id
-        LEFT JOIN file_match fm_movie ON fm_movie.episode_id = e.id AND fm_movie.file_type = 'movie'
-        LEFT JOIN media_file mf_movie ON mf_movie.id = fm_movie.media_file_id
-        LEFT JOIN file_match fm_seg   ON fm_seg.episode_id = e.id AND fm_seg.file_type = 'segment'
-        LEFT JOIN media_file mf_seg   ON mf_seg.id = fm_seg.media_file_id
-        ORDER BY e.season ASC NULLS LAST, e.episode ASC NULLS LAST, e.title ASC
-        "#,
-    )
-    .fetch_all(pool)
-    .await
-    .map_err(|e| e.to_string())?;
-
-    if rows.is_empty() {
-        return Ok(vec![]);
-    }
-
-    // Fetch all cuts in one query, then group by episode_id.
-    let episode_ids: Vec<String> = rows.iter().map(|r| r.id.clone()).collect();
-    let placeholders = episode_ids
-        .iter()
-        .map(|_| "?")
-        .collect::<Vec<_>>()
-        .join(", ");
-    let cut_sql = format!(
-        "SELECT episode_id, id, sort_order, source_type, start_ms, end_ms, user_offset_ms
-         FROM playback_cut WHERE episode_id IN ({placeholders}) ORDER BY sort_order ASC"
+        FROM movie_slot ms
+        LEFT JOIN playback_override po   ON po.slot_id = ms.id
+        LEFT JOIN file_match fm_movie    ON fm_movie.slot_id = ms.id AND fm_movie.file_type = 'movie'
+        LEFT JOIN media_file mf_movie    ON mf_movie.id = fm_movie.media_file_id
+        LEFT JOIN file_match fm_seg      ON fm_seg.slot_id = ms.id AND fm_seg.file_type = 'segment'
+        LEFT JOIN media_file mf_seg      ON mf_seg.id = fm_seg.media_file_id
+        WHERE ms.episode_id IN ({ep_placeholders})
+        ORDER BY ms.episode_id ASC, ms.slot ASC
+        "#
     );
-    let mut cut_query = sqlx::query_as::<_, CutRow>(&cut_sql);
+    let mut slot_query = sqlx::query_as::<_, SlotFileRow>(&slot_sql);
     for id in &episode_ids {
-        cut_query = cut_query.bind(id);
+        slot_query = slot_query.bind(id);
     }
-    let all_cuts: Vec<CutRow> = cut_query
+    let slot_rows: Vec<SlotFileRow> = slot_query
         .fetch_all(pool)
         .await
         .map_err(|e| e.to_string())?;
 
-    // Group cuts by episode_id.
+    // Collect all slot IDs for the cuts query.
+    let slot_ids: Vec<String> = slot_rows.iter().map(|r| r.slot_id.clone()).collect();
+
+    // fetch all cuts grouped by slot_id.
     let mut cuts_map: std::collections::HashMap<String, Vec<PlaybackCutRow>> =
         std::collections::HashMap::new();
-    for cut in all_cuts {
-        cuts_map.entry(cut.episode_id.clone()).or_default().push(PlaybackCutRow {
-            id: cut.id,
-            sort_order: cut.sort_order,
-            source_type: cut.source_type,
-            start_ms: cut.start_ms,
-            end_ms: cut.end_ms,
-            user_offset_ms: cut.user_offset_ms,
+
+    if !slot_ids.is_empty() {
+        let slot_placeholders = slot_ids.iter().map(|_| "?").collect::<Vec<_>>().join(", ");
+        let cut_sql = format!(
+            "SELECT slot_id, id, sort_order, source_type, start_ms, end_ms, user_offset_ms
+             FROM playback_cut WHERE slot_id IN ({slot_placeholders}) ORDER BY sort_order ASC"
+        );
+        let mut cut_query = sqlx::query_as::<_, CutRow>(&cut_sql);
+        for id in &slot_ids {
+            cut_query = cut_query.bind(id);
+        }
+        let all_cuts: Vec<CutRow> = cut_query
+            .fetch_all(pool)
+            .await
+            .map_err(|e| e.to_string())?;
+
+        for cut in all_cuts {
+            cuts_map.entry(cut.slot_id.clone()).or_default().push(PlaybackCutRow {
+                id: cut.id,
+                sort_order: cut.sort_order,
+                source_type: cut.source_type,
+                start_ms: cut.start_ms,
+                end_ms: cut.end_ms,
+                user_offset_ms: cut.user_offset_ms,
+            });
+        }
+    }
+
+    // group slot rows by episode_id.
+    let mut slots_map: std::collections::HashMap<String, Vec<MovieSlotRow>> =
+        std::collections::HashMap::new();
+
+    for row in slot_rows {
+        let movie_match = if row.movie_file_type.is_some() {
+            FileMatchRow {
+                file_type: row.movie_file_type.unwrap(),
+                filename: row.movie_filename,
+                display_name: row.movie_display_name,
+                path: row.movie_path,
+                confidence: row.movie_confidence,
+                status: row.movie_status.unwrap_or_else(|| "missing".to_string()),
+                is_user_overridden: row.movie_is_user_overridden.unwrap_or(false),
+                matched_at: row.movie_matched_at,
+            }
+        } else {
+            missing_match("movie")
+        };
+
+        let segment_match = if row.segment_file_type.is_some() {
+            FileMatchRow {
+                file_type: row.segment_file_type.unwrap(),
+                filename: row.segment_filename,
+                display_name: row.segment_display_name,
+                path: row.segment_path,
+                confidence: row.segment_confidence,
+                status: row.segment_status.unwrap_or_else(|| "missing".to_string()),
+                is_user_overridden: row.segment_is_user_overridden.unwrap_or(false),
+                matched_at: row.segment_matched_at,
+            }
+        } else {
+            missing_match("segment")
+        };
+
+        let cuts = cuts_map.remove(&row.slot_id).unwrap_or_default();
+
+        slots_map.entry(row.episode_id.clone()).or_default().push(MovieSlotRow {
+            id: row.slot_id,
+            slot: row.slot,
+            host_label: row.host_label,
+            movie_title: row.movie_title,
+            movie_year: row.movie_year,
+            movie_match,
+            segment_match,
+            cuts,
+            flagged_for_timing: row.flagged_for_timing,
         });
     }
 
-    let episodes = rows
+    // assemble final EpisodeRow, preserving ORDER BY from phase 1.
+    let episodes = ep_rows
         .into_iter()
         .map(|row| {
-            let movie_match = if row.movie_file_type.is_some() {
-                FileMatchRow {
-                    file_type: row.movie_file_type.unwrap(),
-                    filename: row.movie_filename,
-                    display_name: row.movie_display_name,
-                    path: row.movie_path,
-                    confidence: row.movie_confidence,
-                    status: row.movie_status.unwrap_or_else(|| "missing".to_string()),
-                    is_user_overridden: row.movie_is_user_overridden.unwrap_or(false),
-                    matched_at: row.movie_matched_at,
-                }
-            } else {
-                missing_match("movie")
-            };
-
-            let segment_match = if row.segment_file_type.is_some() {
-                FileMatchRow {
-                    file_type: row.segment_file_type.unwrap(),
-                    filename: row.segment_filename,
-                    display_name: row.segment_display_name,
-                    path: row.segment_path,
-                    confidence: row.segment_confidence,
-                    status: row.segment_status.unwrap_or_else(|| "missing".to_string()),
-                    is_user_overridden: row.segment_is_user_overridden.unwrap_or(false),
-                    matched_at: row.segment_matched_at,
-                }
-            } else {
-                missing_match("segment")
-            };
-
-            let cuts = cuts_map.remove(&row.id).unwrap_or_default();
-
+            let slots = slots_map.remove(&row.id).unwrap_or_default();
             EpisodeRow {
                 id: row.id,
                 title: row.title,
@@ -243,13 +309,8 @@ pub async fn get_episodes_inner(pool: &SqlitePool) -> Result<Vec<EpisodeRow>, St
                 is_special: row.is_special,
                 air_date: row.air_date,
                 description: row.description,
-                host_label: row.host_label,
-                movie_title: row.movie_title,
-                movie_year: row.movie_year,
-                movie_match,
-                segment_match,
-                cuts,
-                flagged_for_timing: row.flagged_for_timing,
+                guests: row.guests_json,
+                slots,
             }
         })
         .collect();
@@ -257,7 +318,10 @@ pub async fn get_episodes_inner(pool: &SqlitePool) -> Result<Vec<EpisodeRow>, St
     Ok(episodes)
 }
 
-pub async fn get_episode_by_id_inner(pool: &SqlitePool, id: &str) -> Result<Option<EpisodeRow>, String> {
+pub async fn get_episode_by_id_inner(
+    pool: &SqlitePool,
+    id: &str,
+) -> Result<Option<EpisodeRow>, String> {
     let all = get_episodes_inner(pool).await?;
     Ok(all.into_iter().find(|e| e.id == id))
 }
@@ -313,6 +377,20 @@ mod tests {
         .unwrap();
     }
 
+    async fn seed_slot(pool: &SqlitePool, episode_id: &str, slot: &str) -> String {
+        let slot_id = format!("{}-{}", episode_id, slot);
+        sqlx::query(
+            "INSERT INTO movie_slot (id, episode_id, slot) VALUES (?, ?, ?)",
+        )
+        .bind(&slot_id)
+        .bind(episode_id)
+        .bind(slot)
+        .execute(pool)
+        .await
+        .unwrap();
+        slot_id
+    }
+
     #[tokio::test]
     async fn get_episodes_returns_seeded_rows() {
         let pool = setup().await;
@@ -326,15 +404,42 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn get_episodes_missing_matches_when_no_file_match() {
+    async fn get_episodes_slots_empty_when_no_slots() {
         let pool = setup().await;
         seed_episode(&pool, "ep-1", "Pilot").await;
 
         let episodes = get_episodes_inner(&pool).await.unwrap();
         let ep = &episodes[0];
-        assert_eq!(ep.movie_match.status, "missing");
-        assert_eq!(ep.segment_match.status, "missing");
-        assert!(ep.cuts.is_empty());
+        assert!(ep.slots.is_empty());
+    }
+
+    #[tokio::test]
+    async fn get_episodes_slot_has_missing_matches() {
+        let pool = setup().await;
+        seed_episode(&pool, "ep-1", "Pilot").await;
+        seed_slot(&pool, "ep-1", "a").await;
+
+        let episodes = get_episodes_inner(&pool).await.unwrap();
+        let ep = &episodes[0];
+        assert_eq!(ep.slots.len(), 1);
+        assert_eq!(ep.slots[0].movie_match.status, "missing");
+        assert_eq!(ep.slots[0].segment_match.status, "missing");
+        assert!(ep.slots[0].cuts.is_empty());
+    }
+
+    #[tokio::test]
+    async fn get_episodes_multiple_slots_ordered() {
+        let pool = setup().await;
+        seed_episode(&pool, "ep-1", "Pilot").await;
+        seed_slot(&pool, "ep-1", "b").await;
+        seed_slot(&pool, "ep-1", "a").await;
+
+        let episodes = get_episodes_inner(&pool).await.unwrap();
+        let ep = &episodes[0];
+        assert_eq!(ep.slots.len(), 2);
+        // Slots ordered alphabetically by slot letter
+        assert_eq!(ep.slots[0].slot, "a");
+        assert_eq!(ep.slots[1].slot, "b");
     }
 
     #[tokio::test]

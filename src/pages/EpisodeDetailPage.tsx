@@ -1,7 +1,167 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { getEpisodeById } from '../api'
-import type { Episode, SourceType } from '../features/episodes/types'
+import type { Episode, MovieSlot, SourceType } from '../features/episodes/types'
+
+type RemapTarget = { slotId: string; fileType: SourceType }
+
+function SlotSection({
+    slot,
+    offsets,
+    adjust,
+    onResetCut,
+    onRemap,
+}: {
+    slot: MovieSlot
+    offsets: Record<string, number>
+    adjust: (cutId: string, delta: number) => void
+    onResetCut: (cutId: string) => void
+    onRemap: (fileType: SourceType) => void
+}) {
+    const slotHeader = `Slot ${slot.slot.toUpperCase()}${slot.movieTitle
+            ? ` — ${slot.movieTitle}${slot.movieYear ? ` (${slot.movieYear})` : ''}`
+            : ''
+        }`
+
+    return (
+        <Panel title={slotHeader}>
+            {/* File Mapping */}
+            <div className="space-y-3 mb-4">
+                <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#b8b1a1' }}>
+                    File Mapping
+                </p>
+                {[slot.movieMatch, slot.segmentMatch].map((match) => (
+                    <div
+                        key={match.fileType}
+                        className="flex items-center justify-between gap-4 text-sm pb-3 last:pb-0"
+                        style={{ borderBottom: '1px solid #2a2a33' }}
+                    >
+                        <div className="min-w-0">
+                            <p
+                                className="text-[10px] uppercase tracking-[0.15em] mb-0.5"
+                                style={{ color: '#b8b1a1' }}
+                            >
+                                {match.fileType === 'movie' ? 'Movie File' : 'Segment File'}
+                            </p>
+                            <p
+                                className="truncate"
+                                style={{
+                                    color: match.status === 'missing' ? '#f87171' : '#f3ebd2',
+                                }}
+                            >
+                                {match.displayName ?? match.filename ?? 'No file matched'}
+                            </p>
+                            {match.confidence !== undefined && (
+                                <p className="text-[10px] mt-0.5" style={{ color: '#b8b1a1' }}>
+                                    Confidence: {Math.round(match.confidence * 100)}%
+                                    {match.status === 'low-confidence' && (
+                                        <span style={{ color: '#fdba74' }}> · Low confidence</span>
+                                    )}
+                                </p>
+                            )}
+                        </div>
+                        <Button
+                            variant="ghost"
+                            className="text-xs px-3 py-1 shrink-0"
+                            onClick={() => onRemap(match.fileType as SourceType)}
+                        >
+                            Remap
+                        </Button>
+                    </div>
+                ))}
+            </div>
+
+            {/* Timeline */}
+            {slot.cuts.length > 0 && (
+                <div className="space-y-2 mb-4">
+                    <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#b8b1a1' }}>
+                        Timeline
+                    </p>
+                    <div className="flex gap-1 h-8 rounded overflow-hidden">
+                        {slot.cuts.map((cut, i) => (
+                            <div
+                                key={i}
+                                className="flex-1 flex items-center justify-center text-[9px] uppercase tracking-widest"
+                                style={{
+                                    backgroundColor: i % 2 === 0 ? 'rgba(139,30,45,0.25)' : '#2a2a33',
+                                    color: i % 2 === 0 ? '#f3ebd2' : '#b8b1a1',
+                                    border: i % 2 === 0 ? '1px solid #8b1e2d' : '1px solid #2a2a33',
+                                }}
+                            >
+                                {cut.sourceType === 'segment' ? 'Seg' : 'Mov'} {cut.sortOrder}
+                            </div>
+                        ))}
+                    </div>
+                    <p className="text-[10px]" style={{ color: '#ffffff' }}>
+                        {/* TODO: playback order should eventually come from metadata */}
+                        Playback order: Seg 1 → Mov 2 → Seg 3 → Mov 4 → Seg 5 → Mov 6
+                    </p>
+                </div>
+            )}
+
+            {/* Offset Controls */}
+            {slot.cuts.length > 0 && (
+                <div className="space-y-4 text-sm">
+                    <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#b8b1a1' }}>
+                        Offset Adjustment
+                    </p>
+                    {slot.cuts.map((cut) => (
+                        <div key={cut.id} className="flex items-center justify-between gap-4">
+                            <span style={{ color: '#b8b1a1' }}>
+                                {cut.sourceType === 'segment' ? 'Seg' : 'Mov'} {cut.sortOrder}{' '}
+                                <span style={{ color: '#2a2a33' }}>
+                                    ({msToHMS(cut.startMs)}–{msToHMS(cut.endMs)})
+                                </span>
+                            </span>
+                            <div className="flex items-center gap-2">
+                                {[-10, -5].map((d) => (
+                                    <Button
+                                        key={d}
+                                        variant="ghost"
+                                        className="px-2 py-1 text-xs"
+                                        onClick={() => adjust(cut.id, d * 1000)}
+                                    >
+                                        {d}s
+                                    </Button>
+                                ))}
+                                <span
+                                    className="w-16 text-center text-xs px-2 py-1 rounded"
+                                    style={{
+                                        color: (offsets[cut.id] ?? 0) !== 0 ? '#fdba74' : '#f3ebd2',
+                                        backgroundColor: '#0b0b0f',
+                                        border: '1px solid #2a2a33',
+                                    }}
+                                >
+                                    {(offsets[cut.id] ?? 0) >= 0 ? '+' : ''}
+                                    {Math.round((offsets[cut.id] ?? 0) / 1000)}s
+                                </span>
+                                {[5, 10].map((d) => (
+                                    <Button
+                                        key={d}
+                                        variant="ghost"
+                                        className="px-2 py-1 text-xs"
+                                        onClick={() => adjust(cut.id, d * 1000)}
+                                    >
+                                        +{d}s
+                                    </Button>
+                                ))}
+                                {(offsets[cut.id] ?? 0) !== 0 && (
+                                    <button
+                                        className="text-[10px] underline"
+                                        style={{ color: '#b8b1a1' }}
+                                        onClick={() => onResetCut(cut.id)}
+                                    >
+                                        reset
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </Panel>
+    )
+}
 import Panel from '../components/ui/Panel'
 import Button from '../components/ui/Button'
 import StatusPill from '../components/ui/StatusPill'
@@ -12,7 +172,7 @@ export default function EpisodeDetailPage() {
     const navigate = useNavigate()
     const [episode, setEpisode] = useState<Episode | null>(null)
     const [offsets, setOffsets] = useState<Record<string, number>>({})
-    const [remapTarget, setRemapTarget] = useState<SourceType | null>(null)
+    const [remapTarget, setRemapTarget] = useState<RemapTarget | null>(null)
     const [notFound, setNotFound] = useState(false)
 
     useEffect(() => {
@@ -21,7 +181,7 @@ export default function EpisodeDetailPage() {
             if (ep) {
                 setEpisode(ep)
                 setOffsets(
-                    ep.cuts.reduce<Record<string, number>>(
+                    ep.slots.flatMap((s) => s.cuts).reduce<Record<string, number>>(
                         (acc, c) => ({ ...acc, [c.id]: c.userOffsetMs }),
                         {},
                     ),
@@ -64,6 +224,8 @@ export default function EpisodeDetailPage() {
     const episodeLabel = episode.isSpecial
         ? '★ Special'
         : `Season ${episode.season} · Episode ${episode.episode}`
+
+    const firstSlot = episode.slots[0]
 
     return (
         <div className="space-y-5 max-w-3xl">
@@ -126,50 +288,17 @@ export default function EpisodeDetailPage() {
                 </dl>
             </Panel>
 
-            {/* File Mapping */}
-            <Panel title="File Mapping">
-                <div className="space-y-3">
-                    {[episode.movieMatch, episode.segmentMatch].map((match) => (
-                        <div
-                            key={match.fileType}
-                            className="flex items-center justify-between gap-4 text-sm pb-3 last:pb-0"
-                            style={{ borderBottom: '1px solid #2a2a33' }}
-                        >
-                            <div className="min-w-0">
-                                <p
-                                    className="text-[10px] uppercase tracking-[0.15em] mb-0.5"
-                                    style={{ color: '#b8b1a1' }}
-                                >
-                                    {match.fileType === 'movie' ? 'Movie File' : 'Segment File'}
-                                </p>
-                                <p
-                                    className="truncate"
-                                    style={{
-                                        color: match.status === 'missing' ? '#f87171' : '#f3ebd2',
-                                    }}
-                                >
-                                    {match.displayName ?? match.filename ?? 'No file matched'}
-                                </p>
-                                {match.confidence !== undefined && (
-                                    <p className="text-[10px] mt-0.5" style={{ color: '#b8b1a1' }}>
-                                        Confidence: {Math.round(match.confidence * 100)}%
-                                        {match.status === 'low-confidence' && (
-                                            <span style={{ color: '#fdba74' }}> · Low confidence</span>
-                                        )}
-                                    </p>
-                                )}
-                            </div>
-                            <Button
-                                variant="ghost"
-                                className="text-xs px-3 py-1 shrink-0"
-                                onClick={() => setRemapTarget(match.fileType)}
-                            >
-                                Remap
-                            </Button>
-                        </div>
-                    ))}
-                </div>
-            </Panel>
+            {/* Per-slot sections */}
+            {episode.slots.map((slot) => (
+                <SlotSection
+                    key={slot.id}
+                    slot={slot}
+                    offsets={offsets}
+                    adjust={adjust}
+                    onResetCut={(cutId) => setOffsets((o) => ({ ...o, [cutId]: 0 }))}
+                    onRemap={(fileType) => setRemapTarget({ slotId: slot.id, fileType })}
+                />
+            ))}
 
             {/* Fake Player */}
             <Panel title="Playback">
@@ -193,7 +322,11 @@ export default function EpisodeDetailPage() {
                         {episode.title}
                     </p>
                     <p className="text-sm" style={{ color: '#b8b1a1' }}>
-                        ▶ {episode.movieMatch.displayName ?? episode.movieMatch.filename ?? 'Unknown Film'}
+                        ▶{' '}
+                        {firstSlot?.movieTitle ??
+                            firstSlot?.movieMatch.displayName ??
+                            firstSlot?.movieMatch.filename ??
+                            'Unknown Film'}
                     </p>
                     <div className="flex gap-3">
                         <Button variant="ghost">⏮</Button>
@@ -216,90 +349,7 @@ export default function EpisodeDetailPage() {
                 </div>
             </Panel>
 
-            {/* Timeline */}
-            <Panel title="Timeline">
-                <div className="space-y-2">
-                    <div className="flex gap-1 h-8 rounded overflow-hidden">
-                        {episode.cuts.map((cut, i) => (
-                            <div
-                                key={i}
-                                className="flex-1 flex items-center justify-center text-[9px] uppercase tracking-widest"
-                                style={{
-                                    backgroundColor: i % 2 === 0 ? 'rgba(139,30,45,0.25)' : '#2a2a33',
-                                    color: i % 2 === 0 ? '#f3ebd2' : '#b8b1a1',
-                                    border: i % 2 === 0 ? '1px solid #8b1e2d' : '1px solid #2a2a33',
-                                }}
-                            >
-                                {cut.sourceType === 'segment' ? 'Seg' : 'Mov'} {cut.sortOrder}
-                            </div>
-                        ))}
-                    </div>
-                    <p className="text-[10px]" style={{ color: '#ffffff' }}>
-                        {/* TODO: This playback order should eventually come from the metadata. Long term scenario is clickable which lets user skip to a specific segment if needed */}
-                        Playback order: Seg 1 → Mov 2 → Seg 3 → Mov 4 → Seg 5 → Mov 6
-                    </p>
-                </div>
-            </Panel>
 
-            {/* Offset Controls */}
-            <Panel title="Offset Adjustment">
-                <div className="space-y-4 text-sm">
-                    {episode.cuts.map((cut) => (
-                        <div key={cut.id} className="flex items-center justify-between gap-4">
-                            <span style={{ color: '#b8b1a1' }}>
-                                {cut.sourceType === 'segment' ? 'Seg' : 'Mov'} {cut.sortOrder}{' '}
-                                <span style={{ color: '#2a2a33' }}>
-                                    ({msToHMS(cut.startMs)}–{msToHMS(cut.endMs)})
-                                </span>
-                            </span>
-                            <div className="flex items-center gap-2">
-                                {[-10, -5].map((d) => (
-                                    <Button
-                                        key={d}
-                                        variant="ghost"
-                                        className="px-2 py-1 text-xs"
-                                        onClick={() => adjust(cut.id, d * 1000)}
-                                    >
-                                        {d}s
-                                    </Button>
-                                ))}
-                                <span
-                                    className="w-16 text-center text-xs px-2 py-1 rounded"
-                                    style={{
-                                        color: (offsets[cut.id] ?? 0) !== 0 ? '#fdba74' : '#f3ebd2',
-                                        backgroundColor: '#0b0b0f',
-                                        border: '1px solid #2a2a33',
-                                    }}
-                                >
-                                    {(offsets[cut.id] ?? 0) >= 0 ? '+' : ''}
-                                    {Math.round((offsets[cut.id] ?? 0) / 1000)}s
-                                </span>
-                                {[5, 10].map((d) => (
-                                    <Button
-                                        key={d}
-                                        variant="ghost"
-                                        className="px-2 py-1 text-xs"
-                                        onClick={() => adjust(cut.id, d * 1000)}
-                                    >
-                                        +{d}s
-                                    </Button>
-                                ))}
-                                {(offsets[cut.id] ?? 0) !== 0 && (
-                                    <button
-                                        className="text-[10px] underline"
-                                        style={{ color: '#b8b1a1' }}
-                                        onClick={() =>
-                                            setOffsets((o) => ({ ...o, [cut.id]: 0 }))
-                                        }
-                                    >
-                                        reset
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </Panel>
 
             {/* Action Row */}
             <div className="flex gap-3 flex-wrap">
@@ -310,7 +360,7 @@ export default function EpisodeDetailPage() {
                     onClick={() =>
                         episode &&
                         setOffsets(
-                            episode.cuts.reduce<Record<string, number>>(
+                            episode.slots.flatMap((s) => s.cuts).reduce<Record<string, number>>(
                                 (acc, c) => ({ ...acc, [c.id]: 0 }),
                                 {},
                             ),
@@ -342,7 +392,7 @@ export default function EpisodeDetailPage() {
                                 fontFamily: 'Impact, "Arial Narrow", sans-serif',
                             }}
                         >
-                            Remap — {remapTarget === 'movie' ? 'Movie File' : 'Segment File'}
+                            Remap — {remapTarget.fileType === 'movie' ? 'Movie File' : 'Segment File'}
                         </h2>
                         <p className="text-sm" style={{ color: '#b8b1a1' }}>
                             Select a replacement file for this slot. File picker will be connected in a later

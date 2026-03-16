@@ -1,17 +1,7 @@
-import type { Episode, EpisodeStatus } from '../../features/episodes/types'
+import type { Episode, EpisodeStatus, MovieSlot } from '../../features/episodes/types'
 
-/**
- * Derives EpisodeStatus from an Episode's FileMatch rows, PlaybackCut offsets,
- * and flaggedForTiming flag. Evaluated in priority order per spec 0005.
- *
- * Priority:
- *  1. Any FileMatch is missing           → 'Missing Files'
- *  2. Any FileMatch is low-confidence    → 'Partial Match'
- *  3. All matched AND offset or flagged  → 'Needs Timing Fix'
- *  4. All matched, clean                 → 'Ready'
- */
-export function deriveEpisodeStatus(episode: Episode): EpisodeStatus {
-    const matches = [episode.movieMatch, episode.segmentMatch]
+function deriveSlotStatus(slot: MovieSlot): EpisodeStatus {
+    const matches = [slot.movieMatch, slot.segmentMatch]
 
     if (matches.some((m) => m.status === 'missing')) {
         return 'Missing Files'
@@ -21,10 +11,25 @@ export function deriveEpisodeStatus(episode: Episode): EpisodeStatus {
         return 'Partial Match'
     }
 
-    const hasOffset = episode.cuts.some((c) => c.userOffsetMs !== 0)
-    if (hasOffset || episode.flaggedForTiming) {
+    const hasOffset = slot.cuts.some((c) => c.userOffsetMs !== 0)
+    if (hasOffset || slot.flaggedForTiming) {
         return 'Needs Timing Fix'
     }
 
+    return 'Ready'
+}
+
+/**
+ * Derives EpisodeStatus using worst-slot-wins across all MovieSlots.
+ * Priority order: Missing Files > Partial Match > Needs Timing Fix > Ready.
+ */
+export function deriveEpisodeStatus(episode: Episode): EpisodeStatus {
+    if (episode.slots.length === 0) return 'Missing Files'
+
+    const statuses = episode.slots.map(deriveSlotStatus)
+
+    if (statuses.some((s) => s === 'Missing Files')) return 'Missing Files'
+    if (statuses.some((s) => s === 'Partial Match')) return 'Partial Match'
+    if (statuses.some((s) => s === 'Needs Timing Fix')) return 'Needs Timing Fix'
     return 'Ready'
 }

@@ -55,6 +55,19 @@ export interface PlaybackCut {
     userOffsetMs: number
 }
 
+/** One movie + segment reel pair within a broadcast episode. */
+export interface MovieSlot {
+    id: string
+    slot: string
+    hostLabel?: string
+    movieTitle?: string
+    movieYear?: number
+    movieMatch: FileMatch
+    segmentMatch: FileMatch
+    cuts: PlaybackCut[]
+    flaggedForTiming: boolean
+}
+
 export interface Episode {
     id: string
     title: string
@@ -63,12 +76,7 @@ export interface Episode {
     isSpecial: boolean
     airDate?: string
     description?: string
-    hostLabel?: string
-    movieTitle?: string
-    movieYear?: number
-    movieMatch: FileMatch
-    segmentMatch: FileMatch
-    cuts: PlaybackCut[]
-    flaggedForTiming: boolean
+    guests: string[]
+    slots: MovieSlot[]
     status: EpisodeStatus
 }

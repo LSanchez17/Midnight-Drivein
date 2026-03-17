@@ -34,7 +34,40 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
                 <Row label="Movie files" value={result.movieFileCount} />
                 <Row label="Segment files" value={result.segmentFileCount} />
             </div>
-
+            <div>
+                <p
+                    className="text-[10px] uppercase tracking-[0.2em] mb-1"
+                    style={{ color: '#b8b1a1' }}
+                >
+                    Match Results
+                </p>
+                <div className="space-y-1">
+                    <Row
+                        label="Matched"
+                        value={
+                            <span style={{ color: '#4ade80' }}>
+                                {result.matchSummary.matched}
+                            </span>
+                        }
+                    />
+                    <Row
+                        label="Low Confidence"
+                        value={
+                            <span style={{ color: '#fdba74' }}>
+                                {result.matchSummary.lowConfidence}
+                            </span>
+                        }
+                    />
+                    <Row
+                        label="Missing"
+                        value={
+                            <span style={{ color: '#f87171' }}>
+                                {result.matchSummary.missing}
+                            </span>
+                        }
+                    />
+                </div>
+            </div>
             {hasMissingFolders && (
                 <div>
                     <p
@@ -56,7 +89,6 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
                     </ul>
                 </div>
             )}
-
             {hasWarnings && (
                 <details>
                     <summary

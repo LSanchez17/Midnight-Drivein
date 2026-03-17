@@ -1,6 +1,6 @@
 import { MOCK_EPISODES } from '../features/episodes/mocks'
 import type { Episode, SourceType } from '../features/episodes/types'
-import type { EpisodeFilters, AppSettings, AppSettingsPatch, ScanResult } from './types'
+import type { EpisodeFilters, AppSettings, AppSettingsPatch, ScanResult, MediaFileSummary } from './types'
 
 export function getEpisodes(filters?: EpisodeFilters): Promise<Episode[]> {
     return new Promise((resolve) =>
@@ -67,6 +67,7 @@ export function scanLibrary(): Promise<ScanResult> {
         segmentFileCount: 2,
         errors: [],
         missingFolders: [],
+        matchSummary: { matched: 0, lowConfidence: 0, missing: 0 },
     })
 }
 
@@ -76,4 +77,10 @@ export function getScanSummary(): Promise<ScanResult | null> {
 
 export function selectLibraryRoot(): Promise<string | null> {
     return Promise.resolve('/mock/movies')
+}
+
+export function listMediaFiles(
+    _folderRoot: 'movies' | 'segments',
+): Promise<MediaFileSummary[]> {
+    return Promise.resolve([])
 }

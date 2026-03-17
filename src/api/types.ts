@@ -20,10 +20,26 @@ export interface AppSettingsPatch {
     theme?: 'dark'
 }
 
+export interface MatchSummary {
+    matched: number
+    lowConfidence: number
+    missing: number
+}
+
 export interface ScanResult {
-    lastScanAt:       string
-    movieFileCount:   number
+    lastScanAt: string
+    movieFileCount: number
     segmentFileCount: number
-    errors:           string[]
-    missingFolders:   string[]
+    errors: string[]
+    missingFolders: string[]
+    matchSummary: MatchSummary
+}
+
+export interface MediaFileSummary {
+    id: string
+    filename: string
+    displayName: string | undefined
+    path: string
+    sizeBytes: number | undefined
+    lastSeenAt: string
 }

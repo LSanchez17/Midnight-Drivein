@@ -2,10 +2,6 @@ use serde::{Deserialize, Serialize};
 use sqlx::SqlitePool;
 use tauri::State;
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 #[derive(Serialize, sqlx::FromRow)]
 #[serde(rename_all = "camelCase")]
 pub struct AppSettings {
@@ -15,8 +11,6 @@ pub struct AppSettings {
     pub theme: String,
 }
 
-/// Partial patch — only provided fields are written.
-/// `Some(None)` means "set to NULL"; `None` means "leave unchanged".
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AppSettingsPatch {
@@ -25,10 +19,6 @@ pub struct AppSettingsPatch {
     pub scan_on_startup: Option<bool>,
     pub theme: Option<String>,
 }
-
-// ---------------------------------------------------------------------------
-// Inner functions (take &SqlitePool — testable without tauri::State)
-// ---------------------------------------------------------------------------
 
 async fn ensure_defaults(pool: &SqlitePool) -> Result<(), String> {
     let now = chrono::Utc::now().to_rfc3339();
@@ -85,10 +75,6 @@ pub async fn save_settings_inner(pool: &SqlitePool, settings: AppSettingsPatch) 
     Ok(())
 }
 
-// ---------------------------------------------------------------------------
-// Tauri commands (thin wrappers)
-// ---------------------------------------------------------------------------
-
 #[tauri::command]
 pub async fn get_settings(pool: State<'_, SqlitePool>) -> Result<AppSettings, String> {
     get_settings_inner(pool.inner()).await
@@ -101,10 +87,6 @@ pub async fn save_settings(
 ) -> Result<(), String> {
     save_settings_inner(pool.inner(), settings).await
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {

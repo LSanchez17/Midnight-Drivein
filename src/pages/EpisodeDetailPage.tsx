@@ -6,6 +6,7 @@ import Panel from '../components/ui/Panel'
 import Button from '../components/ui/Button'
 import StatusPill from '../components/ui/StatusPill'
 import SlotSection from '../features/episodes/components/SlotSection'
+import RemapDialog from '../features/episodes/components/RemapDialog'
 
 type RemapTarget = { slotId: string; fileType: SourceType }
 
@@ -19,6 +20,7 @@ export default function EpisodeDetailPage() {
 
     useEffect(() => {
         if (!episodeId) return
+
         getEpisodeById(episodeId).then((ep) => {
             if (ep) {
                 setEpisode(ep)
@@ -69,9 +71,16 @@ export default function EpisodeDetailPage() {
 
     const firstSlot = episode.slots[0]
 
+    const handleConfirmedRemap = () => {
+        if (episodeId) {
+            getEpisodeById(episodeId).then((ep) => {
+                if (ep) setEpisode(ep)
+            })
+        }
+    }
+
     return (
         <div className="space-y-5 max-w-3xl">
-            {/* Header */}
             <div>
                 <button
                     className="text-xs mb-3 block transition-colors cursor-pointer"
@@ -107,8 +116,6 @@ export default function EpisodeDetailPage() {
                     <StatusPill status={episode.status} className="mt-1 shrink-0" />
                 </div>
             </div>
-
-            {/* Metadata */}
             <Panel title="Metadata">
                 <dl className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
                     <dt style={{ color: '#b8b1a1' }}>Type</dt>
@@ -129,8 +136,6 @@ export default function EpisodeDetailPage() {
                     </dd>
                 </dl>
             </Panel>
-
-            {/* Per-slot sections */}
             {episode.slots.map((slot) => (
                 <SlotSection
                     key={slot.id}
@@ -141,8 +146,6 @@ export default function EpisodeDetailPage() {
                     onRemap={(fileType) => setRemapTarget({ slotId: slot.id, fileType })}
                 />
             ))}
-
-            {/* Fake Player */}
             <Panel title="Playback">
                 <div
                     className="rounded-lg p-6 flex flex-col items-center gap-4"
@@ -175,7 +178,7 @@ export default function EpisodeDetailPage() {
                         <Button variant="primary">▶ Play</Button>
                         <Button variant="ghost">⏭</Button>
                     </div>
-                    {/* Mock progress bar */}
+                    {/* TODO: Remove Mock progress bar */}
                     <div
                         className="w-full rounded-full h-1.5 mt-1 overflow-hidden"
                         style={{ backgroundColor: '#2a2a33' }}
@@ -190,10 +193,6 @@ export default function EpisodeDetailPage() {
                     </p>
                 </div>
             </Panel>
-
-
-
-            {/* Action Row */}
             <div className="flex gap-3 flex-wrap">
                 <Button variant="primary">▶ Play Episode</Button>
                 <Button variant="ghost">Save Offsets</Button>
@@ -212,8 +211,6 @@ export default function EpisodeDetailPage() {
                     Reset
                 </Button>
             </div>
-
-            {/* Remap Drawer / Modal */}
             {remapTarget && (
                 <div
                     className="fixed inset-0 flex items-center justify-center z-50 p-6"
@@ -227,40 +224,13 @@ export default function EpisodeDetailPage() {
                             border: '1px solid #2a2a33',
                         }}
                     >
-                        <h2
-                            className="text-xl uppercase tracking-[0.15em]"
-                            style={{
-                                color: '#f3ebd2',
-                                fontFamily: 'Impact, "Arial Narrow", sans-serif',
-                            }}
-                        >
-                            Remap — {remapTarget.fileType === 'movie' ? 'Movie File' : 'Segment File'}
-                        </h2>
-                        <p className="text-sm" style={{ color: '#b8b1a1' }}>
-                            Select a replacement file for this slot. File picker will be connected in a later
-                            phase.
-                        </p>
-                        <div
-                            className="rounded px-3 py-2 text-sm"
-                            style={{
-                                backgroundColor: '#0b0b0f',
-                                border: '1px solid #2a2a33',
-                                color: '#b8b1a1',
-                            }}
-                        >
-                            /media/…/filename.mkv
-                        </div>
-                        <div className="flex gap-3 justify-end">
-                            <Button variant="ghost" onClick={() => setRemapTarget(null)}>
-                                Cancel
-                            </Button>
-                            <Button
-                                variant="primary"
-                                onClick={() => setRemapTarget(null)}
-                            >
-                                Confirm Remap
-                            </Button>
-                        </div>
+                        <RemapDialog
+                            slotId={remapTarget.slotId}
+                            fileType={remapTarget.fileType}
+                            folderRoot={remapTarget.fileType === 'movie' ? 'movies' : 'segments'}
+                            onClose={() => setRemapTarget(null)}
+                            onConfirmed={handleConfirmedRemap}
+                        />
                     </div>
                 </div>
             )}

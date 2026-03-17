@@ -90,6 +90,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sqlx",
+ "strsim",
  "tauri",
  "tauri-build",
  "tauri-plugin-dialog",

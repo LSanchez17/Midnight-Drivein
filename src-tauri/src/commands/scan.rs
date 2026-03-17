@@ -2,22 +2,27 @@ use chrono::Utc;
 use serde::Serialize;
 use sqlx::SqlitePool;
 use std::{
-    collections::HashSet,
+    collections::{HashMap, HashSet},
     path::Path,
     sync::{
         atomic::{AtomicBool, Ordering},
         Arc,
     },
 };
+use strsim::jaro_winkler;
 use tauri::State;
 use uuid::Uuid;
 use walkdir::WalkDir;
 
 const SUPPORTED_EXTENSIONS: &[&str] = &["mp4", "mkv", "m4v", "mov"];
 
-// ---------------------------------------------------------------------------
-// Public data types
-// ---------------------------------------------------------------------------
+#[derive(Debug, Serialize, Clone, Default)]
+#[serde(rename_all = "camelCase")]
+pub struct MatchSummary {
+    pub matched: usize,
+    pub low_confidence: usize,
+    pub missing: usize,
+}
 
 #[derive(Debug, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -27,11 +32,16 @@ pub struct ScanResult {
     pub segment_file_count: usize,
     pub errors: Vec<String>,
     pub missing_folders: Vec<String>,
+    pub match_summary: MatchSummary,
 }
 
-// ---------------------------------------------------------------------------
-// Internal types
-// ---------------------------------------------------------------------------
+// Only used during matching phase
+struct SlotMatchRow {
+    id: String,
+    movie_title: Option<String>,
+    movie_aliases_json: Option<String>,
+    host_label: Option<String>,
+}
 
 struct MediaFileRow {
     id: String,
@@ -49,14 +59,21 @@ struct WalkResult {
     missing_folder: Option<String>,
 }
 
+fn has_video_extension(s: &str) -> bool {
+    Path::new(s)
+        .extension()
+        .and_then(|e| e.to_str())
+        .map(|e| SUPPORTED_EXTENSIONS.contains(&e.to_lowercase().as_str()))
+        .unwrap_or(false)
+}
+
 // normalize_filename
 // Strip the file extension and remove parenthesised year tags.
 //
 // `"The Slumber Party Massacre (1982).mkv"` → `"The Slumber Party Massacre"`
 // `"sleepaway_camp_1983.mp4"` → `"sleepaway_camp_1983"`
 //
-// Original casing is preserved. The output is not persisted in this phase —
-// it is groundwork for the matching phase.
+// Original casing is preserved.
 pub fn normalize_filename(filename: &str) -> String {
     let stem = Path::new(filename)
         .file_stem()
@@ -97,6 +114,27 @@ fn find_year_tag(s: &str) -> Option<(usize, usize)> {
         }
     }
     None
+}
+// TODO: Handle special naming conventions(IE CHUD)
+// normalize_for_match
+// Level-2 normalisation for fuzzy comparison.
+// If the input looks like a video filename, applies normalize_filename first.
+// Then: lowercase → underscores/dots → spaces → collapse whitespace.
+//
+// `"Castle Freak (1995).mkv"` → `"castle freak"`
+// `"castle_freak_1995.mkv"` → `"castle freak 1995"`
+// `"S01E01A Segments"` → `"s01e01a segments"`
+pub fn normalize_for_match(input: &str) -> String {
+    let stem = if has_video_extension(input) {
+        normalize_filename(input)
+    } else {
+        input.to_string()
+    };
+    stem.to_lowercase()
+        .replace(['_', '.'], " ")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 fn walk_folder(root: String, folder_root: &'static str) -> WalkResult {
@@ -259,17 +297,20 @@ pub async fn scan_library_inner(
     let mut seen_segment_paths: HashSet<String> = HashSet::new();
 
     for row in movie_walk.rows.iter().chain(segment_walk.rows.iter()) {
+        let display_name = normalize_filename(&row.filename);
         let result = sqlx::query(
-            "INSERT INTO media_file (id, filename, path, folder_root, size_bytes, last_seen_at, is_missing)
-             VALUES (?, ?, ?, ?, ?, ?, 0)
+            "INSERT INTO media_file (id, filename, display_name, path, folder_root, size_bytes, last_seen_at, is_missing)
+             VALUES (?, ?, ?, ?, ?, ?, ?, 0)
              ON CONFLICT(path) DO UPDATE SET
                filename     = excluded.filename,
+               display_name = COALESCE(media_file.display_name, excluded.display_name),
                size_bytes   = excluded.size_bytes,
                last_seen_at = excluded.last_seen_at,
                is_missing   = 0",
         )
         .bind(&row.id)
         .bind(&row.filename)
+        .bind(&display_name)
         .bind(&row.path)
         .bind(&row.folder_root)
         .bind(row.size_bytes)
@@ -300,20 +341,33 @@ pub async fn scan_library_inner(
         errors.push(e);
     }
 
+    // Run matching pass — non-fatal; errors are appended to the scan errors list.
+    let match_summary = match match_media_files(pool).await {
+        Ok(s) => s,
+        Err(e) => {
+            errors.push(e);
+            MatchSummary::default()
+        }
+    };
+
     let last_scan_at = Utc::now().to_rfc3339();
     let errors_json = serde_json::to_string(&errors).unwrap_or_else(|_| "[]".to_string());
     let missing_folders_json =
         serde_json::to_string(&missing_folders).unwrap_or_else(|_| "[]".to_string());
     let persist_result = sqlx::query(
         "INSERT OR REPLACE INTO scan_summary
-         (id, last_scan_at, movie_file_count, segment_file_count, errors_json, missing_folders_json)
-         VALUES (1, ?, ?, ?, ?, ?)",
+         (id, last_scan_at, movie_file_count, segment_file_count, errors_json, missing_folders_json,
+          matched_count, low_confidence_count, missing_count)
+         VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&last_scan_at)
     .bind(movie_file_count as i64)
     .bind(segment_file_count as i64)
     .bind(&errors_json)
     .bind(&missing_folders_json)
+    .bind(match_summary.matched as i64)
+    .bind(match_summary.low_confidence as i64)
+    .bind(match_summary.missing as i64)
     .execute(pool)
     .await;
 
@@ -329,13 +383,215 @@ pub async fn scan_library_inner(
         segment_file_count,
         errors,
         missing_folders,
+        match_summary,
     })
+}
+
+pub async fn match_media_files(pool: &SqlitePool) -> Result<MatchSummary, String> {
+    let slots: Vec<SlotMatchRow> = sqlx::query_as::<_, (String, Option<String>, Option<String>, Option<String>)>(
+        "SELECT id, movie_title, movie_aliases_json, host_label FROM movie_slot",
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(|e| format!("DB_ERROR: {e}"))
+    .map(|rows| {
+        rows.into_iter()
+            .map(|(id, movie_title, movie_aliases_json, host_label)| SlotMatchRow {
+                id,
+                movie_title,
+                movie_aliases_json,
+                host_label,
+            })
+            .collect()
+    })?;
+
+    if slots.is_empty() {
+        return Ok(MatchSummary::default());
+    }
+
+    // Load all non-missing media files.
+    let all_files: Vec<(String, String, String)> =
+        sqlx::query_as("SELECT id, filename, folder_root FROM media_file WHERE is_missing = 0")
+            .fetch_all(pool)
+            .await
+            .map_err(|e| format!("DB_ERROR: {e}"))?;
+
+    let movie_files: Vec<(String, String)> = all_files
+        .iter()
+        .filter(|(_, _, root)| root == "movies")
+        .map(|(id, filename, _)| (id.clone(), filename.clone()))
+        .collect();
+
+    let segment_files: Vec<(String, String)> = all_files
+        .iter()
+        .filter(|(_, _, root)| root == "segments")
+        .map(|(id, filename, _)| (id.clone(), filename.clone()))
+        .collect();
+
+    let mut movie_candidates: Vec<(f64, String, String)> = Vec::new();
+
+    for (file_id, filename) in &movie_files {
+        let norm_file = normalize_for_match(filename);
+
+        for slot in &slots {
+            let score = score_movie_match(&norm_file, slot);
+
+            if score > 0.0 {
+                movie_candidates.push((score, slot.id.clone(), file_id.clone()));
+            }
+        }
+    }
+
+    let mut segment_candidates: Vec<(f64, String, String)> = Vec::new();
+
+    for (file_id, filename) in &segment_files {
+        let norm_file = normalize_for_match(filename);
+
+        for slot in &slots {
+            let Some(ref host_label) = slot.host_label else {
+                continue;
+            };
+            let score = jaro_winkler(&norm_file, &normalize_for_match(host_label));
+
+            if score > 0.0 {
+                segment_candidates.push((score, slot.id.clone(), file_id.clone()));
+            }
+        }
+    }
+
+    // Assign best-match uniqueness for each file type.
+    let movie_assignments = assign_best_matches(movie_candidates);
+    let segment_assignments = assign_best_matches(segment_candidates);
+
+    let now = Utc::now().to_rfc3339();
+    let mut summary = MatchSummary::default();
+
+    // Persist movie matches.
+    for slot in &slots {
+        let outcome = movie_assignments.get(&slot.id);
+        upsert_file_match(pool, &slot.id, "movie", outcome, &now, &mut summary).await?;
+    }
+
+    // Persist segment matches.
+    for slot in &slots {
+        if slot.host_label.is_none() {
+            // No host_label — can't match segments; insert missing.
+            upsert_file_match(pool, &slot.id, "segment", None, &now, &mut summary).await?;
+            continue;
+        }
+        let outcome = segment_assignments.get(&slot.id);
+        upsert_file_match(pool, &slot.id, "segment", outcome, &now, &mut summary).await?;
+    }
+
+    Ok(summary)
+}
+
+// Score a normalised filename against a slot's movie title and aliases.
+// Returns the best score found; exact alias normalised match is forced to 1.0.
+fn score_movie_match(norm_file: &str, slot: &SlotMatchRow) -> f64 {
+    let mut best: f64 = 0.0;
+
+    if let Some(ref title) = slot.movie_title {
+        let norm_title = normalize_for_match(title);
+        let s = jaro_winkler(norm_file, &norm_title);
+        if s > best {
+            best = s;
+        }
+    }
+
+    if let Some(ref aliases_json) = slot.movie_aliases_json {
+        if let Ok(aliases) = serde_json::from_str::<Vec<String>>(aliases_json) {
+            for alias in aliases {
+                let norm_alias = normalize_for_match(&alias);
+                // Exact normalised alias match → force 1.0
+                if norm_alias == norm_file {
+                    return 1.0;
+                }
+                let s = jaro_winkler(norm_file, &norm_alias);
+                if s > best {
+                    best = s;
+                }
+            }
+        }
+    }
+
+    best
+}
+
+// Given scored (score, slot_id, file_id) candidates, return the best unique
+// assignment as a map of slot_id → (file_id, score).
+fn assign_best_matches(mut candidates: Vec<(f64, String, String)>) -> HashMap<String, (String, f64)> {
+    // Sort descending by score.
+    candidates.sort_by(|a, b| b.0.partial_cmp(&a.0).unwrap_or(std::cmp::Ordering::Equal));
+
+    let mut claimed_files: HashSet<String> = HashSet::new();
+    let mut claimed_slots: HashSet<String> = HashSet::new();
+    let mut assignments: HashMap<String, (String, f64)> = HashMap::new();
+
+    for (score, slot_id, file_id) in candidates {
+        if claimed_slots.contains(&slot_id) || claimed_files.contains(&file_id) {
+            continue;
+        }
+        claimed_slots.insert(slot_id.clone());
+        claimed_files.insert(file_id.clone());
+        assignments.insert(slot_id, (file_id, score));
+    }
+
+    assignments
+}
+
+async fn upsert_file_match(
+    pool: &SqlitePool,
+    slot_id: &str,
+    file_type: &str,
+    outcome: Option<&(String, f64)>,
+    now: &str,
+    summary: &mut MatchSummary,
+) -> Result<(), String> {
+    let (media_file_id, match_status, confidence): (Option<String>, &str, f64) = match outcome {
+        Some((fid, score)) if *score >= 0.85 => {
+            summary.matched += 1;
+            (Some(fid.clone()), "matched", *score)
+        }
+        Some((fid, score)) if *score >= 0.50 => {
+            summary.low_confidence += 1;
+            (Some(fid.clone()), "low-confidence", *score)
+        }
+        _ => {
+            summary.missing += 1;
+            (None, "missing", 0.0)
+        }
+    };
+
+    sqlx::query(
+        "INSERT INTO file_match (slot_id, file_type, media_file_id, match_status, confidence,
+                                 is_user_overridden, matched_at)
+         VALUES (?, ?, ?, ?, ?, 0, ?)
+         ON CONFLICT(slot_id, file_type) DO UPDATE SET
+             media_file_id  = excluded.media_file_id,
+             match_status   = excluded.match_status,
+             confidence     = excluded.confidence,
+             matched_at     = excluded.matched_at
+         WHERE is_user_overridden = 0",
+    )
+    .bind(slot_id)
+    .bind(file_type)
+    .bind(&media_file_id)
+    .bind(match_status)
+    .bind(confidence)
+    .bind(now)
+    .execute(pool)
+    .await
+    .map_err(|e| format!("DB_ERROR: {e}"))?;
+
+    Ok(())
 }
 
 
 pub async fn get_scan_summary_inner(pool: &SqlitePool) -> Result<Option<ScanResult>, String> {
-    let row = sqlx::query_as::<_, (String, i64, i64, String, String)>(
-        "SELECT last_scan_at, movie_file_count, segment_file_count, errors_json, missing_folders_json
+    let row = sqlx::query_as::<_, (String, i64, i64, String, String, i64, i64, i64)>(
+        "SELECT last_scan_at, movie_file_count, segment_file_count, errors_json, missing_folders_json,
+                matched_count, low_confidence_count, missing_count
          FROM scan_summary WHERE id = 1",
     )
     .fetch_optional(pool)
@@ -344,7 +600,8 @@ pub async fn get_scan_summary_inner(pool: &SqlitePool) -> Result<Option<ScanResu
 
     match row {
         None => Ok(None),
-        Some((last_scan_at, movie_file_count, segment_file_count, errors_json, missing_json)) => {
+        Some((last_scan_at, movie_file_count, segment_file_count, errors_json, missing_json,
+              matched_count, low_confidence_count, missing_count)) => {
             let errors: Vec<String> = serde_json::from_str(&errors_json)
                 .map_err(|e| format!("DB_ERROR: failed to parse errors_json: {e}"))?;
             let missing_folders: Vec<String> = serde_json::from_str(&missing_json)
@@ -355,14 +612,15 @@ pub async fn get_scan_summary_inner(pool: &SqlitePool) -> Result<Option<ScanResu
                 segment_file_count: segment_file_count as usize,
                 errors,
                 missing_folders,
+                match_summary: MatchSummary {
+                    matched: matched_count as usize,
+                    low_confidence: low_confidence_count as usize,
+                    missing: missing_count as usize,
+                },
             }))
         }
     }
 }
-
-// ---------------------------------------------------------------------------
-// Tauri command wrappers
-// ---------------------------------------------------------------------------
 
 #[tauri::command]
 pub async fn scan_library(
@@ -376,10 +634,6 @@ pub async fn scan_library(
 pub async fn get_scan_summary(pool: State<'_, SqlitePool>) -> Result<Option<ScanResult>, String> {
     get_scan_summary_inner(pool.inner()).await
 }
-
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 
 #[cfg(test)]
 mod tests {
@@ -414,6 +668,71 @@ mod tests {
         .await
         .unwrap();
         pool
+    }
+
+    async fn seed_slot_with_title(pool: &SqlitePool, episode_id: &str, slot: &str, title: &str) -> String {
+        let now = Utc::now().to_rfc3339();
+        sqlx::query(
+            "INSERT INTO episode (id, title, is_special, created_at) VALUES (?, 'T', 0, ?)",
+        )
+        .bind(episode_id)
+        .bind(&now)
+        .execute(pool)
+        .await
+        .unwrap();
+        let slot_id = format!("{}-{}", episode_id, slot);
+        sqlx::query(
+            "INSERT INTO movie_slot (id, episode_id, slot, movie_title) VALUES (?, ?, ?, ?)",
+        )
+        .bind(&slot_id)
+        .bind(episode_id)
+        .bind(slot)
+        .bind(title)
+        .execute(pool)
+        .await
+        .unwrap();
+        slot_id
+    }
+
+    async fn seed_slot_with_host(pool: &SqlitePool, episode_id: &str, slot: &str, title: &str, host_label: &str) -> String {
+        let now = Utc::now().to_rfc3339();
+        sqlx::query(
+            "INSERT OR IGNORE INTO episode (id, title, is_special, created_at) VALUES (?, 'T', 0, ?)",
+        )
+        .bind(episode_id)
+        .bind(&now)
+        .execute(pool)
+        .await
+        .unwrap();
+        let slot_id = format!("{}-{}", episode_id, slot);
+        sqlx::query(
+            "INSERT INTO movie_slot (id, episode_id, slot, movie_title, host_label) VALUES (?, ?, ?, ?, ?)",
+        )
+        .bind(&slot_id)
+        .bind(episode_id)
+        .bind(slot)
+        .bind(title)
+        .bind(host_label)
+        .execute(pool)
+        .await
+        .unwrap();
+        slot_id
+    }
+
+    async fn seed_media_file_named(pool: &SqlitePool, id: &str, filename: &str, folder_root: &str) {
+        let now = Utc::now().to_rfc3339();
+        sqlx::query(
+            "INSERT INTO media_file (id, filename, path, folder_root, last_seen_at, is_missing)
+             VALUES (?, ?, ?, ?, ?, 0)",
+        )
+        .bind(id)
+        .bind(filename)
+        .bind(format!("/fake/{}", filename))
+        .bind(folder_root)
+        .bind(&now)
+        .execute(pool)
+        .await
+        .unwrap();
     }
 
     fn flag() -> Arc<AtomicBool> {
@@ -620,10 +939,6 @@ mod tests {
         assert!(r.missing_folders.contains(&"/does_not_exist_segments".to_string()));
     }
 
-    // -----------------------------------------------------------------------
-    // get_scan_summary
-    // -----------------------------------------------------------------------
-
     #[tokio::test]
     async fn get_scan_summary_returns_none_before_scan() {
         let pool = setup().await;
@@ -654,4 +969,193 @@ mod tests {
         assert!(s.missing_folders.is_empty());
         assert!(s.errors.is_empty());
     }
+
+    #[test]
+    fn normalize_for_match_lowercases() {
+        assert_eq!(normalize_for_match("Castle Freak"), "castle freak");
+    }
+
+    #[test]
+    fn normalize_for_match_replaces_underscores() {
+        assert_eq!(
+            normalize_for_match("castle_freak_1995.mkv"),
+            "castle freak 1995"
+        );
+    }
+
+    #[test]
+    fn normalize_for_match_replaces_dots() {
+        assert_eq!(normalize_for_match("C.H.U.D..mkv"), "c h u d");
+    }
+
+    #[test]
+    fn normalize_for_match_collapses_whitespace() {
+        assert_eq!(normalize_for_match("The  Thing"), "the thing");
+    }
+
+    #[test]
+    fn normalize_for_match_strips_year_and_lowercases() {
+        assert_eq!(normalize_for_match("Film (1982).mkv"), "film");
+    }
+
+    #[tokio::test]
+    async fn match_media_files_exact_title() {
+        let pool = setup().await;
+        let slot_id = seed_slot_with_title(&pool, "ep-1", "a", "Castle Freak").await;
+        seed_media_file_named(&pool, "mf-1", "Castle Freak (1995).mkv", "movies").await;
+
+        let summary = match_media_files(&pool).await.unwrap();
+        assert_eq!(summary.matched, 1);
+
+        let row: (Option<String>, String, f64) = sqlx::query_as(
+            "SELECT media_file_id, match_status, confidence FROM file_match WHERE slot_id = ? AND file_type = 'movie'",
+        )
+        .bind(&slot_id)
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+        assert_eq!(row.0.as_deref(), Some("mf-1"));
+        assert_eq!(row.1, "matched");
+        assert!(row.2 >= 0.85);
+    }
+
+    #[tokio::test]
+    async fn match_media_files_underscore_title() {
+        let pool = setup().await;
+        let slot_id = seed_slot_with_title(&pool, "ep-1", "a", "Castle Freak").await;
+        seed_media_file_named(&pool, "mf-1", "castle_freak_1995.mkv", "movies").await;
+
+        let summary = match_media_files(&pool).await.unwrap();
+        assert_eq!(summary.matched, 1);
+
+        let row: (String,) = sqlx::query_as(
+            "SELECT match_status FROM file_match WHERE slot_id = ? AND file_type = 'movie'",
+        )
+        .bind(&slot_id)
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+        assert_eq!(row.0, "matched");
+    }
+
+    #[tokio::test]
+    async fn match_media_files_alias_exact() {
+        let pool = setup().await;
+        // Alias normalises to the same string as the filename.
+        let now = Utc::now().to_rfc3339();
+        sqlx::query("INSERT INTO episode (id, title, is_special, created_at) VALUES ('ep-1', 'T', 0, ?)")
+            .bind(&now)
+            .execute(&pool)
+            .await
+            .unwrap();
+        sqlx::query(
+            "INSERT INTO movie_slot (id, episode_id, slot, movie_title, movie_aliases_json)
+             VALUES ('ep-1-a', 'ep-1', 'a', 'Castle Freak', '[\"castle freak 95\"]')",
+        )
+        .execute(&pool)
+        .await
+        .unwrap();
+        // File normalises to "castle freak 95"
+        seed_media_file_named(&pool, "mf-1", "castle_freak_95.mkv", "movies").await;
+
+        let summary = match_media_files(&pool).await.unwrap();
+        assert_eq!(summary.matched, 1);
+
+        let row: (f64,) = sqlx::query_as(
+            "SELECT confidence FROM file_match WHERE slot_id = 'ep-1-a' AND file_type = 'movie'",
+        )
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+        assert_eq!(row.0, 1.0, "exact alias match should force confidence to 1.0");
+    }
+
+    #[tokio::test]
+    async fn match_media_files_no_match_is_missing() {
+        let pool = setup().await;
+        let slot_id = seed_slot_with_title(&pool, "ep-1", "a", "Castle Freak").await;
+        // No media files inserted.
+
+        let summary = match_media_files(&pool).await.unwrap();
+        // Slot has movie_title but no host_label → movie: missing + segment: missing = 2.
+        assert_eq!(summary.missing, 2);
+
+        let row: (String,) = sqlx::query_as(
+            "SELECT match_status FROM file_match WHERE slot_id = ? AND file_type = 'movie'",
+        )
+        .bind(&slot_id)
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+        assert_eq!(row.0, "missing");
+    }
+
+    #[tokio::test]
+    async fn match_media_files_uniqueness() {
+        let pool = setup().await;
+        // Two slots, one file — only the best-scoring slot gets it.
+        seed_slot_with_title(&pool, "ep-1", "a", "Castle Freak").await;
+        seed_slot_with_title(&pool, "ep-2", "a", "Castle Freak 2").await;
+        seed_media_file_named(&pool, "mf-1", "Castle Freak (1995).mkv", "movies").await;
+
+        let summary = match_media_files(&pool).await.unwrap();
+        // Each slot also gets a segment match (both missing, no host_label).
+        // Movie: 1 matched/low-confidence + 1 missing. Segment: 2 missing. Total missing = 3.
+        assert_eq!(summary.matched + summary.low_confidence, 1);
+        assert_eq!(summary.missing, 3);
+    }
+
+    #[tokio::test]
+    async fn match_media_files_respects_user_override() {
+        let pool = setup().await;
+        let slot_id = seed_slot_with_title(&pool, "ep-1", "a", "Castle Freak").await;
+        seed_media_file_named(&pool, "mf-user", "user_choice.mkv", "movies").await;
+        seed_media_file_named(&pool, "mf-auto", "Castle Freak (1995).mkv", "movies").await;
+
+        // Manually override the slot to point at mf-user.
+        let now = Utc::now().to_rfc3339();
+        sqlx::query(
+            "INSERT INTO file_match (slot_id, file_type, media_file_id, match_status, confidence, is_user_overridden, matched_at)
+             VALUES (?, 'movie', 'mf-user', 'matched', 1.0, 1, ?)",
+        )
+        .bind(&slot_id)
+        .bind(&now)
+        .execute(&pool)
+        .await
+        .unwrap();
+
+        // Run matcher — should NOT overwrite the user's row.
+        match_media_files(&pool).await.unwrap();
+
+        let row: (Option<String>, i64) = sqlx::query_as(
+            "SELECT media_file_id, is_user_overridden FROM file_match WHERE slot_id = ? AND file_type = 'movie'",
+        )
+        .bind(&slot_id)
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+        assert_eq!(row.0.as_deref(), Some("mf-user"), "user override must not be replaced");
+        assert_eq!(row.1, 1);
+    }
+
+    #[tokio::test]
+    async fn match_media_files_segment_by_host_label() {
+        let pool = setup().await;
+        let slot_id = seed_slot_with_host(&pool, "ep-1", "a", "Castle Freak", "S01E01A Segments").await;
+        seed_media_file_named(&pool, "sf-1", "S01E01A Segments.mkv", "segments").await;
+
+        let summary = match_media_files(&pool).await.unwrap();
+        assert_eq!(summary.matched, 1);
+
+        let row: (Option<String>, String) = sqlx::query_as(
+            "SELECT media_file_id, match_status FROM file_match WHERE slot_id = ? AND file_type = 'segment'",
+        )
+        .bind(&slot_id)
+        .fetch_one(&pool)
+        .await
+        .unwrap();
+        assert_eq!(row.0.as_deref(), Some("sf-1"));
+        assert_eq!(row.1, "matched");
+    }
 }
+

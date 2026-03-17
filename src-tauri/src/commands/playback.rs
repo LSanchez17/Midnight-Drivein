@@ -1,11 +1,8 @@
+use serde::Serialize;
 use sqlx::SqlitePool;
 use tauri::State;
 
 const OFFSET_LIMIT_MS: i64 = 3_600_000; // ±1 hour
-
-// ---------------------------------------------------------------------------
-// Inner functions
-// ---------------------------------------------------------------------------
 
 pub async fn save_cut_offset_inner(
     pool: &SqlitePool,
@@ -79,6 +76,13 @@ pub async fn remap_file_inner(
     file_type: &str,
     media_file_id: &str,
 ) -> Result<(), String> {
+    // Validate file_type.
+    if file_type != "movie" && file_type != "segment" {
+        return Err(format!(
+            "INVALID_INPUT: file_type must be 'movie' or 'segment', got '{file_type}'"
+        ));
+    }
+
     // Verify slot exists.
     let slot_exists: Option<(String,)> =
         sqlx::query_as("SELECT id FROM movie_slot WHERE id = ?")
@@ -93,18 +97,22 @@ pub async fn remap_file_inner(
         ));
     }
 
-    // Verify media_file exists.
-    let mf_exists: Option<(String,)> =
-        sqlx::query_as("SELECT id FROM media_file WHERE id = ?")
+    // Verify media_file exists and is not missing.
+    let mf_row: Option<(String, i64)> =
+        sqlx::query_as("SELECT id, is_missing FROM media_file WHERE id = ?")
             .bind(media_file_id)
             .fetch_optional(pool)
             .await
             .map_err(|e| e.to_string())?;
 
-    if mf_exists.is_none() {
-        return Err(format!(
+    match mf_row {
+        None => return Err(format!(
             "NOT_FOUND: media_file with id '{media_file_id}' does not exist"
-        ));
+        )),
+        Some((_, is_missing)) if is_missing == 1 => return Err(format!(
+            "NOT_FOUND: media_file with id '{media_file_id}' is marked missing"
+        )),
+        _ => {}
     }
 
     let now = chrono::Utc::now().to_rfc3339();
@@ -131,10 +139,6 @@ pub async fn remap_file_inner(
     Ok(())
 }
 
-// ---------------------------------------------------------------------------
-// Tauri command wrappers
-// ---------------------------------------------------------------------------
-
 #[tauri::command]
 pub async fn save_cut_offset(
     pool: State<'_, SqlitePool>,
@@ -153,6 +157,52 @@ pub async fn save_playback_override(
     save_playback_override_inner(pool.inner(), &slot_id, flagged_for_timing).await
 }
 
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct MediaFileListRow {
+    pub id: String,
+    pub filename: String,
+    pub display_name: Option<String>,
+    pub path: String,
+    pub size_bytes: Option<i64>,
+    pub last_seen_at: String,
+}
+
+pub async fn list_media_files_inner(
+    pool: &SqlitePool,
+    folder_root: &str,
+) -> Result<Vec<MediaFileListRow>, String> {
+    if folder_root != "movies" && folder_root != "segments" {
+        return Err(format!(
+            "INVALID_INPUT: folder_root must be 'movies' or 'segments', got '{folder_root}'"
+        ));
+    }
+
+    let rows: Vec<(String, String, Option<String>, String, Option<i64>, String)> =
+        sqlx::query_as(
+            "SELECT id, filename, display_name, path, size_bytes, last_seen_at
+             FROM media_file
+             WHERE folder_root = ? AND is_missing = 0
+             ORDER BY filename ASC",
+        )
+        .bind(folder_root)
+        .fetch_all(pool)
+        .await
+        .map_err(|e| format!("DB_ERROR: {e}"))?;
+
+    Ok(rows
+        .into_iter()
+        .map(|(id, filename, display_name, path, size_bytes, last_seen_at)| MediaFileListRow {
+            id,
+            filename,
+            display_name,
+            path,
+            size_bytes,
+            last_seen_at,
+        })
+        .collect())
+}
+
 #[tauri::command]
 pub async fn remap_file(
     pool: State<'_, SqlitePool>,
@@ -163,9 +213,13 @@ pub async fn remap_file(
     remap_file_inner(pool.inner(), &slot_id, &file_type, &media_file_id).await
 }
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
+#[tauri::command]
+pub async fn list_media_files(
+    pool: State<'_, SqlitePool>,
+    folder_root: String,
+) -> Result<Vec<MediaFileListRow>, String> {
+    list_media_files_inner(pool.inner(), &folder_root).await
+}
 
 #[cfg(test)]
 mod tests {
@@ -314,5 +368,73 @@ mod tests {
             .unwrap();
         assert!(row.0, "is_user_overridden should be true");
         assert_eq!(row.1, "matched");
+    }
+
+    #[tokio::test]
+    async fn remap_file_rejects_invalid_file_type() {
+        let pool = setup().await;
+        seed_episode(&pool, "ep-1").await;
+        let slot_id = seed_slot(&pool, "ep-1", "a").await;
+        seed_media_file(&pool, "mf-1").await;
+
+        let result = remap_file_inner(&pool, &slot_id, "unknown", "mf-1").await;
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("INVALID_INPUT"));
+    }
+
+    #[tokio::test]
+    async fn remap_file_rejects_missing_media_file() {
+        let pool = setup().await;
+        seed_episode(&pool, "ep-1").await;
+        let slot_id = seed_slot(&pool, "ep-1", "a").await;
+
+        // Insert a file that is marked missing.
+        let now = chrono::Utc::now().to_rfc3339();
+        sqlx::query(
+            "INSERT INTO media_file (id, filename, path, folder_root, last_seen_at, is_missing)
+             VALUES ('mf-gone', 'gone.mp4', '/test/gone.mp4', 'movies', ?, 1)",
+        )
+        .bind(&now)
+        .execute(&pool)
+        .await
+        .unwrap();
+
+        let result = remap_file_inner(&pool, &slot_id, "movie", "mf-gone").await;
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("NOT_FOUND"));
+    }
+
+    #[tokio::test]
+    async fn list_media_files_returns_non_missing() {
+        let pool = setup().await;
+        let now = chrono::Utc::now().to_rfc3339();
+        sqlx::query(
+            "INSERT INTO media_file (id, filename, path, folder_root, last_seen_at, is_missing)
+             VALUES ('mf-a', 'present.mkv', '/test/present.mkv', 'movies', ?, 0)",
+        )
+        .bind(&now)
+        .execute(&pool)
+        .await
+        .unwrap();
+        sqlx::query(
+            "INSERT INTO media_file (id, filename, path, folder_root, last_seen_at, is_missing)
+             VALUES ('mf-b', 'gone.mkv', '/test/gone.mkv', 'movies', ?, 1)",
+        )
+        .bind(&now)
+        .execute(&pool)
+        .await
+        .unwrap();
+
+        let rows = list_media_files_inner(&pool, "movies").await.unwrap();
+        assert_eq!(rows.len(), 1);
+        assert_eq!(rows[0].id, "mf-a");
+    }
+
+    #[tokio::test]
+    async fn list_media_files_rejects_invalid_root() {
+        let pool = setup().await;
+        let result = list_media_files_inner(&pool, "other").await;
+        assert!(result.is_err());
+        assert!(result.unwrap_err().contains("INVALID_INPUT"));
     }
 }

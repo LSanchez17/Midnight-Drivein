@@ -2,10 +2,6 @@ use serde::Serialize;
 use sqlx::SqlitePool;
 use tauri::State;
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
 #[derive(Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct FileMatchRow {
@@ -57,10 +53,6 @@ pub struct EpisodeRow {
     pub guests: Option<String>,
     pub slots: Vec<MovieSlotRow>,
 }
-
-// ---------------------------------------------------------------------------
-// Private flat row structs for query mapping
-// ---------------------------------------------------------------------------
 
 /// One row from the episode table (no joins).
 #[derive(sqlx::FromRow)]
@@ -117,10 +109,6 @@ struct CutRow {
     end_ms: Option<i64>,
     user_offset_ms: i64,
 }
-
-// ---------------------------------------------------------------------------
-// Inner functions
-// ---------------------------------------------------------------------------
 
 fn missing_match(file_type: &str) -> FileMatchRow {
     FileMatchRow {
@@ -325,10 +313,6 @@ pub async fn get_episode_by_id_inner(
     let all = get_episodes_inner(pool).await?;
     Ok(all.into_iter().find(|e| e.id == id))
 }
-
-// ---------------------------------------------------------------------------
-// Tauri command wrappers
-// ---------------------------------------------------------------------------
 
 #[tauri::command]
 pub async fn get_episodes(pool: State<'_, SqlitePool>) -> Result<Vec<EpisodeRow>, String> {

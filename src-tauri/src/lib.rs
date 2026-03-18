@@ -1,5 +1,9 @@
 mod commands;
+mod constants;
 mod db;
+#[cfg(test)]
+pub mod test_support;
+mod utils;
 
 use std::sync::{atomic::AtomicBool, Arc};
 use tauri::Manager;
@@ -17,10 +21,7 @@ pub fn run() {
                 )?;
             }
 
-            let data_dir = app
-                .path()
-                .app_data_dir()
-                .expect("app data dir unavailable");
+            let data_dir = app.path().app_data_dir().expect("app data dir unavailable");
             std::fs::create_dir_all(&data_dir)?;
 
             let pool = tauri::async_runtime::block_on(db::init_pool(
@@ -35,10 +36,8 @@ pub fn run() {
                 .join("resources")
                 .join("episodes.json");
 
-            tauri::async_runtime::block_on(
-                db::seed::seed_episodes_if_empty(&pool, &json_path),
-            )
-            .expect("episode seed failed");
+            tauri::async_runtime::block_on(db::seed::seed_episodes_if_empty(&pool, &json_path))
+                .expect("episode seed failed");
 
             app.manage(pool);
             app.manage(Arc::new(AtomicBool::new(false)));

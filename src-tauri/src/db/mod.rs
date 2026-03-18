@@ -1,4 +1,10 @@
+// Declare submodules
+pub mod episodes;
+pub mod playback;
+pub mod scan;
 pub mod seed;
+pub mod settings;
+pub mod types;
 
 use sqlx::{
     sqlite::{SqliteConnectOptions, SqlitePoolOptions},

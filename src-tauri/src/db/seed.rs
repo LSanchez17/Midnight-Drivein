@@ -39,7 +39,7 @@ struct MovieJson {
 
 #[derive(Deserialize)]
 struct CutJson {
-    source: String,      // "segment" | "movie"
+    source: String, // "segment" | "movie"
     start_ms: i64,
     end_ms: Option<i64>, // null = play to end of file
 }
@@ -157,22 +157,11 @@ pub async fn seed_episodes_if_empty(
 
 #[cfg(test)]
 mod tests {
+    use crate::test_support::setup;
+
     use super::*;
-    use sqlx::sqlite::SqlitePoolOptions;
     use std::io::Write;
     use tempfile::NamedTempFile;
-
-    async fn setup() -> SqlitePool {
-        let pool = SqlitePoolOptions::new()
-            .connect("sqlite::memory:")
-            .await
-            .unwrap();
-        sqlx::migrate!("src/db/migrations")
-            .run(&pool)
-            .await
-            .unwrap();
-        pool
-    }
 
     fn write_fixture(json: &str) -> NamedTempFile {
         let mut f = NamedTempFile::new().unwrap();

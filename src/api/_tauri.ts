@@ -1,8 +1,8 @@
 import { invoke } from '@tauri-apps/api/core'
 import { open } from '@tauri-apps/plugin-dialog'
-import { deriveEpisodeStatus } from '../lib/derive/episodeStatus'
+import { deriveEpisodeStatus } from '../utils/EpisodeStatuses'
 import type { Episode, MovieSlot, FileMatch, PlaybackCut, SourceType, MatchStatus } from '../features/episodes/types'
-import type { AppSettings, AppSettingsPatch, EpisodeFilters, ScanResult } from './types'
+import type { AppSettings, AppSettingsPatch, EpisodeFilters, ScanResult, MediaFileSummary } from './types'
 import { ApiError, type ErrorCode } from './errors'
 
 // Error parsing — Rust errors use "ERROR_CODE: message" prefix convention
@@ -195,6 +195,22 @@ export async function remapFile(
 ): Promise<void> {
     try {
         await invoke<void>('remap_file', { slotId, fileType, mediaFileId })
+    } catch (e) {
+        throw parseError(e)
+    }
+}
+
+export async function listMediaFiles(
+    folderRoot: 'movies' | 'segments',
+): Promise<MediaFileSummary[]> {
+    try {
+        const rows = await invoke<MediaFileSummary[]>('list_media_files', { folderRoot })
+
+        return rows.map((r) => ({
+            ...r,
+            displayName: r.displayName ?? undefined,
+            sizeBytes: r.sizeBytes ?? undefined,
+        }))
     } catch (e) {
         throw parseError(e)
     }

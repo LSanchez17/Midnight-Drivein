@@ -1,4 +1,4 @@
-import type { Episode, EpisodeStatus, MovieSlot } from '../../features/episodes/types'
+import type { Episode, EpisodeStatus, MovieSlot } from '../features/episodes/types'
 
 function deriveSlotStatus(slot: MovieSlot): EpisodeStatus {
     const matches = [slot.movieMatch, slot.segmentMatch]
@@ -23,7 +23,7 @@ function deriveSlotStatus(slot: MovieSlot): EpisodeStatus {
  * Derives EpisodeStatus using worst-slot-wins across all MovieSlots.
  * Priority order: Missing Files > Partial Match > Needs Timing Fix > Ready.
  */
-export function deriveEpisodeStatus(episode: Episode): EpisodeStatus {
+function deriveEpisodeStatus(episode: Episode): EpisodeStatus {
     if (episode.slots.length === 0) return 'Missing Files'
 
     const statuses = episode.slots.map(deriveSlotStatus)
@@ -33,3 +33,5 @@ export function deriveEpisodeStatus(episode: Episode): EpisodeStatus {
     if (statuses.some((s) => s === 'Needs Timing Fix')) return 'Needs Timing Fix'
     return 'Ready'
 }
+
+export { deriveEpisodeStatus }

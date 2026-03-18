@@ -15,6 +15,7 @@ const mockScanResult: ScanResult = {
     segmentFileCount: 2,
     errors: [],
     missingFolders: [],
+    matchSummary: { matched: 2, lowConfidence: 1, missing: 0 },
 }
 
 beforeEach(() => {
@@ -86,5 +87,14 @@ describe('mock shape compatibility', () => {
         expect(typeof result.segmentFileCount).toBe('number')
         expect(Array.isArray(result.errors)).toBe(true)
         expect(Array.isArray(result.missingFolders)).toBe(true)
+    })
+
+    it('_mock scanLibrary includes matchSummary with numeric fields', async () => {
+        const { scanLibrary: mockScan } = await import('../_mock')
+        const result = await mockScan()
+        expect(result.matchSummary).toBeDefined()
+        expect(typeof result.matchSummary.matched).toBe('number')
+        expect(typeof result.matchSummary.lowConfidence).toBe('number')
+        expect(typeof result.matchSummary.missing).toBe('number')
     })
 })

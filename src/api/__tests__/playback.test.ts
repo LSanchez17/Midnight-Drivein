@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { invoke } from '@tauri-apps/api/core'
-import { saveCutOffset, savePlaybackOverride, remapFile, scanLibrary } from '../_tauri'
+import { saveCutOffset, savePlaybackOverride, remapFile, listMediaFiles, scanLibrary } from '../_tauri'
 
 // Mock @tauri-apps/api/core so tests run outside of a Tauri window.
 vi.mock('@tauri-apps/api/core', () => ({
@@ -78,6 +78,61 @@ describe('remapFile', () => {
             code: 'NOT_FOUND',
         })
     })
+
+    it('throws ApiError with INVALID_INPUT for bad file_type', async () => {
+        mockInvoke.mockRejectedValueOnce('INVALID_INPUT: file_type must be \'movie\' or \'segment\'')
+
+        // @ts-expect-error Testing invalid input
+        await expect(remapFile('s01e01-a', 'unknown', 'mf-1')).rejects.toMatchObject({
+            name: 'ApiError',
+            code: 'INVALID_INPUT',
+        })
+    })
+})
+
+describe('listMediaFiles', () => {
+    it('invokes list_media_files with folderRoot', async () => {
+        mockInvoke.mockResolvedValueOnce([])
+        await listMediaFiles('movies')
+        expect(mockInvoke).toHaveBeenCalledWith('list_media_files', { folderRoot: 'movies' })
+    })
+
+    it('returns an array of MediaFileSummary', async () => {
+        const file = {
+            id: 'mf-1',
+            filename: 'movie.mkv',
+            displayName: 'My Movie',
+            path: '/media/movies/movie.mkv',
+            sizeBytes: 1_073_741_824,
+            lastSeenAt: '2026-03-16T00:00:00Z',
+        }
+        mockInvoke.mockResolvedValueOnce([file])
+        const result = await listMediaFiles('movies')
+        expect(result).toEqual([file])
+    })
+
+    it('coerces null displayName to undefined', async () => {
+        mockInvoke.mockResolvedValueOnce([{
+            id: 'mf-2',
+            filename: 'seg.mkv',
+            displayName: null,
+            path: '/media/segments/seg.mkv',
+            sizeBytes: 512,
+            lastSeenAt: '2026-03-16T00:00:00Z',
+        }])
+        const [row] = await listMediaFiles('segments')
+        expect(row.displayName).toBeUndefined()
+    })
+
+    it('throws ApiError with INVALID_INPUT for unknown folder root', async () => {
+        mockInvoke.mockRejectedValueOnce('INVALID_INPUT: folder_root must be \'movies\' or \'segments\'')
+
+        // @ts-expect-error Testing invalid input
+        await expect(listMediaFiles('other')).rejects.toMatchObject({
+            name: 'ApiError',
+            code: 'INVALID_INPUT',
+        })
+    })
 })
 
 describe('scanLibrary', () => {
@@ -128,5 +183,11 @@ describe('mock shape compatibility', () => {
         expect(typeof result.segmentFileCount).toBe('number')
         expect(Array.isArray(result.errors)).toBe(true)
         expect(Array.isArray(result.missingFolders)).toBe(true)
+    })
+
+    it('listMediaFiles from _mock.ts resolves to empty array', async () => {
+        const { listMediaFiles: mockList } = await import('../_mock')
+        const result = await mockList('movies')
+        expect(Array.isArray(result)).toBe(true)
     })
 })

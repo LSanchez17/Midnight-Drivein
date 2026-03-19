@@ -74,9 +74,9 @@ pub async fn remap_file(
     media_file_id: &str,
 ) -> Result<(), String> {
     // Validate file_type.
-    if file_type != "movie" && file_type != "segment" {
+    if file_type != "movie" && file_type != "commentary" {
         return Err(format!(
-            "INVALID_INPUT: file_type must be 'movie' or 'segment', got '{file_type}'"
+            "INVALID_INPUT: file_type must be 'movie' or 'commentary', got '{file_type}'"
         ));
     }
 
@@ -143,9 +143,9 @@ pub async fn list_media_files(
     pool: &SqlitePool,
     folder_root: &str,
 ) -> Result<Vec<MediaFileListRow>, String> {
-    if folder_root != "movies" && folder_root != "segments" {
+    if folder_root != "movies" && folder_root != "commentary" {
         return Err(format!(
-            "INVALID_INPUT: folder_root must be 'movies' or 'segments', got '{folder_root}'"
+            "INVALID_INPUT: folder_root must be 'movies' or 'commentary', got '{folder_root}'"
         ));
     }
 
@@ -180,32 +180,20 @@ mod tests {
     use super::*;
     use crate::test_support::{
         setup, setup_episode, setup_media_file, setup_missing_media_file, setup_movie_slot,
+        setup_playback_cut,
     };
-    use sqlx::SqlitePool;
-
-    async fn seed_cut(pool: &SqlitePool, slot_id: &str, cut_id: &str) {
-        sqlx::query(
-            "INSERT INTO playback_cut (id, slot_id, sort_order, source_type, start_ms, end_ms, user_offset_ms)
-             VALUES (?, ?, 1, 'movie', 0, 1000, 0)",
-        )
-        .bind(cut_id)
-        .bind(slot_id)
-        .execute(pool)
-        .await
-        .unwrap();
-    }
 
     #[tokio::test]
     async fn save_cut_offset_persists() {
         let pool = setup().await;
         setup_episode(&pool, "ep-1", None).await;
         let slot_id = setup_movie_slot(&pool, "ep-1", "a", "Test Movie", None).await;
-        seed_cut(&pool, &slot_id, "cut-1").await;
+        let cut_id = setup_playback_cut(&pool, &slot_id, 0, "movie", 0, Some(1000), 0).await;
 
-        save_cut_offset(&pool, "cut-1", 500).await.unwrap();
+        save_cut_offset(&pool, &cut_id, 500).await.unwrap();
 
         let offset: (i64,) = sqlx::query_as("SELECT user_offset_ms FROM playback_cut WHERE id = ?")
-            .bind("cut-1")
+            .bind(&cut_id)
             .fetch_one(&pool)
             .await
             .unwrap();

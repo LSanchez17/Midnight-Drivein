@@ -23,7 +23,7 @@ export default function OffsetControls({
             {cuts.map((cut) => (
                 <div key={cut.id} className="flex items-center justify-between gap-4">
                     <span style={{ color: '#b8b1a1' }}>
-                        {cut.sourceType === 'segment' ? 'Seg' : 'Mov'} {cut.sortOrder}{' '}
+                        {cut.sourceType === 'commentary' ? 'Com' : 'Mov'} {cut.sortOrder}{' '}
                         <span style={{ color: '#2a2a33' }}>
                             ({msToHMS(cut.startMs)}–{msToHMS(cut.endMs)})
                         </span>

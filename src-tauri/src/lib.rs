@@ -54,6 +54,7 @@ pub fn run() {
             commands::playback::save_playback_override,
             commands::playback::remap_file,
             commands::playback::list_media_files,
+            commands::playback::get_playback_plan,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

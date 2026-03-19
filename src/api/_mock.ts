@@ -1,6 +1,8 @@
 import { MOCK_EPISODES } from '../features/episodes/mocks'
-import type { Episode, SourceType } from '../features/episodes/types'
+import { resolvePlaybackPlan } from '../features/episodes/resolvePlaybackPlan'
+import type { Episode, SourceType, PlaybackEntry } from '../features/episodes/types'
 import type { EpisodeFilters, AppSettings, AppSettingsPatch, ScanResult, MediaFileSummary } from './types'
+import { ApiError } from './errors'
 
 export function getEpisodes(filters?: EpisodeFilters): Promise<Episode[]> {
     return new Promise((resolve) =>
@@ -41,7 +43,7 @@ export function getEpisodeById(id: string): Promise<Episode | undefined> {
 }
 
 export function getSettings(): Promise<AppSettings> {
-    return Promise.resolve({ moviesFolder: null, segmentsFolder: null, scanOnStartup: false, theme: 'dark' })
+    return Promise.resolve({ moviesFolder: null, commentaryFolder: null, scanOnStartup: false, theme: 'dark' })
 }
 
 export function saveSettings(_patch: AppSettingsPatch): Promise<void> {
@@ -64,7 +66,7 @@ export function scanLibrary(): Promise<ScanResult> {
     return Promise.resolve({
         lastScanAt: new Date().toISOString(),
         movieFileCount: 3,
-        segmentFileCount: 2,
+        commentaryFileCount: 2,
         errors: [],
         missingFolders: [],
         matchSummary: { matched: 0, lowConfidence: 0, missing: 0 },
@@ -80,7 +82,24 @@ export function selectLibraryRoot(): Promise<string | null> {
 }
 
 export function listMediaFiles(
-    _folderRoot: 'movies' | 'segments',
+    _folderRoot: 'movies' | 'commentary',
 ): Promise<MediaFileSummary[]> {
     return Promise.resolve([])
+}
+
+export function getPlaybackPlan(episodeId: string, slotLetter: string): Promise<PlaybackEntry[]> {
+    const episode = MOCK_EPISODES.find((e) => e.id === episodeId)
+    const slot = episode?.slots.find((s) => s.slot === slotLetter)
+
+    if (!slot) {
+        return Promise.reject(new ApiError('NOT_FOUND', `Slot ${episodeId}/${slotLetter} not found`))
+    }
+
+    const result = resolvePlaybackPlan(slot)
+
+    if (!result.ok) {
+        return Promise.reject(new ApiError('INVALID_INPUT', result.error.code))
+    }
+
+    return Promise.resolve(result.entries)
 }

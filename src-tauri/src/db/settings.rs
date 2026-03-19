@@ -18,7 +18,7 @@ async fn set_defaults(pool: &SqlitePool) -> Result<(), String> {
 pub(crate) async fn get_settings(pool: &SqlitePool) -> Result<AppSettings, String> {
     set_defaults(pool).await?;
     sqlx::query_as(
-        "SELECT movies_folder, segments_folder, scan_on_startup, theme
+        "SELECT movies_folder, commentary_folder, scan_on_startup, theme
          FROM app_settings WHERE id = 1",
     )
     .fetch_one(pool)
@@ -37,8 +37,8 @@ pub(crate) async fn save_settings(
     if settings.movies_folder.is_some() {
         fragments.push("movies_folder = ?");
     }
-    if settings.segments_folder.is_some() {
-        fragments.push("segments_folder = ?");
+    if settings.commentary_folder.is_some() {
+        fragments.push("commentary_folder = ?");
     }
     if settings.scan_on_startup.is_some() {
         fragments.push("scan_on_startup = ?");
@@ -63,7 +63,7 @@ pub(crate) async fn save_settings(
     if let Some(v) = settings.movies_folder {
         query = query.bind(v);
     }
-    if let Some(v) = settings.segments_folder {
+    if let Some(v) = settings.commentary_folder {
         query = query.bind(v);
     }
     if let Some(v) = settings.scan_on_startup {
@@ -88,7 +88,7 @@ mod tests {
         let pool = setup().await;
         let s = get_settings(&pool).await.unwrap();
         assert!(s.movies_folder.is_none());
-        assert!(s.segments_folder.is_none());
+        assert!(s.commentary_folder.is_none());
         assert!(!s.scan_on_startup);
         assert_eq!(s.theme, "dark");
     }
@@ -100,7 +100,7 @@ mod tests {
             &pool,
             AppSettingsPatch {
                 movies_folder: Some(Some("/media/movies".to_string())),
-                segments_folder: None,
+                commentary_folder: None,
                 scan_on_startup: Some(true),
                 theme: None,
             },
@@ -119,7 +119,7 @@ mod tests {
             &pool,
             AppSettingsPatch {
                 movies_folder: None,
-                segments_folder: None,
+                commentary_folder: None,
                 scan_on_startup: Some(true),
                 theme: None,
             },
@@ -130,7 +130,7 @@ mod tests {
             &pool,
             AppSettingsPatch {
                 movies_folder: Some(Some("/media/movies".to_string())),
-                segments_folder: None,
+                commentary_folder: None,
                 scan_on_startup: None,
                 theme: None,
             },
@@ -149,7 +149,7 @@ mod tests {
             &pool,
             AppSettingsPatch {
                 movies_folder: Some(Some("/media/movies".to_string())),
-                segments_folder: None,
+                commentary_folder: None,
                 scan_on_startup: None,
                 theme: None,
             },
@@ -160,7 +160,7 @@ mod tests {
             &pool,
             AppSettingsPatch {
                 movies_folder: Some(None),
-                segments_folder: None,
+                commentary_folder: None,
                 scan_on_startup: None,
                 theme: None,
             },

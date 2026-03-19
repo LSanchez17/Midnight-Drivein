@@ -25,7 +25,7 @@ pub(crate) fn normalize_filename(filename: &str) -> String {
 //
 // `"Castle Freak (1995).mkv"` → `"castle freak"`
 // `"castle_freak_1995.mkv"` → `"castle freak 1995"`
-// `"S01E01A Segments"` → `"s01e01a segments"`
+// `"S01E01A Commentary"` → `"s01e01a commentary"`
 pub(crate) fn normalize_for_match(input: &str) -> String {
     let stem = if has_video_extension(input) {
         normalize_filename(input)

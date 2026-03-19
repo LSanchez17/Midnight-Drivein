@@ -26,7 +26,7 @@ export default function FileMapping({
                             className="text-[10px] uppercase tracking-[0.15em] mb-0.5"
                             style={{ color: '#b8b1a1' }}
                         >
-                            {match.fileType === 'movie' ? 'Movie File' : 'Segment File'}
+                            {match.fileType === 'movie' ? 'Movie File' : 'Commentary File'}
                         </p>
                         <p
                             className="truncate"

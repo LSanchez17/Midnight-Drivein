@@ -12,7 +12,7 @@ const mockInvoke = vi.mocked(invoke)
 const mockScanResult: ScanResult = {
     lastScanAt: '2026-03-16T14:00:00Z',
     movieFileCount: 3,
-    segmentFileCount: 2,
+    commentaryFileCount: 2,
     errors: [],
     missingFolders: [],
     matchSummary: { matched: 2, lowConfidence: 1, missing: 0 },
@@ -40,7 +40,7 @@ describe('scanLibrary', () => {
 
     it('throws ApiError with IO_ERROR when folders not configured', async () => {
         mockInvoke.mockRejectedValueOnce(
-            'IO_ERROR: movies_folder and segments_folder must both be configured before scanning',
+            'IO_ERROR: movies_folder and commentary_folder must both be configured before scanning',
         )
         await expect(scanLibrary()).rejects.toMatchObject({
             name: 'ApiError',
@@ -84,7 +84,7 @@ describe('mock shape compatibility', () => {
         const result = await mockScan()
         expect(typeof result.lastScanAt).toBe('string')
         expect(typeof result.movieFileCount).toBe('number')
-        expect(typeof result.segmentFileCount).toBe('number')
+        expect(typeof result.commentaryFileCount).toBe('number')
         expect(Array.isArray(result.errors)).toBe(true)
         expect(Array.isArray(result.missingFolders)).toBe(true)
     })

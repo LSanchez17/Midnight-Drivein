@@ -30,7 +30,7 @@ function makeSlotRow(
     episodeId: string,
     slotLetter: string,
     movieStatus: string,
-    segmentStatus: string,
+    commentaryStatus: string,
 ) {
     const makeMatch = (fileType: string, status: string) => ({
         fileType,
@@ -45,11 +45,11 @@ function makeSlotRow(
     return {
         id: `${episodeId}-${slotLetter}`,
         slot: slotLetter,
-        hostLabel: null,
+        commentary: null,
         movieTitle: null,
         movieYear: null,
         movieMatch: makeMatch('movie', movieStatus),
-        segmentMatch: makeMatch('segment', segmentStatus),
+        commentaryMatch: makeMatch('commentary', commentaryStatus),
         cuts: [],
         flaggedForTiming: false,
     }

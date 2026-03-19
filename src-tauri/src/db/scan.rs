@@ -40,7 +40,7 @@ struct SlotMatchRow {
     id: String,
     movie_title: Option<String>,
     movie_aliases_json: Option<String>,
-    host_label: Option<String>,
+    commentary: Option<String>,
 }
 
 // mark_missing — flip is_missing=1 for rows absent from this scan
@@ -243,7 +243,7 @@ async fn upsert_file_match(
 
 pub(crate) async fn get_scan_summary(pool: &SqlitePool) -> Result<Option<ScanResult>, String> {
     let row = sqlx::query_as::<_, (String, i64, i64, String, String, i64, i64, i64)>(
-        "SELECT last_scan_at, movie_file_count, segment_file_count, errors_json, missing_folders_json,
+        "SELECT last_scan_at, movie_file_count, commentary_file_count, errors_json, missing_folders_json,
                 matched_count, low_confidence_count, missing_count
          FROM scan_summary WHERE id = 1",
     )
@@ -256,7 +256,7 @@ pub(crate) async fn get_scan_summary(pool: &SqlitePool) -> Result<Option<ScanRes
         Some((
             last_scan_at,
             movie_file_count,
-            segment_file_count,
+            commentary_file_count,
             errors_json,
             missing_json,
             matched_count,
@@ -270,7 +270,7 @@ pub(crate) async fn get_scan_summary(pool: &SqlitePool) -> Result<Option<ScanRes
             Ok(Some(ScanResult {
                 last_scan_at,
                 movie_file_count: movie_file_count as usize,
-                segment_file_count: segment_file_count as usize,
+                commentary_file_count: commentary_file_count as usize,
                 errors,
                 missing_folders,
                 match_summary: MatchSummary {
@@ -289,16 +289,16 @@ pub(crate) async fn scan_library(
 ) -> Result<ScanResult, String> {
     // Read configured folders.
     let row: (Option<String>, Option<String>) =
-        sqlx::query_as("SELECT movies_folder, segments_folder FROM app_settings WHERE id = 1")
+        sqlx::query_as("SELECT movies_folder, commentary_folder FROM app_settings WHERE id = 1")
             .fetch_optional(pool)
             .await
             .map_err(|e| e.to_string())?
             .unwrap_or((None, None));
 
-    let (movies_folder, segments_folder) = match (row.0, row.1) {
+    let (movies_folder, commentary_folder) = match (row.0, row.1) {
         (Some(m), Some(s)) => (m, s),
         _ => {
-            return Err("IO_ERROR: movies_folder and segments_folder must both be configured before scanning".to_string());
+            return Err("IO_ERROR: movies_folder and commentary_folder must both be configured before scanning".to_string());
         }
     };
 
@@ -319,9 +319,9 @@ pub(crate) async fn scan_library(
                 format!("IO_ERROR: {e}")
             })?;
 
-    let segments_folder_clone = segments_folder.clone();
-    let segment_walk =
-        tokio::task::spawn_blocking(move || walk_folder(segments_folder_clone, "segments"))
+    let commentary_folder_clone = commentary_folder.clone();
+    let commentary_walk =
+        tokio::task::spawn_blocking(move || walk_folder(commentary_folder_clone, "commentary"))
             .await
             .map_err(|e| {
                 scanning.store(false, Ordering::SeqCst);
@@ -329,26 +329,26 @@ pub(crate) async fn scan_library(
             })?;
 
     let movie_file_count = movie_walk.rows.len();
-    let segment_file_count = segment_walk.rows.len();
+    let commentary_file_count = commentary_walk.rows.len();
 
     let mut errors: Vec<String> = movie_walk
         .warnings
         .into_iter()
-        .chain(segment_walk.warnings)
+        .chain(commentary_walk.warnings)
         .collect();
 
     let missing_folders: Vec<String> = movie_walk
         .missing_folder
         .into_iter()
-        .chain(segment_walk.missing_folder)
+        .chain(commentary_walk.missing_folder)
         .collect();
 
     // UPSERT all found files.  The candidate UUID is only used for new rows —
     // ON CONFLICT(path) preserves the original id on update.
     let mut seen_movie_paths: HashSet<String> = HashSet::new();
-    let mut seen_segment_paths: HashSet<String> = HashSet::new();
+    let mut seen_commentary_paths: HashSet<String> = HashSet::new();
 
-    for row in movie_walk.rows.iter().chain(segment_walk.rows.iter()) {
+    for row in movie_walk.rows.iter().chain(commentary_walk.rows.iter()) {
         let display_name = normalize_filename(&row.filename);
         let result = sqlx::query(
             "INSERT INTO media_file (id, filename, display_name, path, folder_root, size_bytes, last_seen_at, is_missing)
@@ -375,7 +375,7 @@ pub(crate) async fn scan_library(
                 if row.folder_root == "movies" {
                     seen_movie_paths.insert(row.path.clone());
                 } else {
-                    seen_segment_paths.insert(row.path.clone());
+                    seen_commentary_paths.insert(row.path.clone());
                 }
             }
             Err(e) => errors.push(format!("DB_ERROR: could not upsert {}: {e}", row.path)),
@@ -383,13 +383,13 @@ pub(crate) async fn scan_library(
     }
 
     // Mark any previously-seen files that were not found this scan as missing.
-    // Note: if the user has changed movies_folder or segments_folder to a different
+    // Note: if the user has changed movies_folder or commentary_folder to a different
     // path, all rows from the old path will be marked is_missing=1 — this is
     // intentional; they are preserved for diagnostics.
     if let Err(e) = mark_missing(pool, "movies", &seen_movie_paths).await {
         errors.push(e);
     }
-    if let Err(e) = mark_missing(pool, "segments", &seen_segment_paths).await {
+    if let Err(e) = mark_missing(pool, "commentary", &seen_commentary_paths).await {
         errors.push(e);
     }
 
@@ -408,13 +408,13 @@ pub(crate) async fn scan_library(
         serde_json::to_string(&missing_folders).unwrap_or_else(|_| "[]".to_string());
     let persist_result = sqlx::query(
         "INSERT OR REPLACE INTO scan_summary
-         (id, last_scan_at, movie_file_count, segment_file_count, errors_json, missing_folders_json,
+         (id, last_scan_at, movie_file_count, commentary_file_count, errors_json, missing_folders_json,
           matched_count, low_confidence_count, missing_count)
          VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(&last_scan_at)
     .bind(movie_file_count as i64)
-    .bind(segment_file_count as i64)
+    .bind(commentary_file_count as i64)
     .bind(&errors_json)
     .bind(&missing_folders_json)
     .bind(match_summary.matched as i64)
@@ -432,7 +432,7 @@ pub(crate) async fn scan_library(
     Ok(ScanResult {
         last_scan_at,
         movie_file_count,
-        segment_file_count,
+        commentary_file_count,
         errors,
         missing_folders,
         match_summary,
@@ -442,7 +442,7 @@ pub(crate) async fn scan_library(
 pub(crate) async fn match_media_files(pool: &SqlitePool) -> Result<MatchSummary, String> {
     let slots: Vec<SlotMatchRow> =
         sqlx::query_as::<_, (String, Option<String>, Option<String>, Option<String>)>(
-            "SELECT id, movie_title, movie_aliases_json, host_label FROM movie_slot",
+            "SELECT id, movie_title, movie_aliases_json, commentary FROM movie_slot",
         )
         .fetch_all(pool)
         .await
@@ -450,11 +450,11 @@ pub(crate) async fn match_media_files(pool: &SqlitePool) -> Result<MatchSummary,
         .map(|rows| {
             rows.into_iter()
                 .map(
-                    |(id, movie_title, movie_aliases_json, host_label)| SlotMatchRow {
+                    |(id, movie_title, movie_aliases_json, commentary)| SlotMatchRow {
                         id,
                         movie_title,
                         movie_aliases_json,
-                        host_label,
+                        commentary,
                     },
                 )
                 .collect()
@@ -477,9 +477,9 @@ pub(crate) async fn match_media_files(pool: &SqlitePool) -> Result<MatchSummary,
         .map(|(id, filename, _)| (id.clone(), filename.clone()))
         .collect();
 
-    let segment_files: Vec<(String, String)> = all_files
+    let commentary_files: Vec<(String, String)> = all_files
         .iter()
-        .filter(|(_, _, root)| root == "segments")
+        .filter(|(_, _, root)| root == "commentary")
         .map(|(id, filename, _)| (id.clone(), filename.clone()))
         .collect();
 
@@ -497,26 +497,26 @@ pub(crate) async fn match_media_files(pool: &SqlitePool) -> Result<MatchSummary,
         }
     }
 
-    let mut segment_candidates: Vec<(f64, String, String)> = Vec::new();
+    let mut commentary_candidates: Vec<(f64, String, String)> = Vec::new();
 
-    for (file_id, filename) in &segment_files {
+    for (file_id, filename) in &commentary_files {
         let norm_file = normalize_for_match(filename);
 
         for slot in &slots {
-            let Some(ref host_label) = slot.host_label else {
+            let Some(ref commentary) = slot.commentary else {
                 continue;
             };
-            let score = jaro_winkler(&norm_file, &normalize_for_match(host_label));
+            let score = jaro_winkler(&norm_file, &normalize_for_match(commentary));
 
             if score > 0.0 {
-                segment_candidates.push((score, slot.id.clone(), file_id.clone()));
+                commentary_candidates.push((score, slot.id.clone(), file_id.clone()));
             }
         }
     }
 
     // Assign best-match uniqueness for each file type.
     let movie_assignments = assign_best_matches(movie_candidates);
-    let segment_assignments = assign_best_matches(segment_candidates);
+    let commentary_assignments = assign_best_matches(commentary_candidates);
 
     let now = Utc::now().to_rfc3339();
     let mut summary = MatchSummary::default();
@@ -527,15 +527,15 @@ pub(crate) async fn match_media_files(pool: &SqlitePool) -> Result<MatchSummary,
         upsert_file_match(pool, &slot.id, "movie", outcome, &now, &mut summary).await?;
     }
 
-    // Persist segment matches.
+    // Persist commentary matches.
     for slot in &slots {
-        if slot.host_label.is_none() {
-            // No host_label — can't match segments; insert missing.
-            upsert_file_match(pool, &slot.id, "segment", None, &now, &mut summary).await?;
+        if slot.commentary.is_none() {
+            // No commentary — can't match commentary; insert missing.
+            upsert_file_match(pool, &slot.id, "commentary", None, &now, &mut summary).await?;
             continue;
         }
-        let outcome = segment_assignments.get(&slot.id);
-        upsert_file_match(pool, &slot.id, "segment", outcome, &now, &mut summary).await?;
+        let outcome = commentary_assignments.get(&slot.id);
+        upsert_file_match(pool, &slot.id, "commentary", outcome, &now, &mut summary).await?;
     }
 
     Ok(summary)
@@ -548,15 +548,15 @@ mod tests {
     use super::*;
     use crate::test_support::{setup, setup_episode, setup_media_file, setup_movie_slot};
 
-    async fn setup_with_folders(movies: &str, segments: &str) -> SqlitePool {
+    async fn setup_with_folders(movies: &str, commentary: &str) -> SqlitePool {
         let pool = setup().await;
         let now = Utc::now().to_rfc3339();
         sqlx::query(
-            "INSERT INTO app_settings (id, movies_folder, segments_folder, scan_on_startup, theme, created_at, updated_at)
+            "INSERT INTO app_settings (id, movies_folder, commentary_folder, scan_on_startup, theme, created_at, updated_at)
              VALUES (1, ?, ?, 0, 'dark', ?, ?)",
         )
         .bind(movies)
-        .bind(segments)
+        .bind(commentary)
         .bind(&now)
         .bind(&now)
         .execute(&pool)
@@ -578,7 +578,7 @@ mod tests {
     #[tokio::test]
     async fn scan_library_walks_subdirectories() {
         let movies_dir = TempDir::new().unwrap();
-        let segments_dir = TempDir::new().unwrap();
+        let commentary_dir = TempDir::new().unwrap();
 
         let sub = movies_dir.path().join("subfolder");
         std::fs::create_dir_all(&sub).unwrap();
@@ -587,7 +587,7 @@ mod tests {
 
         let pool = setup_with_folders(
             movies_dir.path().to_str().unwrap(),
-            segments_dir.path().to_str().unwrap(),
+            commentary_dir.path().to_str().unwrap(),
         )
         .await;
 
@@ -598,12 +598,12 @@ mod tests {
     #[tokio::test]
     async fn scan_library_is_idempotent() {
         let movies_dir = TempDir::new().unwrap();
-        let segments_dir = TempDir::new().unwrap();
+        let commentary_dir = TempDir::new().unwrap();
         touch(&movies_dir, "film.mkv");
 
         let pool = setup_with_folders(
             movies_dir.path().to_str().unwrap(),
-            segments_dir.path().to_str().unwrap(),
+            commentary_dir.path().to_str().unwrap(),
         )
         .await;
 
@@ -620,12 +620,12 @@ mod tests {
     #[tokio::test]
     async fn scan_library_marks_removed_file_missing() {
         let movies_dir = TempDir::new().unwrap();
-        let segments_dir = TempDir::new().unwrap();
+        let commentary_dir = TempDir::new().unwrap();
         let file_path = touch(&movies_dir, "film.mkv");
 
         let pool = setup_with_folders(
             movies_dir.path().to_str().unwrap(),
-            segments_dir.path().to_str().unwrap(),
+            commentary_dir.path().to_str().unwrap(),
         )
         .await;
 
@@ -650,7 +650,7 @@ mod tests {
 
     #[tokio::test]
     async fn scan_library_handles_missing_folder() {
-        let pool = setup_with_folders("/does_not_exist_movies", "/does_not_exist_segments").await;
+        let pool = setup_with_folders("/does_not_exist_movies", "/does_not_exist_commentary").await;
         let result = scan_library(&pool, &flag()).await;
         assert!(result.is_ok(), "missing folders should not return Err");
         let r = result.unwrap();
@@ -659,7 +659,7 @@ mod tests {
             .contains(&"/does_not_exist_movies".to_string()));
         assert!(r
             .missing_folders
-            .contains(&"/does_not_exist_segments".to_string()));
+            .contains(&"/does_not_exist_commentary".to_string()));
     }
 
     #[tokio::test]
@@ -673,7 +673,7 @@ mod tests {
     #[tokio::test]
     async fn scan_library_succeeds_when_folders_set() {
         // Non-existent folders → ScanResult with missing_folders, still Ok.
-        let pool = setup_with_folders("/nonexistent_movies", "/nonexistent_segments").await;
+        let pool = setup_with_folders("/nonexistent_movies", "/nonexistent_commentary").await;
         let result = scan_library(&pool, &flag()).await;
         assert!(result.is_ok());
         let r = result.unwrap();
@@ -683,7 +683,7 @@ mod tests {
 
     #[tokio::test]
     async fn scan_library_returns_scan_in_progress_on_double_call() {
-        let pool = setup_with_folders("/movies", "/segments").await;
+        let pool = setup_with_folders("/movies", "/commentary").await;
         let scanning = flag();
         scanning.store(true, Ordering::SeqCst);
         let result = scan_library(&pool, &scanning).await;
@@ -694,19 +694,19 @@ mod tests {
     #[tokio::test]
     async fn scan_library_indexes_video_files() {
         let movies_dir = TempDir::new().unwrap();
-        let segments_dir = TempDir::new().unwrap();
+        let commentary_dir = TempDir::new().unwrap();
         touch(&movies_dir, "film.mkv");
         touch(&movies_dir, "another.mp4");
 
         let pool = setup_with_folders(
             movies_dir.path().to_str().unwrap(),
-            segments_dir.path().to_str().unwrap(),
+            commentary_dir.path().to_str().unwrap(),
         )
         .await;
 
         let result = scan_library(&pool, &flag()).await.unwrap();
         assert_eq!(result.movie_file_count, 2);
-        assert_eq!(result.segment_file_count, 0);
+        assert_eq!(result.commentary_file_count, 0);
 
         let count: (i64,) =
             sqlx::query_as("SELECT COUNT(*) FROM media_file WHERE folder_root = 'movies'")
@@ -719,7 +719,7 @@ mod tests {
     #[tokio::test]
     async fn scan_library_ignores_non_video_files() {
         let movies_dir = TempDir::new().unwrap();
-        let segments_dir = TempDir::new().unwrap();
+        let commentary_dir = TempDir::new().unwrap();
         touch(&movies_dir, "film.mkv");
         touch(&movies_dir, "info.nfo");
         touch(&movies_dir, "cover.jpg");
@@ -727,7 +727,7 @@ mod tests {
 
         let pool = setup_with_folders(
             movies_dir.path().to_str().unwrap(),
-            segments_dir.path().to_str().unwrap(),
+            commentary_dir.path().to_str().unwrap(),
         )
         .await;
 
@@ -751,13 +751,13 @@ mod tests {
     #[tokio::test]
     async fn get_scan_summary_returns_result_after_scan() {
         let movies_dir = TempDir::new().unwrap();
-        let segments_dir = TempDir::new().unwrap();
+        let commentary_dir = TempDir::new().unwrap();
         touch(&movies_dir, "a.mkv");
-        touch(&segments_dir, "b.mp4");
+        touch(&commentary_dir, "b.mp4");
 
         let pool = setup_with_folders(
             movies_dir.path().to_str().unwrap(),
-            segments_dir.path().to_str().unwrap(),
+            commentary_dir.path().to_str().unwrap(),
         )
         .await;
 
@@ -767,7 +767,7 @@ mod tests {
         assert!(summary.is_some());
         let s = summary.unwrap();
         assert_eq!(s.movie_file_count, 1);
-        assert_eq!(s.segment_file_count, 1);
+        assert_eq!(s.commentary_file_count, 1);
         assert!(s.missing_folders.is_empty());
         assert!(s.errors.is_empty());
     }
@@ -850,7 +850,7 @@ mod tests {
         // No media files inserted.
 
         let summary = match_media_files(&pool).await.unwrap();
-        // Slot has movie_title but no host_label → movie: missing + segment: missing = 2.
+        // Slot has movie_title but no commentary → movie: missing + commentary: missing = 2.
         assert_eq!(summary.missing, 2);
 
         let row: (String,) = sqlx::query_as(
@@ -872,8 +872,8 @@ mod tests {
         setup_media_file(&pool, "mf-1", "Castle Freak (1995).mkv", "movies").await;
 
         let summary = match_media_files(&pool).await.unwrap();
-        // Each slot also gets a segment match (both missing, no host_label).
-        // Movie: 1 matched/low-confidence + 1 missing. Segment: 2 missing. Total missing = 3.
+        // Each slot also gets a commentary match (both missing, no commentary).
+        // Movie: 1 matched/low-confidence + 1 missing. Commentary: 2 missing. Total missing = 3.
         assert_eq!(summary.matched + summary.low_confidence, 1);
         assert_eq!(summary.missing, 3);
     }
@@ -916,16 +916,16 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn match_media_files_segment_by_host_label() {
+    async fn match_media_files_commentary_by_label() {
         let pool = setup().await;
         let slot_id = setup_movie_slot(&pool, "ep-1", "a", "Castle Freak", None).await;
-        setup_media_file(&pool, "sf-1", "S01E01A Segments.mkv", "segments").await;
+        setup_media_file(&pool, "sf-1", "S01E01A Commentary.mkv", "commentary").await;
 
         let summary = match_media_files(&pool).await.unwrap();
         assert_eq!(summary.matched, 1);
 
         let row: (Option<String>, String) = sqlx::query_as(
-            "SELECT media_file_id, match_status FROM file_match WHERE slot_id = ? AND file_type = 'segment'",
+            "SELECT media_file_id, match_status FROM file_match WHERE slot_id = ? AND file_type = 'commentary'",
         )
         .bind(&slot_id)
         .fetch_one(&pool)

@@ -1,7 +1,7 @@
 import type { Episode, EpisodeStatus, MovieSlot } from '../features/episodes/types'
 
 function deriveSlotStatus(slot: MovieSlot): EpisodeStatus {
-    const matches = [slot.movieMatch, slot.segmentMatch]
+    const matches = [slot.movieMatch, slot.commentaryMatch]
 
     if (matches.some((m) => m.status === 'missing')) {
         return 'Missing Files'

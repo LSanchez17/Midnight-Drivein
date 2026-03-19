@@ -32,7 +32,7 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
             <div className="space-y-1">
                 <Row label="Last scan" value={formatDate(result.lastScanAt)} />
                 <Row label="Movie files" value={result.movieFileCount} />
-                <Row label="Segment files" value={result.segmentFileCount} />
+                <Row label="Commentary files" value={result.commentaryFileCount} />
             </div>
             <div>
                 <p

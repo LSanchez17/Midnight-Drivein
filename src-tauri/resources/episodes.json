@@ -11,7 +11,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S01E01A Segments",
+                "commentary": "S01E01A Commentary",
                 "movie": {
                     "title": "C.H.U.D.",
                     "year": 1984,
@@ -21,7 +21,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S01E01B Segments",
+                "commentary": "S01E01B Commentary",
                 "movie": {
                     "title": "Castle Freak",
                     "year": 1995,
@@ -43,7 +43,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S01E02A Segments",
+                "commentary": "S01E02A Commentary",
                 "movie": {
                     "title": "Q: The Winged Serpent",
                     "year": 1982,
@@ -53,7 +53,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S01E02B Segments",
+                "commentary": "S01E02B Commentary",
                 "movie": {
                     "title": "Society",
                     "year": 1989,
@@ -77,23 +77,65 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S01E03A Segments",
+                "commentary": "deathgasm commentary",
                 "movie": {
                     "title": "Deathgasm",
                     "year": 2015,
                     "aliases": []
                 },
-                "cuts": []
+                "cuts": [
+                    {
+                        "source": "commentary",
+                        "start_ms": 0,
+                        "end_ms": 60000
+                    },
+                    {
+                        "source": "movie",
+                        "start_ms": 60000,
+                        "end_ms": 150000
+                    },
+                    {
+                        "source": "commentary",
+                        "start_ms": 150000,
+                        "end_ms": 210000
+                    },
+                    {
+                        "source": "movie",
+                        "start_ms": 210000,
+                        "end_ms": null
+                    }
+                ]
             },
             {
                 "slot": "b",
-                "host_label": "S01E03B Segments",
+                "commentary": "the changeling commentary",
                 "movie": {
                     "title": "The Changeling",
                     "year": 1980,
                     "aliases": []
                 },
-                "cuts": []
+                "cuts": [
+                    {
+                        "source": "commentary",
+                        "start_ms": 0,
+                        "end_ms": 120000
+                    },
+                    {
+                        "source": "movie",
+                        "start_ms": 120000,
+                        "end_ms": 240000
+                    },
+                    {
+                        "source": "commentary",
+                        "start_ms": 240000,
+                        "end_ms": 300000
+                    },
+                    {
+                        "source": "movie",
+                        "start_ms": 300000,
+                        "end_ms": null
+                    }
+                ]
             }
         ]
     },
@@ -111,7 +153,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S01E04A Segments",
+                "commentary": "S01E04A Commentary",
                 "movie": {
                     "title": "Madman",
                     "year": 1982,
@@ -121,7 +163,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S01E04B Segments",
+                "commentary": "S01E04B Commentary",
                 "movie": {
                     "title": "Wolfguy: Enraged Lycanthrope",
                     "year": 1975,
@@ -143,7 +185,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S01E05A Segments",
+                "commentary": "S01E05A Commentary",
                 "movie": {
                     "title": "Demon Wind",
                     "year": 1990,
@@ -153,7 +195,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S01E05B Segments",
+                "commentary": "S01E05B Commentary",
                 "movie": {
                     "title": "The House of the Devil",
                     "year": 2009,
@@ -178,7 +220,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S01E06A Segments",
+                "commentary": "S01E06A Commentary",
                 "movie": {
                     "title": "WolfCop",
                     "year": 2014,
@@ -188,7 +230,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S01E06B Segments",
+                "commentary": "S01E06B Commentary",
                 "movie": {
                     "title": "Henry: Portrait of a Serial Killer",
                     "year": 1986,
@@ -210,7 +252,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S01E07A Segments",
+                "commentary": "S01E07A Commentary",
                 "movie": {
                     "title": "Contamination",
                     "year": 1980,
@@ -220,7 +262,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S01E07B Segments",
+                "commentary": "S01E07B Commentary",
                 "movie": {
                     "title": "A Girl Walks Home Alone at Night",
                     "year": 2014,
@@ -244,7 +286,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S01E08A Segments",
+                "commentary": "S01E08A Commentary",
                 "movie": {
                     "title": "The Stuff",
                     "year": 1985,
@@ -254,7 +296,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S01E08B Segments",
+                "commentary": "S01E08B Commentary",
                 "movie": {
                     "title": "Street Trash",
                     "year": 1987,
@@ -279,7 +321,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S01E09A Segments",
+                "commentary": "S01E09A Commentary",
                 "movie": {
                     "title": "Blood Harvest",
                     "year": 1987,
@@ -289,7 +331,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S01E09B Segments",
+                "commentary": "S01E09B Commentary",
                 "movie": {
                     "title": "Hello Mary Lou: Prom Night II",
                     "year": 1987,
@@ -314,7 +356,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E01A Segments",
+                "commentary": "S02E01A Commentary",
                 "movie": {
                     "title": "Chopping Mall",
                     "year": 1986,
@@ -324,7 +366,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E01B Segments",
+                "commentary": "S02E01B Commentary",
                 "movie": {
                     "title": "Bloodsucking Freaks",
                     "year": 1976,
@@ -348,7 +390,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E02A Segments",
+                "commentary": "S02E02A Commentary",
                 "movie": {
                     "title": "Maniac",
                     "year": 1980,
@@ -358,7 +400,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E02B Segments",
+                "commentary": "S02E02B Commentary",
                 "movie": {
                     "title": "Heathers",
                     "year": 1988,
@@ -382,7 +424,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E03A Segments",
+                "commentary": "S02E03A Commentary",
                 "movie": {
                     "title": "Brain Damage",
                     "year": 1988,
@@ -392,7 +434,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E03B Segments",
+                "commentary": "S02E03B Commentary",
                 "movie": {
                     "title": "Deep Red",
                     "year": 1975,
@@ -417,7 +459,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E04A Segments",
+                "commentary": "S02E04A Commentary",
                 "movie": {
                     "title": "Troma's War",
                     "year": 1988,
@@ -427,7 +469,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E04B Segments",
+                "commentary": "S02E04B Commentary",
                 "movie": {
                     "title": "One Cut of the Dead",
                     "year": 2017,
@@ -449,7 +491,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E05A Segments",
+                "commentary": "S02E05A Commentary",
                 "movie": {
                     "title": "The Exorcist III",
                     "year": 1990,
@@ -459,7 +501,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E05B Segments",
+                "commentary": "S02E05B Commentary",
                 "movie": {
                     "title": "Deadbeat at Dawn",
                     "year": 1988,
@@ -483,7 +525,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E06A Segments",
+                "commentary": "S02E06A Commentary",
                 "movie": {
                     "title": "Dead Heat",
                     "year": 1988,
@@ -493,7 +535,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E06B Segments",
+                "commentary": "S02E06B Commentary",
                 "movie": {
                     "title": "Cannibal Holocaust",
                     "year": 1980,
@@ -517,7 +559,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E07A Segments",
+                "commentary": "S02E07A Commentary",
                 "movie": {
                     "title": "Mayhem",
                     "year": 2017,
@@ -527,7 +569,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E07B Segments",
+                "commentary": "S02E07B Commentary",
                 "movie": {
                     "title": "Tetsuo: The Iron Man",
                     "year": 1989,
@@ -549,7 +591,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E08A Segments",
+                "commentary": "S02E08A Commentary",
                 "movie": {
                     "title": "Scare Package",
                     "year": 2020,
@@ -559,7 +601,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E08B Segments",
+                "commentary": "S02E08B Commentary",
                 "movie": {
                     "title": "Hogzilla",
                     "year": 2020,
@@ -584,7 +626,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E09A Segments",
+                "commentary": "S02E09A Commentary",
                 "movie": {
                     "title": "Hellbound: Hellraiser II",
                     "year": 1988,
@@ -594,7 +636,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E09B Segments",
+                "commentary": "S02E09B Commentary",
                 "movie": {
                     "title": "Hell Comes to Frogtown",
                     "year": 1988,
@@ -622,7 +664,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S02E10A Segments",
+                "commentary": "S02E10A Commentary",
                 "movie": {
                     "title": "Slumber Party Massacre II",
                     "year": 1987,
@@ -632,7 +674,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S02E10B Segments",
+                "commentary": "S02E10B Commentary",
                 "movie": {
                     "title": "Victor Crowley",
                     "year": 2017,
@@ -656,7 +698,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E01A Segments",
+                "commentary": "S03E01A Commentary",
                 "movie": {
                     "title": "Mother's Day",
                     "year": 1980,
@@ -666,7 +708,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E01B Segments",
+                "commentary": "S03E01B Commentary",
                 "movie": {
                     "title": "The House by the Cemetery",
                     "year": 1981,
@@ -690,7 +732,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E02A Segments",
+                "commentary": "S03E02A Commentary",
                 "movie": {
                     "title": "Audition",
                     "year": 1999,
@@ -700,7 +742,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E02B Segments",
+                "commentary": "S03E02B Commentary",
                 "movie": {
                     "title": "Class of 1984",
                     "year": 1982,
@@ -724,7 +766,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E03A Segments",
+                "commentary": "S03E03A Commentary",
                 "movie": {
                     "title": "Bride of Re-Animator",
                     "year": 1990,
@@ -734,7 +776,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E03B Segments",
+                "commentary": "S03E03B Commentary",
                 "movie": {
                     "title": "Next of Kin",
                     "year": 1982,
@@ -758,7 +800,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E04A Segments",
+                "commentary": "S03E04A Commentary",
                 "movie": {
                     "title": "Ginger Snaps",
                     "year": 2000,
@@ -768,7 +810,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E04B Segments",
+                "commentary": "S03E04B Commentary",
                 "movie": {
                     "title": "Fried Barry",
                     "year": 2020,
@@ -790,7 +832,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E05A Segments",
+                "commentary": "S03E05A Commentary",
                 "movie": {
                     "title": "Mandy",
                     "year": 2018,
@@ -800,7 +842,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E05B Segments",
+                "commentary": "S03E05B Commentary",
                 "movie": {
                     "title": "Dead & Buried",
                     "year": 1981,
@@ -825,7 +867,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E06A Segments",
+                "commentary": "S03E06A Commentary",
                 "movie": {
                     "title": "Maniac Cop",
                     "year": 1988,
@@ -835,7 +877,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E06B Segments",
+                "commentary": "S03E06B Commentary",
                 "movie": {
                     "title": "Maniac Cop 2",
                     "year": 1990,
@@ -857,7 +899,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E07A Segments",
+                "commentary": "S03E07A Commentary",
                 "movie": {
                     "title": "Train to Busan",
                     "year": 2016,
@@ -867,7 +909,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E07B Segments",
+                "commentary": "S03E07B Commentary",
                 "movie": {
                     "title": "Spookies",
                     "year": 1986,
@@ -891,7 +933,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E08A Segments",
+                "commentary": "S03E08A Commentary",
                 "movie": {
                     "title": "Sledgehammer",
                     "year": 1983,
@@ -901,7 +943,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E08B Segments",
+                "commentary": "S03E08B Commentary",
                 "movie": {
                     "title": "Things",
                     "year": 1989,
@@ -925,7 +967,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E09A Segments",
+                "commentary": "S03E09A Commentary",
                 "movie": {
                     "title": "Evilspeak",
                     "year": 1981,
@@ -935,7 +977,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E09B Segments",
+                "commentary": "S03E09B Commentary",
                 "movie": {
                     "title": "The Day of the Beast",
                     "year": 1995,
@@ -959,7 +1001,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S03E10A Segments",
+                "commentary": "S03E10A Commentary",
                 "movie": {
                     "title": "The Little Shop of Horrors",
                     "year": 1960,
@@ -969,7 +1011,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S03E10B Segments",
+                "commentary": "S03E10B Commentary",
                 "movie": {
                     "title": "Humanoids from the Deep",
                     "year": 1980,
@@ -994,7 +1036,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E01A Segments",
+                "commentary": "S04E01A Commentary",
                 "movie": {
                     "title": "Night of the Living Dead",
                     "year": 1968,
@@ -1004,7 +1046,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E01B Segments",
+                "commentary": "S04E01B Commentary",
                 "movie": {
                     "title": "Antropophagus",
                     "year": 1980,
@@ -1026,7 +1068,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E02A Segments",
+                "commentary": "S04E02A Commentary",
                 "movie": {
                     "title": "Black Sunday",
                     "year": 1960,
@@ -1036,7 +1078,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E02B Segments",
+                "commentary": "S04E02B Commentary",
                 "movie": {
                     "title": "Def by Temptation",
                     "year": 1990,
@@ -1058,7 +1100,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E03A Segments",
+                "commentary": "S04E03A Commentary",
                 "movie": {
                     "title": "The Little Girl Who Lives Down the Lane",
                     "year": 1976,
@@ -1068,7 +1110,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E03B Segments",
+                "commentary": "S04E03B Commentary",
                 "movie": {
                     "title": "Housebound",
                     "year": 2014,
@@ -1090,7 +1132,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E04A Segments",
+                "commentary": "S04E04A Commentary",
                 "movie": {
                     "title": "Nosferatu",
                     "year": 1922,
@@ -1100,7 +1142,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E04B Segments",
+                "commentary": "S04E04B Commentary",
                 "movie": {
                     "title": "Nosferatu the Vampyre",
                     "year": 1979,
@@ -1122,7 +1164,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E05A Segments",
+                "commentary": "S04E05A Commentary",
                 "movie": {
                     "title": "Slaughterhouse",
                     "year": 1987,
@@ -1132,7 +1174,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E05B Segments",
+                "commentary": "S04E05B Commentary",
                 "movie": {
                     "title": "Tenebrae",
                     "year": 1982,
@@ -1158,7 +1200,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E06A Segments",
+                "commentary": "S04E06A Commentary",
                 "movie": {
                     "title": "The Monster Club",
                     "year": 1981,
@@ -1168,7 +1210,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E06B Segments",
+                "commentary": "S04E06B Commentary",
                 "movie": {
                     "title": "Hellbender",
                     "year": 2021,
@@ -1190,7 +1232,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E07A Segments",
+                "commentary": "S04E07A Commentary",
                 "movie": {
                     "title": "Butcher, Baker, Nightmare Maker",
                     "year": 1981,
@@ -1200,7 +1242,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E07B Segments",
+                "commentary": "S04E07B Commentary",
                 "movie": {
                     "title": "The Baby",
                     "year": 1973,
@@ -1222,7 +1264,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E08A Segments",
+                "commentary": "S04E08A Commentary",
                 "movie": {
                     "title": "The Stepfather",
                     "year": 1987,
@@ -1232,7 +1274,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E08B Segments",
+                "commentary": "S04E08B Commentary",
                 "movie": {
                     "title": "The Freakmaker",
                     "year": 1974,
@@ -1257,7 +1299,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E09A Segments",
+                "commentary": "S04E09A Commentary",
                 "movie": {
                     "title": "Head of the Family",
                     "year": 1996,
@@ -1267,7 +1309,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E09B Segments",
+                "commentary": "S04E09B Commentary",
                 "movie": {
                     "title": "Habit",
                     "year": 1997,
@@ -1289,7 +1331,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S04E10A Segments",
+                "commentary": "S04E10A Commentary",
                 "movie": {
                     "title": "Uncle Sam",
                     "year": 1996,
@@ -1299,7 +1341,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S04E10B Segments",
+                "commentary": "S04E10B Commentary",
                 "movie": {
                     "title": "Nightbreed",
                     "year": 1990,
@@ -1328,7 +1370,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E01A Segments",
+                "commentary": "S05E01A Commentary",
                 "movie": {
                     "title": "Zombi 2",
                     "year": 1979,
@@ -1338,7 +1380,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E01B Segments",
+                "commentary": "S05E01B Commentary",
                 "movie": {
                     "title": "The Beyond",
                     "year": 1981,
@@ -1362,7 +1404,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E02A Segments",
+                "commentary": "S05E02A Commentary",
                 "movie": {
                     "title": "Witchboard",
                     "year": 1986,
@@ -1372,7 +1414,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E02B Segments",
+                "commentary": "S05E02B Commentary",
                 "movie": {
                     "title": "The Devil's Rain",
                     "year": 1975,
@@ -1394,7 +1436,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E03A Segments",
+                "commentary": "S05E03A Commentary",
                 "movie": {
                     "title": "Don't Panic",
                     "year": 1987,
@@ -1404,7 +1446,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E03B Segments",
+                "commentary": "S05E03B Commentary",
                 "movie": {
                     "title": "Tigers Are Not Afraid",
                     "year": 2017,
@@ -1426,7 +1468,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E04A Segments",
+                "commentary": "S05E04A Commentary",
                 "movie": {
                     "title": "The Babadook",
                     "year": 2014,
@@ -1436,7 +1478,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E04B Segments",
+                "commentary": "S05E04B Commentary",
                 "movie": {
                     "title": "The Muthers",
                     "year": 1976,
@@ -1458,7 +1500,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E05A Segments",
+                "commentary": "S05E05A Commentary",
                 "movie": {
                     "title": "The Mutilator",
                     "year": 1984,
@@ -1468,7 +1510,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E05B Segments",
+                "commentary": "S05E05B Commentary",
                 "movie": {
                     "title": "Possession",
                     "year": 1981,
@@ -1492,7 +1534,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E06A Segments",
+                "commentary": "S05E06A Commentary",
                 "movie": {
                     "title": "Sharknado",
                     "year": 2013,
@@ -1502,7 +1544,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E06B Segments",
+                "commentary": "S05E06B Commentary",
                 "movie": {
                     "title": "Amsterdamned",
                     "year": 1988,
@@ -1524,7 +1566,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E07A Segments",
+                "commentary": "S05E07A Commentary",
                 "movie": {
                     "title": "Dark Night of the Scarecrow",
                     "year": 1981,
@@ -1534,7 +1576,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E07B Segments",
+                "commentary": "S05E07B Commentary",
                 "movie": {
                     "title": "Beyond the Door III",
                     "year": 1989,
@@ -1558,7 +1600,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E08A Segments",
+                "commentary": "S05E08A Commentary",
                 "movie": {
                     "title": "Mad God",
                     "year": 2021,
@@ -1568,7 +1610,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E08B Segments",
+                "commentary": "S05E08B Commentary",
                 "movie": {
                     "title": "Perfect Blue",
                     "year": 1997,
@@ -1590,7 +1632,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E09A Segments",
+                "commentary": "S05E09A Commentary",
                 "movie": {
                     "title": "Alligator",
                     "year": 1980,
@@ -1600,7 +1642,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E09B Segments",
+                "commentary": "S05E09B Commentary",
                 "movie": {
                     "title": "Grizzly",
                     "year": 1976,
@@ -1626,7 +1668,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S05E10A Segments",
+                "commentary": "S05E10A Commentary",
                 "movie": {
                     "title": "The Living Dead at Manchester Morgue",
                     "year": 1974,
@@ -1636,7 +1678,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S05E10B Segments",
+                "commentary": "S05E10B Commentary",
                 "movie": {
                     "title": "Day of the Dead",
                     "year": 1985,
@@ -1658,7 +1700,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E01 Segments",
+                "commentary": "S06E01 Commentary",
                 "movie": {
                     "title": "Rottentail",
                     "year": 2019,
@@ -1684,7 +1726,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E02 Segments",
+                "commentary": "S06E02 Commentary",
                 "movie": {
                     "title": "The Toxic Avenger",
                     "year": 1984,
@@ -1710,7 +1752,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E03 Segments",
+                "commentary": "S06E03 Commentary",
                 "movie": {
                     "title": "The Autopsy of Jane Doe",
                     "year": 2016,
@@ -1732,7 +1774,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E04 Segments",
+                "commentary": "S06E04 Commentary",
                 "movie": {
                     "title": "Death Spa",
                     "year": 1988,
@@ -1754,7 +1796,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E05 Segments",
+                "commentary": "S06E05 Commentary",
                 "movie": {
                     "title": "Graduation Day",
                     "year": 1981,
@@ -1778,7 +1820,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E06 Segments",
+                "commentary": "S06E06 Commentary",
                 "movie": {
                     "title": "Donnie Darko",
                     "year": 2001,
@@ -1802,7 +1844,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E07 Segments",
+                "commentary": "S06E07 Commentary",
                 "movie": {
                     "title": "Suitable Flesh",
                     "year": 2023,
@@ -1824,7 +1866,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E08 Segments",
+                "commentary": "S06E08 Commentary",
                 "movie": {
                     "title": "Dr. Giggles",
                     "year": 1992,
@@ -1846,7 +1888,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E09 Segments",
+                "commentary": "S06E09 Commentary",
                 "movie": {
                     "title": "Carnival of Souls",
                     "year": 1962,
@@ -1870,7 +1912,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E10 Segments",
+                "commentary": "S06E10 Commentary",
                 "movie": {
                     "title": "Death Game",
                     "year": 1977,
@@ -1892,7 +1934,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S06E11 Segments",
+                "commentary": "S06E11 Commentary",
                 "movie": {
                     "title": "Cemetery Man",
                     "year": 1994,
@@ -1917,7 +1959,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E01A Segments",
+                "commentary": "S07E01A Commentary",
                 "movie": {
                     "title": "The Phantom of the Opera",
                     "year": 1925,
@@ -1927,7 +1969,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E01B Segments",
+                "commentary": "S07E01B Commentary",
                 "movie": {
                     "title": "Opera",
                     "year": 1987,
@@ -1949,7 +1991,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E02A Segments",
+                "commentary": "S07E02A Commentary",
                 "movie": {
                     "title": "Intruder",
                     "year": 1989,
@@ -1959,7 +2001,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E02B Segments",
+                "commentary": "S07E02B Commentary",
                 "movie": {
                     "title": "In a Violent Nature",
                     "year": 2024,
@@ -1981,7 +2023,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E03A Segments",
+                "commentary": "S07E03A Commentary",
                 "movie": {
                     "title": "The City of the Dead",
                     "year": 1960,
@@ -1991,7 +2033,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E03B Segments",
+                "commentary": "S07E03B Commentary",
                 "movie": {
                     "title": "Ringu",
                     "year": 1998,
@@ -2015,7 +2057,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E04A Segments",
+                "commentary": "S07E04A Commentary",
                 "movie": {
                     "title": "Earth vs. the Spider",
                     "year": 1958,
@@ -2025,7 +2067,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E04B Segments",
+                "commentary": "S07E04B Commentary",
                 "movie": {
                     "title": "Dark Match",
                     "year": 2024,
@@ -2047,7 +2089,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E05A Segments",
+                "commentary": "S07E05A Commentary",
                 "movie": {
                     "title": "Dog Soldiers",
                     "year": 2002,
@@ -2057,7 +2099,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E05B Segments",
+                "commentary": "S07E05B Commentary",
                 "movie": {
                     "title": "Bad Moon",
                     "year": 1996,
@@ -2079,7 +2121,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E06A Segments",
+                "commentary": "S07E06A Commentary",
                 "movie": {
                     "title": "Piranha",
                     "year": 1978,
@@ -2089,7 +2131,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E06B Segments",
+                "commentary": "S07E06B Commentary",
                 "movie": {
                     "title": "Crocodile",
                     "year": 1980,
@@ -2113,7 +2155,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E07A Segments",
+                "commentary": "S07E07A Commentary",
                 "movie": {
                     "title": "This Night I'll Possess Your Corpse",
                     "year": 1967,
@@ -2123,7 +2165,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E07B Segments",
+                "commentary": "S07E07B Commentary",
                 "movie": {
                     "title": "The Church",
                     "year": 1989,
@@ -2147,7 +2189,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E08A Segments",
+                "commentary": "S07E08A Commentary",
                 "movie": {
                     "title": "Mute Witness",
                     "year": 1995,
@@ -2157,7 +2199,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E08B Segments",
+                "commentary": "S07E08B Commentary",
                 "movie": {
                     "title": "The Final Terror",
                     "year": 1983,
@@ -2184,7 +2226,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E09A Segments",
+                "commentary": "S07E09A Commentary",
                 "movie": {
                     "title": "The Bird with the Crystal Plumage",
                     "year": 1970,
@@ -2194,7 +2236,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E09B Segments",
+                "commentary": "S07E09B Commentary",
                 "movie": {
                     "title": "Blood and Black Lace",
                     "year": 1964,
@@ -2216,7 +2258,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E10A Segments",
+                "commentary": "S07E10A Commentary",
                 "movie": {
                     "title": "Don't Torture a Duckling",
                     "year": 1972,
@@ -2226,7 +2268,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E10B Segments",
+                "commentary": "S07E10B Commentary",
                 "movie": {
                     "title": "Don't Go in the Woods",
                     "year": 1981,
@@ -2248,7 +2290,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E11A Segments",
+                "commentary": "S07E11A Commentary",
                 "movie": {
                     "title": "House on Haunted Hill",
                     "year": 1959,
@@ -2258,7 +2300,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E11B Segments",
+                "commentary": "S07E11B Commentary",
                 "movie": {
                     "title": "The Innkeepers",
                     "year": 2011,
@@ -2280,7 +2322,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "S07E12A Segments",
+                "commentary": "S07E12A Commentary",
                 "movie": {
                     "title": "Messiah of Evil",
                     "year": 1974,
@@ -2290,7 +2332,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "S07E12B Segments",
+                "commentary": "S07E12B Commentary",
                 "movie": {
                     "title": "The Last Horror Film",
                     "year": 1982,
@@ -2315,7 +2357,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP01A Segments",
+                "commentary": "SP01A Commentary",
                 "movie": {
                     "title": "Tourist Trap",
                     "year": 1979,
@@ -2325,7 +2367,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP01B Segments",
+                "commentary": "SP01B Commentary",
                 "movie": {
                     "title": "Sleepaway Camp",
                     "year": 1983,
@@ -2335,7 +2377,7 @@
             },
             {
                 "slot": "c",
-                "host_label": "SP01C Segments",
+                "commentary": "SP01C Commentary",
                 "movie": {
                     "title": "Rabid",
                     "year": 1977,
@@ -2345,7 +2387,7 @@
             },
             {
                 "slot": "d",
-                "host_label": "SP01D Segments",
+                "commentary": "SP01D Commentary",
                 "movie": {
                     "title": "The Prowler",
                     "year": 1981,
@@ -2355,7 +2397,7 @@
             },
             {
                 "slot": "e",
-                "host_label": "SP01E Segments",
+                "commentary": "SP01E Commentary",
                 "movie": {
                     "title": "Sorority Babes in the Slimeball Bowl-O-Rama",
                     "year": 1988,
@@ -2365,7 +2407,7 @@
             },
             {
                 "slot": "f",
-                "host_label": "SP01F Segments",
+                "commentary": "SP01F Commentary",
                 "movie": {
                     "title": "Daughters of Darkness",
                     "year": 1971,
@@ -2375,7 +2417,7 @@
             },
             {
                 "slot": "g",
-                "host_label": "SP01G Segments",
+                "commentary": "SP01G Commentary",
                 "movie": {
                     "title": "Blood Feast",
                     "year": 1963,
@@ -2385,7 +2427,7 @@
             },
             {
                 "slot": "h",
-                "host_label": "SP01H Segments",
+                "commentary": "SP01H Commentary",
                 "movie": {
                     "title": "Basket Case",
                     "year": 1982,
@@ -2395,7 +2437,7 @@
             },
             {
                 "slot": "i",
-                "host_label": "SP01I Segments",
+                "commentary": "SP01I Commentary",
                 "movie": {
                     "title": "Re-Animator",
                     "year": 1985,
@@ -2405,7 +2447,7 @@
             },
             {
                 "slot": "j",
-                "host_label": "SP01J Segments",
+                "commentary": "SP01J Commentary",
                 "movie": {
                     "title": "Demons",
                     "year": 1985,
@@ -2415,7 +2457,7 @@
             },
             {
                 "slot": "k",
-                "host_label": "SP01K Segments",
+                "commentary": "SP01K Commentary",
                 "movie": {
                     "title": "The Legend of Boggy Creek",
                     "year": 1972,
@@ -2425,7 +2467,7 @@
             },
             {
                 "slot": "l",
-                "host_label": "SP01L Segments",
+                "commentary": "SP01L Commentary",
                 "movie": {
                     "title": "Hellraiser",
                     "year": 1987,
@@ -2435,7 +2477,7 @@
             },
             {
                 "slot": "m",
-                "host_label": "SP01M Segments",
+                "commentary": "SP01M Commentary",
                 "movie": {
                     "title": "Pieces",
                     "year": 1982,
@@ -2460,7 +2502,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP02A Segments",
+                "commentary": "SP02A Commentary",
                 "movie": {
                     "title": "The Texas Chain Saw Massacre",
                     "year": 1974,
@@ -2470,7 +2512,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP02B Segments",
+                "commentary": "SP02B Commentary",
                 "movie": {
                     "title": "The Hills Have Eyes",
                     "year": 1977,
@@ -2480,7 +2522,7 @@
             },
             {
                 "slot": "c",
-                "host_label": "SP02C Segments",
+                "commentary": "SP02C Commentary",
                 "movie": {
                     "title": "Dead or Alive",
                     "year": 1999,
@@ -2490,7 +2532,7 @@
             },
             {
                 "slot": "d",
-                "host_label": "SP02D Segments",
+                "commentary": "SP02D Commentary",
                 "movie": {
                     "title": "Blood Rage",
                     "year": 1987,
@@ -2515,7 +2557,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP03A Segments",
+                "commentary": "SP03A Commentary",
                 "movie": {
                     "title": "Phantasm",
                     "year": 1979,
@@ -2525,7 +2567,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP03B Segments",
+                "commentary": "SP03B Commentary",
                 "movie": {
                     "title": "Phantasm III: Lord of the Dead",
                     "year": 1994,
@@ -2535,7 +2577,7 @@
             },
             {
                 "slot": "c",
-                "host_label": "SP03C Segments",
+                "commentary": "SP03C Commentary",
                 "movie": {
                     "title": "Phantasm IV: Oblivion",
                     "year": 1998,
@@ -2545,7 +2587,7 @@
             },
             {
                 "slot": "d",
-                "host_label": "SP03D Segments",
+                "commentary": "SP03D Commentary",
                 "movie": {
                     "title": "Phantasm: Ravager",
                     "year": 2016,
@@ -2569,7 +2611,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP04A Segments",
+                "commentary": "SP04A Commentary",
                 "movie": {
                     "title": "Halloween",
                     "year": 1978,
@@ -2579,7 +2621,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP04B Segments",
+                "commentary": "SP04B Commentary",
                 "movie": {
                     "title": "Halloween 4: The Return of Michael Myers",
                     "year": 1988,
@@ -2589,7 +2631,7 @@
             },
             {
                 "slot": "c",
-                "host_label": "SP04C Segments",
+                "commentary": "SP04C Commentary",
                 "movie": {
                     "title": "Halloween 5: The Revenge of Michael Myers",
                     "year": 1989,
@@ -2611,7 +2653,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP05A Segments",
+                "commentary": "SP05A Commentary",
                 "movie": {
                     "title": "Black Christmas",
                     "year": 1974,
@@ -2621,7 +2663,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP05B Segments",
+                "commentary": "SP05B Commentary",
                 "movie": {
                     "title": "Jack Frost",
                     "year": 1997,
@@ -2631,7 +2673,7 @@
             },
             {
                 "slot": "c",
-                "host_label": "SP05C Segments",
+                "commentary": "SP05C Commentary",
                 "movie": {
                     "title": "Silent Night Deadly Night Part 2",
                     "year": 1987,
@@ -2653,7 +2695,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP06A Segments",
+                "commentary": "SP06A Commentary",
                 "movie": {
                     "title": "Haunt",
                     "year": 2019,
@@ -2663,7 +2705,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP06B Segments",
+                "commentary": "SP06B Commentary",
                 "movie": {
                     "title": "Hack-O-Lantern",
                     "year": 1988,
@@ -2685,7 +2727,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP07A Segments",
+                "commentary": "SP07A Commentary",
                 "movie": {
                     "title": "Dial Code Santa Claus",
                     "year": 1989,
@@ -2700,7 +2742,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP07B Segments",
+                "commentary": "SP07B Commentary",
                 "movie": {
                     "title": "Christmas Evil",
                     "year": 1980,
@@ -2724,7 +2766,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP08A Segments",
+                "commentary": "SP08A Commentary",
                 "movie": {
                     "title": "Tammy and the T-Rex",
                     "year": 1994,
@@ -2734,7 +2776,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP08B Segments",
+                "commentary": "SP08B Commentary",
                 "movie": {
                     "title": "The Love Witch",
                     "year": 2016,
@@ -2759,7 +2801,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP09A Segments",
+                "commentary": "SP09A Commentary",
                 "movie": {
                     "title": "Angel",
                     "year": 1984,
@@ -2769,7 +2811,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP09B Segments",
+                "commentary": "SP09B Commentary",
                 "movie": {
                     "title": "Terror Train",
                     "year": 1980,
@@ -2794,7 +2836,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP10A Segments",
+                "commentary": "SP10A Commentary",
                 "movie": {
                     "title": "Days Gone Bye",
                     "year": 2010,
@@ -2807,7 +2849,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP10B Segments",
+                "commentary": "SP10B Commentary",
                 "movie": {
                     "title": "Guts",
                     "year": 2010,
@@ -2834,7 +2876,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP11A Segments",
+                "commentary": "SP11A Commentary",
                 "movie": {
                     "title": "Ice Cream Man",
                     "year": 1995,
@@ -2844,7 +2886,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP11B Segments",
+                "commentary": "SP11B Commentary",
                 "movie": {
                     "title": "'Gator Bait",
                     "year": 1974,
@@ -2872,7 +2914,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP12A Segments",
+                "commentary": "SP12A Commentary",
                 "movie": {
                     "title": "Black Roses",
                     "year": 1988,
@@ -2882,7 +2924,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP12B Segments",
+                "commentary": "SP12B Commentary",
                 "movie": {
                     "title": "Frankenhooker",
                     "year": 1990,
@@ -2907,7 +2949,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP13A Segments",
+                "commentary": "SP13A Commentary",
                 "movie": {
                     "title": "Elvira's Haunted Hills",
                     "year": 2001,
@@ -2917,7 +2959,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP13B Segments",
+                "commentary": "SP13B Commentary",
                 "movie": {
                     "title": "Popcorn",
                     "year": 1991,
@@ -2939,7 +2981,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP14A Segments",
+                "commentary": "SP14A Commentary",
                 "movie": {
                     "title": "Don't Open till Christmas",
                     "year": 1984,
@@ -2949,7 +2991,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP14B Segments",
+                "commentary": "SP14B Commentary",
                 "movie": {
                     "title": "A Christmas Horror Story",
                     "year": 2015,
@@ -2971,7 +3013,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP15A Segments",
+                "commentary": "SP15A Commentary",
                 "movie": {
                     "title": "Phantom of the Mall: Eric's Revenge",
                     "year": 1989,
@@ -2981,7 +3023,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP15B Segments",
+                "commentary": "SP15B Commentary",
                 "movie": {
                     "title": "Nekromantik",
                     "year": 1988,
@@ -3005,7 +3047,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP16 Segments",
+                "commentary": "SP16 Commentary",
                 "movie": {
                     "title": "Old Acquaintences",
                     "year": 2023,
@@ -3033,7 +3075,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP17 Segments",
+                "commentary": "SP17 Commentary",
                 "movie": {
                     "title": "Night of the Demons",
                     "year": 1988,
@@ -3057,7 +3099,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP18 Segments",
+                "commentary": "SP18 Commentary",
                 "movie": {
                     "title": "L'ame Perdue",
                     "year": 2023,
@@ -3082,7 +3124,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP19 Segments",
+                "commentary": "SP19 Commentary",
                 "movie": {
                     "title": "Halloween",
                     "year": 1978,
@@ -3106,7 +3148,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP20A Segments",
+                "commentary": "SP20A Commentary",
                 "movie": {
                     "title": "Demons 2",
                     "year": 1986,
@@ -3116,7 +3158,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP20B Segments",
+                "commentary": "SP20B Commentary",
                 "movie": {
                     "title": "All Hallows' Eve",
                     "year": 2013,
@@ -3140,7 +3182,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP21A Segments",
+                "commentary": "SP21A Commentary",
                 "movie": {
                     "title": "The Brain",
                     "year": 1988,
@@ -3150,7 +3192,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP21B Segments",
+                "commentary": "SP21B Commentary",
                 "movie": {
                     "title": "The Gingerdead Man",
                     "year": 2005,
@@ -3172,7 +3214,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP22A Segments",
+                "commentary": "SP22A Commentary",
                 "movie": {
                     "title": "Freeway",
                     "year": 1996,
@@ -3182,7 +3224,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP22B Segments",
+                "commentary": "SP22B Commentary",
                 "movie": {
                     "title": "Vamp",
                     "year": 1986,
@@ -3204,7 +3246,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP23A Segments",
+                "commentary": "SP23A Commentary",
                 "movie": {
                     "title": "Years",
                     "year": 2024,
@@ -3233,7 +3275,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP24A Segments",
+                "commentary": "SP24A Commentary",
                 "movie": {
                     "title": "A Bucket of Blood",
                     "year": 1959,
@@ -3243,7 +3285,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP24B Segments",
+                "commentary": "SP24B Commentary",
                 "movie": {
                     "title": "Deathstalker",
                     "year": 1983,
@@ -3270,7 +3312,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP25A Segments",
+                "commentary": "SP25A Commentary",
                 "movie": {
                     "title": "The Slumber Party Massacre",
                     "year": 1982,
@@ -3280,7 +3322,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP25B Segments",
+                "commentary": "SP25B Commentary",
                 "movie": {
                     "title": "When Evil Lurks",
                     "year": 2023,
@@ -3290,7 +3332,7 @@
             },
             {
                 "slot": "c",
-                "host_label": "SP25C Segments",
+                "commentary": "SP25C Commentary",
                 "movie": {
                     "title": "Bloody Muscle Body Builder in Hell",
                     "year": 1995,
@@ -3300,7 +3342,7 @@
             },
             {
                 "slot": "d",
-                "host_label": "SP25D Segments",
+                "commentary": "SP25D Commentary",
                 "movie": {
                     "title": "Fade to Black",
                     "year": 1980,
@@ -3310,7 +3352,7 @@
             },
             {
                 "slot": "e",
-                "host_label": "SP25E Segments",
+                "commentary": "SP25E Commentary",
                 "movie": {
                     "title": "Children of the Corn",
                     "year": 1984,
@@ -3320,7 +3362,7 @@
             },
             {
                 "slot": "f",
-                "host_label": "SP25F Segments",
+                "commentary": "SP25F Commentary",
                 "movie": {
                     "title": "Galaxy of Terror",
                     "year": 1981,
@@ -3344,7 +3386,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP26A Segments",
+                "commentary": "SP26A Commentary",
                 "movie": {
                     "title": "Friday the 13th",
                     "year": 1980,
@@ -3354,7 +3396,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP26B Segments",
+                "commentary": "SP26B Commentary",
                 "movie": {
                     "title": "Friday the 13th Part 2",
                     "year": 1981,
@@ -3379,7 +3421,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP27A Segments",
+                "commentary": "SP27A Commentary",
                 "movie": {
                     "title": "Satan's Little Helper",
                     "year": 2004,
@@ -3389,7 +3431,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP27B Segments",
+                "commentary": "SP27B Commentary",
                 "movie": {
                     "title": "Late Night with the Devil",
                     "year": 2023,
@@ -3411,7 +3453,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP28A Segments",
+                "commentary": "SP28A Commentary",
                 "movie": {
                     "title": "Rare Exports: A Christmas Tale",
                     "year": 2010,
@@ -3421,7 +3463,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP28B Segments",
+                "commentary": "SP28B Commentary",
                 "movie": {
                     "title": "It's a Wonderful Knife",
                     "year": 2023,
@@ -3443,7 +3485,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP29A Segments",
+                "commentary": "SP29A Commentary",
                 "movie": {
                     "title": "A Nightmare on Elm Street",
                     "year": 1984,
@@ -3453,7 +3495,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP29B Segments",
+                "commentary": "SP29B Commentary",
                 "movie": {
                     "title": "Freddy vs. Jason",
                     "year": 2003,
@@ -3479,7 +3521,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP30A Segments",
+                "commentary": "SP30A Commentary",
                 "movie": {
                     "title": "Clown in a Cornfield",
                     "year": 2025,
@@ -3489,7 +3531,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP30B Segments",
+                "commentary": "SP30B Commentary",
                 "movie": {
                     "title": "Jack-O",
                     "year": 1995,
@@ -3511,7 +3553,7 @@
         "movies": [
             {
                 "slot": "a",
-                "host_label": "SP31A Segments",
+                "commentary": "SP31A Commentary",
                 "movie": {
                     "title": "Curtains",
                     "year": 1983,
@@ -3521,7 +3563,7 @@
             },
             {
                 "slot": "b",
-                "host_label": "SP31B Segments",
+                "commentary": "SP31B Commentary",
                 "movie": {
                     "title": "Iced",
                     "year": 1988,

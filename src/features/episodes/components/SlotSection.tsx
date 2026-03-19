@@ -27,7 +27,7 @@ export default function SlotSection({
     return (
         <Panel title={slotHeader}>
             <FileMapping
-                matches={[slot.movieMatch, slot.segmentMatch]}
+                matches={[slot.movieMatch, slot.commentaryMatch]}
                 onRemap={onRemap}
             />
             {slot.cuts.length > 0 && <SlotTimeline cuts={slot.cuts} />}

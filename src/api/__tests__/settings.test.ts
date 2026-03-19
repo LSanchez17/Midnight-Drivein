@@ -46,7 +46,7 @@ describe('getSettings', () => {
     it('unwraps data envelope and returns AppSettings', async () => {
         const expected: AppSettings = {
             moviesFolder: null,
-            segmentsFolder: null,
+            commentaryFolder: null,
             scanOnStartup: false,
             theme: 'dark',
         }

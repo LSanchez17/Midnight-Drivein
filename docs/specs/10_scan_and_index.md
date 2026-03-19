@@ -25,7 +25,7 @@ _"What files exist?"_
   needed to see the summary panel
 - Pointing a folder at a path that does not exist produces a warning in the summary
   and does not crash the app
-- `cargo test -p app_lib` and `npm run test` both pass
+- `cargo test -p app_lib` and `yarn run test` both pass
 
 ---
 

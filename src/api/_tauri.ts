@@ -34,7 +34,7 @@ interface PlaybackCutWire {
     sortOrder: number
     sourceType: SourceType
     startMs: number
-    endMs: number | null
+    endMs: number
     userOffsetMs: number
 }
 
@@ -82,7 +82,7 @@ function toCut(wire: PlaybackCutWire): PlaybackCut {
         sortOrder: wire.sortOrder,
         sourceType: wire.sourceType,
         startMs: wire.startMs,
-        endMs: wire.endMs ?? undefined,
+        endMs: wire.endMs,
         userOffsetMs: wire.userOffsetMs,
     }
 }
@@ -227,9 +227,9 @@ export async function getPlaybackPlan(
             source: row.source,
             filePath: row.filePath,
             startMs: row.startMs,
-            endMs: row.endMs ?? undefined,
+            endMs: row.endMs,
             effectiveStartMs: row.effectiveStartMs,
-            effectiveEndMs: row.effectiveEndMs ?? undefined,
+            effectiveEndMs: row.effectiveEndMs,
             cutId: row.cutId,
         }))
     } catch (e) {

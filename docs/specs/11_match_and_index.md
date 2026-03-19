@@ -35,7 +35,7 @@ correct or override any automatic match.
 - Clicking Remap opens the `RemapDialog` listing all non-missing files for the
   correct folder root; selecting one updates the episode status immediately
 - `ScanSummaryPanel` shows matched / low-confidence / missing counts after a scan
-- `cargo test -p app_lib` and `npm run test` both pass
+- `cargo test -p app_lib` and `yarn run test` both pass
 
 ---
 

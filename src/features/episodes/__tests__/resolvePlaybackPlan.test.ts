@@ -35,9 +35,9 @@ describe('resolvePlaybackPlan', () => {
         expect(result.entries[0].endMs).toBe(60_000)
         expect(result.entries[0].effectiveStartMs).toBe(0)
         expect(result.entries[0].effectiveEndMs).toBe(60_000)
-        // Last cut has no endMs (play to end of file)
-        expect(result.entries[3].endMs).toBeUndefined()
-        expect(result.entries[3].effectiveEndMs).toBeUndefined()
+        // Last cut has explicit endMs
+        expect(result.entries[3].endMs).toBe(4_920_000)
+        expect(result.entries[3].effectiveEndMs).toBe(4_920_000)
     })
 
     it('happy path — slot b (The Changeling, 4 cuts)', () => {
@@ -53,7 +53,7 @@ describe('resolvePlaybackPlan', () => {
         ])
         expect(result.entries[0].startMs).toBe(0)
         expect(result.entries[0].endMs).toBe(120_000)
-        expect(result.entries[3].endMs).toBeUndefined()
+        expect(result.entries[3].endMs).toBe(6_420_000)
     })
 
     it('returns no_cuts error when cuts array is empty', () => {
@@ -127,7 +127,7 @@ describe('resolvePlaybackPlan', () => {
         expect(result.entries[0].effectiveStartMs).toBe(0)
     })
 
-    it('passes through undefined endMs (play to end of file) without transformation', () => {
+    it('passes through explicit endMs without transformation', () => {
         const slot: MovieSlot = {
             ...slotA,
             cuts: [
@@ -136,7 +136,7 @@ describe('resolvePlaybackPlan', () => {
                     sortOrder: 1,
                     sourceType: 'movie',
                     startMs: 0,
-                    endMs: undefined,
+                    endMs: 3_000_000,
                     userOffsetMs: 0,
                 },
             ],
@@ -144,7 +144,7 @@ describe('resolvePlaybackPlan', () => {
         const result = resolvePlaybackPlan(slot)
         expect(result.ok).toBe(true)
         if (!result.ok) return
-        expect(result.entries[0].endMs).toBeUndefined()
-        expect(result.entries[0].effectiveEndMs).toBeUndefined()
+        expect(result.entries[0].endMs).toBe(3_000_000)
+        expect(result.entries[0].effectiveEndMs).toBe(3_000_000)
     })
 })

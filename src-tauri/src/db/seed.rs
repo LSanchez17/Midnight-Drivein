@@ -38,7 +38,7 @@ struct MovieJson {
 struct CutJson {
     source: String, // "commentary" | "movie"
     start_ms: i64,
-    end_ms: Option<i64>, // null = play to end of file
+    end_ms: i64,
 }
 
 // Seed episodes from `json_path` if the episode table is empty.
@@ -180,7 +180,7 @@ mod tests {
             "cuts": [
               { "source": "commentary", "start_ms": 0,      "end_ms": 185000  },
               { "source": "movie",      "start_ms": 0,      "end_ms": 4120000 },
-              { "source": "commentary", "start_ms": 185000, "end_ms": null    }
+              { "source": "commentary", "start_ms": 185000, "end_ms": 5000000 }
             ]
           },
           {
@@ -228,13 +228,13 @@ mod tests {
                 .unwrap();
         assert_eq!(cut_count.0, 3);
 
-        // One cut has end_ms IS NULL
-        let null_cut: (i64,) =
-            sqlx::query_as("SELECT COUNT(*) FROM playback_cut WHERE end_ms IS NULL")
+        // All cuts have explicit end_ms
+        let cut_count: (i64,) =
+            sqlx::query_as("SELECT COUNT(*) FROM playback_cut WHERE slot_id = 's01e01-a'")
                 .fetch_one(&pool)
                 .await
                 .unwrap();
-        assert_eq!(null_cut.0, 1);
+        assert_eq!(cut_count.0, 3);
     }
 
     #[tokio::test]

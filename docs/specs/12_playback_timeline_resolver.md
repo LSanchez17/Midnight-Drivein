@@ -36,7 +36,7 @@ populated `cuts` arrays and matching commentary reel names following the new
 - `resolvePlaybackPlan(slot)` for a slot with `cuts: []` returns
   `{ ok: false, error: { code: 'no_cuts' } }`
 - `get_playback_plan('s01e03', 'a')` Tauri command returns the same 4 entries
-- `cargo test -p app_lib` and `npm run test` both pass
+- `cargo test -p app_lib` and `yarn run test` both pass
 - Settings page shows "Commentary Folder" label; scan summary shows "Commentary files"
 
 ---
@@ -729,7 +729,7 @@ Extend existing tests or add new `describe('getPlaybackPlan')` block:
 ## Verification
 
 1. `cargo test -p app_lib` — Rust unit tests pass including new `get_playback_plan_for_slot` tests
-2. `npm run test` — All TS tests pass including new resolver tests and updated field references
+2. `yarn run test` — All TS tests pass including new resolver tests and updated field references
 3. Cold reseed: delete DB, run `yarn tauri dev`, confirm Library page loads with no console errors
 4. DB inspection after reseed:
    - `SELECT DISTINCT source_type FROM playback_cut` → only `'movie'` and `'commentary'`

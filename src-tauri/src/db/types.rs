@@ -68,7 +68,7 @@ pub struct PlaybackCutRow {
     pub sort_order: i64,
     pub source_type: String,
     pub start_ms: i64,
-    pub end_ms: Option<i64>,
+    pub end_ms: i64,
     pub user_offset_ms: i64,
 }
 
@@ -93,9 +93,9 @@ pub struct PlaybackEntryRow {
     pub source: String,
     pub file_path: String,
     pub start_ms: i64,
-    pub end_ms: Option<i64>,
+    pub end_ms: i64,
     pub effective_start_ms: i64,
-    pub effective_end_ms: Option<i64>,
+    pub effective_end_ms: i64,
     pub cut_id: String,
 }
 

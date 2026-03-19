@@ -49,8 +49,8 @@ export interface PlaybackEntry {
     source: 'movie' | 'commentary'
     filePath: string
     startMs: number
-    endMs: number | null
+    endMs: number
     effectiveStartMs: number
-    effectiveEndMs: number | null
+    effectiveEndMs: number
     cutId: string
 }

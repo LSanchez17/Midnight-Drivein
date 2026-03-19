@@ -87,22 +87,27 @@
                     {
                         "source": "commentary",
                         "start_ms": 0,
+                        "end_ms": 30000
+                    },
+                    {
+                        "source": "movie",
+                        "start_ms": 0,
+                        "end_ms": 300000
+                    },
+                    {
+                        "source": "commentary",
+                        "start_ms": 30000,
                         "end_ms": 60000
                     },
                     {
                         "source": "movie",
-                        "start_ms": 60000,
-                        "end_ms": 150000
+                        "start_ms": 300000,
+                        "end_ms": 550000
                     },
                     {
                         "source": "commentary",
-                        "start_ms": 150000,
-                        "end_ms": 210000
-                    },
-                    {
-                        "source": "movie",
-                        "start_ms": 210000,
-                        "end_ms": null
+                        "start_ms": 60000,
+                        "end_ms": 86000
                     }
                 ]
             },
@@ -118,22 +123,27 @@
                     {
                         "source": "commentary",
                         "start_ms": 0,
-                        "end_ms": 120000
+                        "end_ms": 20000
                     },
                     {
                         "source": "movie",
-                        "start_ms": 120000,
-                        "end_ms": 240000
+                        "start_ms": 0,
+                        "end_ms": 150000
                     },
                     {
                         "source": "commentary",
-                        "start_ms": 240000,
-                        "end_ms": 300000
+                        "start_ms": 20000,
+                        "end_ms": 40000
                     },
                     {
                         "source": "movie",
-                        "start_ms": 300000,
-                        "end_ms": null
+                        "start_ms": 150000,
+                        "end_ms": 275000
+                    },
+                    {
+                        "source": "commentary",
+                        "start_ms": 30000,
+                        "end_ms": 46500
                     }
                 ]
             }

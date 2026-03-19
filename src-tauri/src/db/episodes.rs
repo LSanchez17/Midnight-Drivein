@@ -53,7 +53,7 @@ struct CutRow {
     sort_order: i64,
     source_type: String,
     start_ms: i64,
-    end_ms: Option<i64>,
+    end_ms: i64,
     user_offset_ms: i64,
 }
 
@@ -332,9 +332,7 @@ pub(crate) async fn get_playback_plan_for_slot(
                 commentary_path.clone().unwrap()
             };
             let effective_start_ms = std::cmp::max(0, cut.start_ms + cut.user_offset_ms);
-            let effective_end_ms = cut
-                .end_ms
-                .map(|e| std::cmp::max(effective_start_ms, e + cut.user_offset_ms));
+            let effective_end_ms = std::cmp::max(effective_start_ms, cut.end_ms + cut.user_offset_ms);
 
             PlaybackEntryRow {
                 order: cut.sort_order,
@@ -452,7 +450,7 @@ mod tests {
         let pool = setup().await;
         setup_episode(&pool, "ep-1", None).await;
         let slot_id = setup_movie_slot(&pool, "ep-1", "a", "Deathgasm", None).await;
-        setup_playback_cut(&pool, &slot_id, 0, "movie", 1, Some(0), 1000).await;
+        setup_playback_cut(&pool, &slot_id, 0, "movie", 1, 0, 1000).await;
         // No file_match row for movie.
 
         let result = get_playback_plan_for_slot(&pool, &slot_id).await;
@@ -472,10 +470,10 @@ mod tests {
         seed_file_match(&pool, &slot_id, "movie", "mf-movie").await;
         seed_file_match(&pool, &slot_id, "commentary", "mf-com").await;
 
-        setup_playback_cut(&pool, &slot_id, 0, "commentary", 1, Some(0), 1000).await;
-        setup_playback_cut(&pool, &slot_id, 1, "movie", 2, Some(60_000), 150_000).await;
-        setup_playback_cut(&pool, &slot_id, 2, "commentary", 3, Some(150_000), 210_000).await;
-        setup_playback_cut(&pool, &slot_id, 3, "movie", 4, None, 0).await;
+        setup_playback_cut(&pool, &slot_id, 0, "commentary", 1, 0, 1000).await;
+        setup_playback_cut(&pool, &slot_id, 1, "movie", 2, 60_000, 150_000).await;
+        setup_playback_cut(&pool, &slot_id, 2, "commentary", 3, 150_000, 210_000).await;
+        setup_playback_cut(&pool, &slot_id, 3, "movie", 4, 4_920_000, 0).await;
 
         let entries = get_playback_plan_for_slot(&pool, &slot_id).await.unwrap();
         assert_eq!(entries.len(), 4);
@@ -484,6 +482,6 @@ mod tests {
         assert!(entries[0].file_path.contains("deathgasm_commentary.mkv"));
         assert_eq!(entries[1].source, "movie");
         assert!(entries[1].file_path.contains("deathgasm.mkv"));
-        assert_eq!(entries[3].end_ms, None);
+        assert_eq!(entries[3].end_ms, 4_920_000);
     }
 }

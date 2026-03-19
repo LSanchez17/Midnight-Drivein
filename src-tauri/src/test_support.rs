@@ -109,7 +109,7 @@ pub async fn setup_playback_cut(
     sort_order: i64,
     source_type: &str,
     start_ms: i64,
-    end_ms: Option<i64>,
+    end_ms: i64,
     user_offset_ms: i64,
 ) -> String {
     // Construct the cut id manually here

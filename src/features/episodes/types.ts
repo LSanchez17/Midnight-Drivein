@@ -51,7 +51,7 @@ export interface PlaybackCut {
     sortOrder: number
     sourceType: SourceType
     startMs: number
-    endMs: number | undefined
+    endMs: number
     userOffsetMs: number
 }
 
@@ -88,16 +88,16 @@ export interface PlaybackEntry {
     filePath: string
     /** Raw start timestamp from the cut metadata (milliseconds) */
     startMs: number
-    /** Raw end timestamp from the cut metadata; undefined = play to end of file */
-    endMs: number | undefined
+    /** Raw end timestamp from the cut metadata (milliseconds) */
+    endMs: number
     /**
      * Actual seek target after applying userOffsetMs; >= 0 always
      */
     effectiveStartMs: number
     /**
-     * Actual end target after applying userOffsetMs. Undefined designates end of file.
+     * Actual end target after applying userOffsetMs.
      */
-    effectiveEndMs: number | undefined
+    effectiveEndMs: number
     cutId: string
 }
 

@@ -23,10 +23,7 @@ export function resolvePlaybackPlan(slot: MovieSlot): PlaybackPlanResult {
                 : slot.commentaryMatch.path!
 
         const effectiveStartMs = Math.max(0, cut.startMs + cut.userOffsetMs)
-        const effectiveEndMs =
-            cut.endMs !== undefined
-                ? Math.max(effectiveStartMs, cut.endMs + cut.userOffsetMs)
-                : undefined
+        const effectiveEndMs = Math.max(effectiveStartMs, cut.endMs + cut.userOffsetMs)
 
         return {
             order: cut.sortOrder,

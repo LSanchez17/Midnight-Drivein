@@ -188,7 +188,7 @@ mod tests {
         let pool = setup().await;
         setup_episode(&pool, "ep-1", None).await;
         let slot_id = setup_movie_slot(&pool, "ep-1", "a", "Test Movie", None).await;
-        let cut_id = setup_playback_cut(&pool, &slot_id, 0, "movie", 0, Some(1000), 0).await;
+        let cut_id = setup_playback_cut(&pool, &slot_id, 0, "movie", 0, 1000, 0).await;
 
         save_cut_offset(&pool, &cut_id, 500).await.unwrap();
 

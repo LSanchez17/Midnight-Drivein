@@ -17,7 +17,7 @@ export default function SlotTimeline({ cuts }: { cuts: PlaybackCut[] }) {
                             border: i % 2 === 0 ? '1px solid #8b1e2d' : '1px solid #2a2a33',
                         }}
                     >
-                        {cut.sourceType === 'segment' ? 'Seg' : 'Mov'} {cut.sortOrder}
+                        {cut.sourceType === 'commentary' ? 'Seg' : 'Mov'} {cut.sortOrder}
                     </div>
                 ))}
             </div>

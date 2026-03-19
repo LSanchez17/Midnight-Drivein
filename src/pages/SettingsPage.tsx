@@ -13,7 +13,7 @@ export default function SettingsPage() {
     const { settings, isLoading, reloadSettings } = useSettings()
 
     const [moviesFolderError, setMoviesFolderError] = useState<string | null>(null)
-    const [segmentsFolderError, setSegmentsFolderError] = useState<string | null>(null)
+    const [commentaryFolderError, setCommentaryFolderError] = useState<string | null>(null)
     const [scanToggleError, setScanToggleError] = useState<string | null>(null)
     const [scanError, setScanError] = useState<string | null>(null)
     const [lastScan, setLastScan] = useState<ScanResult | null>(null)
@@ -27,8 +27,8 @@ export default function SettingsPage() {
             })
     }, [])
 
-    async function handleChooseFolder(field: 'moviesFolder' | 'segmentsFolder') {
-        const setError = field === 'moviesFolder' ? setMoviesFolderError : setSegmentsFolderError
+    async function handleChooseFolder(field: 'moviesFolder' | 'commentaryFolder') {
+        const setError = field === 'moviesFolder' ? setMoviesFolderError : setCommentaryFolderError
         setError(null)
         try {
             const path = await selectLibraryRoot()
@@ -66,7 +66,7 @@ export default function SettingsPage() {
         }
     }
 
-    const bothFoldersSet = Boolean(settings?.moviesFolder && settings?.segmentsFolder)
+    const bothFoldersSet = Boolean(settings?.moviesFolder && settings?.commentaryFolder)
 
     return (
         <div className="space-y-6 max-w-2xl">
@@ -92,13 +92,13 @@ export default function SettingsPage() {
                         error={moviesFolderError}
                     />
                     <FolderRow
-                        label="Segments Folder"
-                        value={settings?.segmentsFolder}
-                        placeholder="e.g. /Users/you/NonMovieSegments"
-                        ariaLabel="Segments folder path"
+                        label="Commentary Folder"
+                        value={settings?.commentaryFolder}
+                        placeholder="e.g. /Users/you/Commentary"
+                        ariaLabel="Commentary folder path"
                         disabled={isLoading}
-                        onChoose={() => handleChooseFolder('segmentsFolder')}
-                        error={segmentsFolderError}
+                        onChoose={() => handleChooseFolder('commentaryFolder')}
+                        error={commentaryFolderError}
                     />
                     <Button
                         variant="primary"

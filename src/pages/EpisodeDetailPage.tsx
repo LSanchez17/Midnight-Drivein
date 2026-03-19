@@ -227,7 +227,7 @@ export default function EpisodeDetailPage() {
                         <RemapDialog
                             slotId={remapTarget.slotId}
                             fileType={remapTarget.fileType}
-                            folderRoot={remapTarget.fileType === 'movie' ? 'movies' : 'segments'}
+                            folderRoot={remapTarget.fileType === 'movie' ? 'movies' : 'commentary'}
                             onClose={() => setRemapTarget(null)}
                             onConfirmed={handleConfirmedRemap}
                         />

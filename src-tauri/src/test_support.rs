@@ -44,14 +44,14 @@ pub async fn setup_movie_slot(
 
     sqlx::query(
         "
-        INSERT OR IGNORE INTO movie_slot (id, episode_id, slot, movie_title, host_label, movie_aliases_json) VALUES (?, ?, ?, ?, ?, ?)
+        INSERT OR IGNORE INTO movie_slot (id, episode_id, slot, movie_title, commentary, movie_aliases_json) VALUES (?, ?, ?, ?, ?, ?)
     ",
     )
     .bind(&slot_id)
     .bind(episode_id)
     .bind(slot)
     .bind(title)
-    .bind("S01E01A Segments")
+    .bind("S01E01A Commentary")
     .bind(movie_aliases.map(|aliases| serde_json::to_string(aliases).unwrap()))
     .execute(pool)
     .await
@@ -101,4 +101,36 @@ pub async fn setup_missing_media_file(
     .execute(pool)
     .await
     .unwrap();
+}
+
+pub async fn setup_playback_cut(
+    pool: &SqlitePool,
+    slot_id: &str,
+    sort_order: i64,
+    source_type: &str,
+    start_ms: i64,
+    end_ms: Option<i64>,
+    user_offset_ms: i64,
+) -> String {
+    // Construct the cut id manually here
+    let cut_id = format!("{}-c{}", slot_id, sort_order);
+
+    sqlx::query(
+        "
+        INSERT OR IGNORE INTO playback_cut (id, slot_id, sort_order, source_type, start_ms, end_ms, user_offset_ms) 
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ",
+    )
+    .bind(&cut_id)
+    .bind(slot_id)
+    .bind(sort_order)
+    .bind(source_type)
+    .bind(start_ms)
+    .bind(end_ms)
+    .bind(user_offset_ms)
+    .execute(pool)
+    .await
+    .unwrap();
+
+    cut_id
 }

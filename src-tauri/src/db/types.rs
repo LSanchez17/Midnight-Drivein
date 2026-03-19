@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "camelCase")]
 pub struct AppSettings {
     pub movies_folder: Option<String>,
-    pub segments_folder: Option<String>,
+    pub commentary_folder: Option<String>,
     pub scan_on_startup: bool,
     pub theme: String,
 }
@@ -13,7 +13,7 @@ pub struct AppSettings {
 #[serde(rename_all = "camelCase")]
 pub struct AppSettingsPatch {
     pub movies_folder: Option<Option<String>>,
-    pub segments_folder: Option<Option<String>>,
+    pub commentary_folder: Option<Option<String>>,
     pub scan_on_startup: Option<bool>,
     pub theme: Option<String>,
 }
@@ -31,7 +31,7 @@ pub struct MatchSummary {
 pub struct ScanResult {
     pub last_scan_at: String,
     pub movie_file_count: usize,
-    pub segment_file_count: usize,
+    pub commentary_file_count: usize,
     pub errors: Vec<String>,
     pub missing_folders: Vec<String>,
     pub match_summary: MatchSummary,
@@ -61,7 +61,7 @@ pub struct FileMatchRow {
     pub matched_at: Option<String>,
 }
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Clone, sqlx::FromRow)]
 #[serde(rename_all = "camelCase")]
 pub struct PlaybackCutRow {
     pub id: String,
@@ -77,13 +77,26 @@ pub struct PlaybackCutRow {
 pub struct MovieSlotRow {
     pub id: String,
     pub slot: String,
-    pub host_label: Option<String>,
+    pub commentary: Option<String>,
     pub movie_title: Option<String>,
     pub movie_year: Option<i64>,
     pub movie_match: FileMatchRow,
-    pub segment_match: FileMatchRow,
+    pub commentary_match: FileMatchRow,
     pub cuts: Vec<PlaybackCutRow>,
     pub flagged_for_timing: bool,
+}
+
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PlaybackEntryRow {
+    pub order: i64,
+    pub source: String,
+    pub file_path: String,
+    pub start_ms: i64,
+    pub end_ms: Option<i64>,
+    pub effective_start_ms: i64,
+    pub effective_end_ms: Option<i64>,
+    pub cut_id: String,
 }
 
 #[derive(Serialize, Clone)]

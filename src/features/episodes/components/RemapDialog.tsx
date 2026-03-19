@@ -9,7 +9,7 @@ import { formatBytes } from '../../../utils/Files'
 interface RemapDialogProps {
     slotId: string
     fileType: SourceType
-    folderRoot: 'movies' | 'segments'
+    folderRoot: 'movies' | 'commentary'
     onClose: () => void
     onConfirmed: () => void
 }
@@ -66,7 +66,7 @@ export default function RemapDialog({
         }
     }
 
-    const label = fileType === 'movie' ? 'Movie File' : 'Segment File'
+    const label = fileType === 'movie' ? 'Movie File' : 'Commentary File'
 
     return (
         <>

@@ -3,10 +3,7 @@ use serde::Deserialize;
 use sqlx::SqlitePool;
 use std::path::Path;
 
-// ---------------------------------------------------------------------------
-// JSON deserialise shapes (private — only used during seeding)
-// ---------------------------------------------------------------------------
-
+// Structs only used for deserialising the seed JSON
 #[derive(Deserialize)]
 struct EpisodeJson {
     id: String,
@@ -24,7 +21,7 @@ struct EpisodeJson {
 #[derive(Deserialize)]
 struct SlotJson {
     slot: String,
-    host_label: Option<String>,
+    commentary: Option<String>,
     movie: Option<MovieJson>,
     #[serde(default)]
     cuts: Vec<CutJson>,
@@ -39,17 +36,13 @@ struct MovieJson {
 
 #[derive(Deserialize)]
 struct CutJson {
-    source: String, // "segment" | "movie"
+    source: String, // "commentary" | "movie"
     start_ms: i64,
     end_ms: Option<i64>, // null = play to end of file
 }
 
-// ---------------------------------------------------------------------------
-// Public seeder
-// ---------------------------------------------------------------------------
-
-/// Seed episodes from `json_path` if the episode table is empty.
-/// Idempotent — safe to call on every startup; exits early when rows exist.
+// Seed episodes from `json_path` if the episode table is empty.
+// Idempotent — safe to call on every startup; exits early when rows exist.
 pub async fn seed_episodes_if_empty(
     pool: &SqlitePool,
     json_path: &Path,
@@ -108,7 +101,7 @@ pub async fn seed_episodes_if_empty(
             sqlx::query(
                 r#"
                 INSERT OR IGNORE INTO movie_slot
-                    (id, episode_id, slot, host_label,
+                    (id, episode_id, slot, commentary,
                      movie_title, movie_year, movie_aliases_json)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 "#,
@@ -116,7 +109,7 @@ pub async fn seed_episodes_if_empty(
             .bind(&slot_id)
             .bind(&ep.id)
             .bind(&slot_entry.slot)
-            .bind(&slot_entry.host_label)
+            .bind(&slot_entry.commentary)
             .bind(&movie_title)
             .bind(movie_year)
             .bind(&movie_aliases_json)
@@ -124,7 +117,7 @@ pub async fn seed_episodes_if_empty(
             .await?;
 
             for (i, cut) in slot_entry.cuts.iter().enumerate() {
-                let sort_order = (i + 1) as i64;
+                let sort_order = i as i64;
                 let cut_id = format!("{}-c{}", slot_id, sort_order);
 
                 sqlx::query(
@@ -182,17 +175,17 @@ mod tests {
         "movies": [
           {
             "slot": "a",
-            "host_label": "S01E01A Segments",
+            "commentary": "S01E01A Commentary",
             "movie": { "title": "Tourist Trap", "year": 1979, "aliases": ["Tourist Trap 1979"] },
             "cuts": [
-              { "source": "segment", "start_ms": 0,      "end_ms": 185000  },
-              { "source": "movie",   "start_ms": 0,      "end_ms": 4120000 },
-              { "source": "segment", "start_ms": 185000, "end_ms": null    }
+              { "source": "commentary", "start_ms": 0,      "end_ms": 185000  },
+              { "source": "movie",      "start_ms": 0,      "end_ms": 4120000 },
+              { "source": "commentary", "start_ms": 185000, "end_ms": null    }
             ]
           },
           {
             "slot": "b",
-            "host_label": "S01E01B Segments",
+            "commentary": "S01E01B Commentary",
             "movie": { "title": "Castle Freak", "year": 1995, "aliases": [] },
             "cuts": []
           }

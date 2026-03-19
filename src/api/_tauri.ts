@@ -1,8 +1,8 @@
 import { invoke } from '@tauri-apps/api/core'
 import { open } from '@tauri-apps/plugin-dialog'
 import { deriveEpisodeStatus } from '../utils/EpisodeStatuses'
-import type { Episode, MovieSlot, FileMatch, PlaybackCut, SourceType, MatchStatus } from '../features/episodes/types'
-import type { AppSettings, AppSettingsPatch, EpisodeFilters, ScanResult, MediaFileSummary } from './types'
+import type { Episode, MovieSlot, FileMatch, PlaybackCut, SourceType, MatchStatus, PlaybackEntry } from '../features/episodes/types'
+import type { AppSettings, AppSettingsPatch, EpisodeFilters, ScanResult, MediaFileSummary, PlaybackEntry as PlaybackEntryWire } from './types'
 import { ApiError, type ErrorCode } from './errors'
 
 // Error parsing — Rust errors use "ERROR_CODE: message" prefix convention
@@ -41,11 +41,11 @@ interface PlaybackCutWire {
 interface MovieSlotWire {
     id: string
     slot: string
-    hostLabel: string | null
+    commentary: string | null
     movieTitle: string | null
     movieYear: number | null
     movieMatch: FileMatchWire
-    segmentMatch: FileMatchWire
+    commentaryMatch: FileMatchWire
     cuts: PlaybackCutWire[]
     flaggedForTiming: boolean
 }
@@ -91,11 +91,11 @@ function toSlot(wire: MovieSlotWire): MovieSlot {
     return {
         id: wire.id,
         slot: wire.slot,
-        hostLabel: wire.hostLabel ?? undefined,
+        commentary: wire.commentary ?? undefined,
         movieTitle: wire.movieTitle ?? undefined,
         movieYear: wire.movieYear ?? undefined,
         movieMatch: toFileMatch(wire.movieMatch),
-        segmentMatch: toFileMatch(wire.segmentMatch),
+        commentaryMatch: toFileMatch(wire.commentaryMatch),
         cuts: wire.cuts.map(toCut),
         flaggedForTiming: wire.flaggedForTiming,
     }
@@ -201,7 +201,7 @@ export async function remapFile(
 }
 
 export async function listMediaFiles(
-    folderRoot: 'movies' | 'segments',
+    folderRoot: 'movies' | 'commentary',
 ): Promise<MediaFileSummary[]> {
     try {
         const rows = await invoke<MediaFileSummary[]>('list_media_files', { folderRoot })
@@ -210,6 +210,27 @@ export async function listMediaFiles(
             ...r,
             displayName: r.displayName ?? undefined,
             sizeBytes: r.sizeBytes ?? undefined,
+        }))
+    } catch (e) {
+        throw parseError(e)
+    }
+}
+
+export async function getPlaybackPlan(
+    episodeId: string,
+    slot: string,
+): Promise<PlaybackEntry[]> {
+    try {
+        const rows = await invoke<PlaybackEntryWire[]>('get_playback_plan', { episodeId, slot })
+        return rows.map(row => ({
+            order: row.order,
+            source: row.source,
+            filePath: row.filePath,
+            startMs: row.startMs,
+            endMs: row.endMs ?? undefined,
+            effectiveStartMs: row.effectiveStartMs,
+            effectiveEndMs: row.effectiveEndMs ?? undefined,
+            cutId: row.cutId,
         }))
     } catch (e) {
         throw parseError(e)

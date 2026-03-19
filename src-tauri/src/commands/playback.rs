@@ -1,4 +1,7 @@
-use crate::db::{playback as db_playback, types::MediaFileListRow};
+use crate::db::{
+    episodes as db_episodes, playback as db_playback,
+    types::{MediaFileListRow, PlaybackEntryRow},
+};
 use sqlx::SqlitePool;
 use tauri::State;
 
@@ -36,4 +39,14 @@ pub async fn list_media_files(
     folder_root: String,
 ) -> Result<Vec<MediaFileListRow>, String> {
     db_playback::list_media_files(pool.inner(), &folder_root).await
+}
+
+#[tauri::command]
+pub async fn get_playback_plan(
+    pool: State<'_, SqlitePool>,
+    episode_id: String,
+    slot: String,
+) -> Result<Vec<PlaybackEntryRow>, String> {
+    let slot_id = format!("{}-{}", episode_id, slot);
+    db_episodes::get_playback_plan_for_slot(pool.inner(), &slot_id).await
 }

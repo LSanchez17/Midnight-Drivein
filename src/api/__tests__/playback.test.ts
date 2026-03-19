@@ -80,7 +80,7 @@ describe('remapFile', () => {
     })
 
     it('throws ApiError with INVALID_INPUT for bad file_type', async () => {
-        mockInvoke.mockRejectedValueOnce('INVALID_INPUT: file_type must be \'movie\' or \'segment\'')
+        mockInvoke.mockRejectedValueOnce('INVALID_INPUT: file_type must be \'movie\' or \'commentary\'')
 
         // @ts-expect-error Testing invalid input
         await expect(remapFile('s01e01-a', 'unknown', 'mf-1')).rejects.toMatchObject({
@@ -120,12 +120,12 @@ describe('listMediaFiles', () => {
             sizeBytes: 512,
             lastSeenAt: '2026-03-16T00:00:00Z',
         }])
-        const [row] = await listMediaFiles('segments')
+        const [row] = await listMediaFiles('commentary')
         expect(row.displayName).toBeUndefined()
     })
 
     it('throws ApiError with INVALID_INPUT for unknown folder root', async () => {
-        mockInvoke.mockRejectedValueOnce('INVALID_INPUT: folder_root must be \'movies\' or \'segments\'')
+        mockInvoke.mockRejectedValueOnce('INVALID_INPUT: folder_root must be \'movies\' or \'commentary\'')
 
         // @ts-expect-error Testing invalid input
         await expect(listMediaFiles('other')).rejects.toMatchObject({
@@ -140,7 +140,7 @@ describe('scanLibrary', () => {
         const mockResult = {
             lastScanAt: '2026-03-16T00:00:00Z',
             movieFileCount: 2,
-            segmentFileCount: 1,
+            commentaryFileCount: 1,
             errors: [],
             missingFolders: [],
         }
@@ -160,7 +160,7 @@ describe('scanLibrary', () => {
 
     it('throws ApiError with IO_ERROR when folders not configured', async () => {
         mockInvoke.mockRejectedValueOnce(
-            'IO_ERROR: movies_folder and segments_folder must both be configured before scanning',
+            'IO_ERROR: movies_folder and commentary_folder must both be configured before scanning',
         )
 
         await expect(scanLibrary()).rejects.toMatchObject({
@@ -180,7 +180,7 @@ describe('mock shape compatibility', () => {
         const { scanLibrary: mockScan } = await import('../_mock')
         const result = await mockScan()
         expect(typeof result.movieFileCount).toBe('number')
-        expect(typeof result.segmentFileCount).toBe('number')
+        expect(typeof result.commentaryFileCount).toBe('number')
         expect(Array.isArray(result.errors)).toBe(true)
         expect(Array.isArray(result.missingFolders)).toBe(true)
     })
@@ -189,5 +189,24 @@ describe('mock shape compatibility', () => {
         const { listMediaFiles: mockList } = await import('../_mock')
         const result = await mockList('movies')
         expect(Array.isArray(result)).toBe(true)
+    })
+
+    it('getPlaybackPlan from _mock.ts returns PlaybackEntry[] for s01e03-a', async () => {
+        const { getPlaybackPlan: mockPlan } = await import('../_mock')
+        const entries = await mockPlan('s01e03', 'a')
+        expect(Array.isArray(entries)).toBe(true)
+        expect(entries.length).toBe(4)
+        entries.forEach((e) => {
+            expect(e.filePath).toBeTruthy()
+            expect(typeof e.effectiveStartMs).toBe('number')
+        })
+    })
+
+    it('getPlaybackPlan from _mock.ts rejects for unknown episode', async () => {
+        const { getPlaybackPlan: mockPlan } = await import('../_mock')
+        await expect(mockPlan('no-such-episode', 'a')).rejects.toMatchObject({
+            name: 'ApiError',
+            code: 'NOT_FOUND',
+        })
     })
 })

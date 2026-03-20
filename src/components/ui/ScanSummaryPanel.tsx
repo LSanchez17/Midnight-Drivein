@@ -1,5 +1,6 @@
 import type { ScanResult } from '../../api/types'
-import { formatDate } from '../../utils/Time'
+import { ACCENT_ORANGE, ACCENT_PINK, MUTED_TEXT } from '../../utils/colorConstants'
+import { formatDate } from '../../utils/time'
 import Row from './Row'
 
 interface ScanSummaryPanelProps {
@@ -10,7 +11,7 @@ interface ScanSummaryPanelProps {
 export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPanelProps) {
     if (isScanning) {
         return (
-            <p className="text-sm mt-3" style={{ color: '#b8b1a1' }}>
+            <p className="text-sm mt-3" style={{ color: MUTED_TEXT }}>
                 Scanning…
             </p>
         )
@@ -18,7 +19,7 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
 
     if (!result) {
         return (
-            <p className="text-sm mt-3" style={{ color: '#b8b1a1' }}>
+            <p className="text-sm mt-3" style={{ color: MUTED_TEXT }}>
                 No scan has been run yet.
             </p>
         )
@@ -37,7 +38,7 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
             <div>
                 <p
                     className="text-[10px] uppercase tracking-[0.2em] mb-1"
-                    style={{ color: '#b8b1a1' }}
+                    style={{ color: MUTED_TEXT }}
                 >
                     Match Results
                 </p>
@@ -53,7 +54,7 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
                     <Row
                         label="Low Confidence"
                         value={
-                            <span style={{ color: '#fdba74' }}>
+                            <span style={{ color: ACCENT_ORANGE }}>
                                 {result.matchSummary.lowConfidence}
                             </span>
                         }
@@ -61,7 +62,7 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
                     <Row
                         label="Missing"
                         value={
-                            <span style={{ color: '#f87171' }}>
+                            <span style={{ color: ACCENT_PINK }}>
                                 {result.matchSummary.missing}
                             </span>
                         }
@@ -72,7 +73,7 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
                 <div>
                     <p
                         className="text-[10px] uppercase tracking-[0.2em] mb-1"
-                        style={{ color: '#f87171' }}
+                        style={{ color: ACCENT_PINK }}
                     >
                         Missing Folders
                     </p>
@@ -81,7 +82,7 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
                             <li
                                 key={folder}
                                 className="text-xs font-mono break-all"
-                                style={{ color: '#f87171' }}
+                                style={{ color: ACCENT_PINK }}
                             >
                                 {folder}
                             </li>
@@ -93,13 +94,13 @@ export default function ScanSummaryPanel({ result, isScanning }: ScanSummaryPane
                 <details>
                     <summary
                         className="cursor-pointer text-xs select-none"
-                        style={{ color: '#f87171' }}
+                        style={{ color: ACCENT_PINK }}
                     >
                         {result.errors.length} warning{result.errors.length !== 1 ? 's' : ''}
                     </summary>
                     <ul className="mt-1 space-y-0.5 pl-3">
                         {result.errors.map((msg, i) => (
-                            <li key={i} className="text-xs break-all" style={{ color: '#f87171' }}>
+                            <li key={i} className="text-xs break-all" style={{ color: ACCENT_PINK }}>
                                 {msg}
                             </li>
                         ))}

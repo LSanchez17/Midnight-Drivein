@@ -7,6 +7,7 @@ pub struct AppSettings {
     pub commentary_folder: Option<String>,
     pub scan_on_startup: bool,
     pub theme: String,
+    pub auto_advance_slots: bool,
 }
 
 #[derive(Deserialize)]
@@ -16,6 +17,7 @@ pub struct AppSettingsPatch {
     pub commentary_folder: Option<Option<String>>,
     pub scan_on_startup: Option<bool>,
     pub theme: Option<String>,
+    pub auto_advance_slots: Option<bool>,
 }
 
 #[derive(Debug, Serialize, Clone, Default)]
@@ -97,6 +99,8 @@ pub struct PlaybackEntryRow {
     pub effective_start_ms: i64,
     pub effective_end_ms: i64,
     pub cut_id: String,
+    pub global_start_ms: i64,
+    pub global_end_ms: i64,
 }
 
 #[derive(Serialize, Clone)]

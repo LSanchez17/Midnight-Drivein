@@ -8,6 +8,8 @@ import { ApiError } from '../api/errors'
 import type { ScanResult } from '../api/types'
 import FieldError from '../components/ui/FieldError'
 import FolderRow from '../components/ui/FolderRow'
+import { ACCENT_CREAM, ACCENT_RED, MUTED_TEXT } from '../utils/colorConstants'
+import Header from '../components/ui/Header'
 
 export default function SettingsPage() {
     const { settings, isLoading, reloadSettings } = useSettings()
@@ -15,6 +17,7 @@ export default function SettingsPage() {
     const [moviesFolderError, setMoviesFolderError] = useState<string | null>(null)
     const [commentaryFolderError, setCommentaryFolderError] = useState<string | null>(null)
     const [scanToggleError, setScanToggleError] = useState<string | null>(null)
+    const [autoAdvanceError, setAutoAdvanceError] = useState<string | null>(null)
     const [scanError, setScanError] = useState<string | null>(null)
     const [lastScan, setLastScan] = useState<ScanResult | null>(null)
     const [isScanning, setIsScanning] = useState(false)
@@ -66,20 +69,22 @@ export default function SettingsPage() {
         }
     }
 
+    async function handleAutoAdvanceChange(checked: boolean) {
+        setAutoAdvanceError(null)
+
+        try {
+            await saveSettings({ autoAdvanceSlots: checked })
+            reloadSettings()
+        } catch (e) {
+            setAutoAdvanceError(e instanceof ApiError ? e.message : String(e))
+        }
+    }
+
     const bothFoldersSet = Boolean(settings?.moviesFolder && settings?.commentaryFolder)
 
     return (
         <div className="space-y-6 max-w-2xl">
-            <h1
-                className="text-4xl uppercase tracking-[0.15em]"
-                style={{
-                    color: '#f3ebd2',
-                    fontFamily: 'Impact, "Arial Narrow", sans-serif',
-                }}
-            >
-                Settings
-            </h1>
-
+            <Header title="Settings" as="h1" className="text-4xl uppercase tracking-[0.15em]" />
             <Panel title="Library Root">
                 <div className="space-y-4 text-sm">
                     <FolderRow
@@ -121,14 +126,30 @@ export default function SettingsPage() {
                             checked={settings?.scanOnStartup ?? false}
                             disabled={isLoading}
                             onChange={(e) => handleScanOnStartupChange(e.target.checked)}
-                            className="w-4 h-4 accent-[#8b1e2d] cursor-pointer"
+                            className={`w-4 h-4 accent-[${ACCENT_RED}] cursor-pointer`}
                         />
-                        <span style={{ color: '#f3ebd2' }}>Scan library on startup</span>
+                        <span style={{ color: ACCENT_CREAM }}>Scan library on startup</span>
                     </label>
                     <FieldError message={scanToggleError} />
-                    <p className="text-xs" style={{ color: '#b8b1a1' }}>
+                    <p className="text-xs" style={{ color: MUTED_TEXT }}>
                         Fuzzy-match thresholds and additional scan settings will appear here in a future phase.
                     </p>
+                </div>
+            </Panel>
+
+            <Panel title="Playback">
+                <div className="space-y-2 text-sm">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            checked={settings?.autoAdvanceSlots ?? true}
+                            disabled={isLoading}
+                            onChange={(e) => handleAutoAdvanceChange(e.target.checked)}
+                            className={`w-4 h-4 accent-[${ACCENT_RED}] cursor-pointer`}
+                        />
+                        <span style={{ color: ACCENT_CREAM }}>Automatically advance to the next movie when playback ends</span>
+                    </label>
+                    <FieldError message={autoAdvanceError} />
                 </div>
             </Panel>
 
@@ -138,7 +159,7 @@ export default function SettingsPage() {
                         <Button variant="ghost">Import Metadata</Button>
                         <Button variant="ghost">Export Metadata</Button>
                     </div>
-                    <p style={{ color: '#b8b1a1' }}>
+                    <p style={{ color: MUTED_TEXT }}>
                         Metadata is stored locally in a SQLite database on your machine. It is never uploaded or
                         shared.
                     </p>
@@ -146,15 +167,15 @@ export default function SettingsPage() {
             </Panel>
 
             <Panel title="Appearance">
-                <p className="text-sm" style={{ color: '#b8b1a1' }}>
+                <p className="text-sm" style={{ color: MUTED_TEXT }}>
                     Theme options will appear here in a future phase.
                 </p>
             </Panel>
 
             <Panel title="About">
-                <div className="space-y-3 text-sm" style={{ color: '#b8b1a1' }}>
+                <div className="space-y-3 text-sm" style={{ color: MUTED_TEXT }}>
                     <p className="leading-relaxed">
-                        <strong style={{ color: '#f3ebd2' }}>Midnight Drive-In</strong> is a local-only media
+                        <strong style={{ color: ACCENT_CREAM }}>Midnight Drive-In</strong> is a local-only media
                         organizer. It does not host, stream, download, or distribute any media. All files remain
                         on your machine at all times.
                     </p>

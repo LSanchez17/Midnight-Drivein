@@ -3,6 +3,9 @@ import { getEpisodes } from '../api'
 import type { Episode, EpisodeStatus } from '../features/episodes/types'
 import EpisodeCard from '../features/episodes/components/EpisodeCard'
 import TextInput from '../components/ui/TextInput'
+import { ACCENT_CREAM, ACCENT_DARK, ACCENT_RED, MUTED_TEXT, PRIMARY_BACKGROUND, SECONDARY_BACKGROUND } from '../utils/colorConstants'
+import LoadingSkeleton from '../components/ui/Loading'
+import Header from '../components/ui/Header'
 
 const ALL_STATUSES: EpisodeStatus[] = [
     'Ready',
@@ -14,9 +17,9 @@ const ALL_STATUSES: EpisodeStatus[] = [
 type SpecialFilter = 'All' | 'Episodes' | 'Specials'
 
 const selectStyle: React.CSSProperties = {
-    backgroundColor: '#0b0b0f',
-    border: '1px solid #2a2a33',
-    color: '#f3ebd2',
+    backgroundColor: PRIMARY_BACKGROUND,
+    border: `1px solid ${ACCENT_DARK}`,
+    color: ACCENT_CREAM,
     borderRadius: '0.375rem',
     padding: '0.5rem 0.75rem',
     fontSize: '0.875rem',
@@ -43,28 +46,17 @@ export default function LibraryPage() {
 
     return (
         <div className="space-y-6 max-w-6xl">
-            {/* Page title */}
             <div className="flex items-center gap-3">
-                <h1
-                    className="text-4xl tracking-[0.15em] uppercase"
-                    style={{
-                        color: '#f3ebd2',
-                        fontFamily: 'Impact, "Arial Narrow", sans-serif',
-                    }}
-                >
-                    Library
-                </h1>
+                <Header as='h1' title='Library' className='text-4xl tracking-[0.15em] uppercase' />
                 {!loading && (
                     <span
                         className="text-xs px-2 py-0.5 rounded-full border"
-                        style={{ color: '#b8b1a1', borderColor: '#2a2a33', backgroundColor: '#15151b' }}
+                        style={{ color: MUTED_TEXT, borderColor: ACCENT_DARK, backgroundColor: SECONDARY_BACKGROUND }}
                     >
                         {filtered.length} {filtered.length === 1 ? 'episode' : 'episodes'}
                     </span>
                 )}
             </div>
-
-            {/* Filters */}
             <div className="flex flex-wrap gap-3 items-center">
                 <TextInput
                     placeholder="Search episodes or movies…"
@@ -97,33 +89,21 @@ export default function LibraryPage() {
                     <option value="Specials">Specials</option>
                 </select>
             </div>
-
-            {/* Loading skeletons */}
             {loading && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {[...Array(6)].map((_, i) => (
-                        <div
-                            key={i}
-                            className="rounded-lg h-44 animate-pulse"
-                            style={{ backgroundColor: '#15151b', border: '1px solid #2a2a33' }}
-                        />
-                    ))}
-                </div>
+                <LoadingSkeleton itemCount={6} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" />
             )}
-
-            {/* Empty state */}
             {!loading && filtered.length === 0 && (
                 <div
                     className="flex flex-col items-center justify-center py-24 gap-3 rounded-lg"
-                    style={{ border: '1px dashed #2a2a33' }}
+                    style={{ border: `1px dashed ${ACCENT_DARK}` }}
                 >
                     <span className="text-5xl">🎞</span>
-                    <p className="text-sm" style={{ color: '#b8b1a1' }}>
+                    <p className="text-sm" style={{ color: MUTED_TEXT }}>
                         No episodes match your current filters.
                     </p>
                     <button
                         className="text-xs underline"
-                        style={{ color: '#8b1e2d' }}
+                        style={{ color: ACCENT_RED }}
                         onClick={() => {
                             setSearch('')
                             setStatusFilter('All')
@@ -134,8 +114,6 @@ export default function LibraryPage() {
                     </button>
                 </div>
             )}
-
-            {/* Episode grid */}
             {!loading && filtered.length > 0 && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filtered.map((ep) => (

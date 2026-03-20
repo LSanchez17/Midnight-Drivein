@@ -1,5 +1,6 @@
 import { clsx } from 'clsx'
 import type { InputHTMLAttributes } from 'react'
+import { ACCENT_CREAM, ACCENT_DARK, ACCENT_RED, PRIMARY_BACKGROUND } from '../../utils/colorConstants'
 
 export default function TextInput({ className, style, ...props }: InputHTMLAttributes<HTMLInputElement>) {
     return (
@@ -9,16 +10,16 @@ export default function TextInput({ className, style, ...props }: InputHTMLAttri
                 className,
             )}
             style={{
-                backgroundColor: '#0b0b0f',
-                border: '1px solid #2a2a33',
-                color: '#f3ebd2',
+                backgroundColor: PRIMARY_BACKGROUND,
+                border: `1px solid ${ACCENT_DARK}`,
+                color: ACCENT_CREAM,
                 ...style,
             }}
             onFocus={(e) => {
-                e.currentTarget.style.borderColor = '#8b1e2d'
+                e.currentTarget.style.borderColor = ACCENT_RED
             }}
             onBlur={(e) => {
-                e.currentTarget.style.borderColor = '#2a2a33'
+                e.currentTarget.style.borderColor = ACCENT_DARK
             }}
             {...props}
         />

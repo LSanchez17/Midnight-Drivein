@@ -3,6 +3,7 @@ import Card from '../../../components/ui/Card'
 import StatusPill from '../../../components/ui/StatusPill'
 import Button from '../../../components/ui/Button'
 import type { Episode } from '../types'
+import { ACCENT_DARK, ACCENT_RED, MUTED_TEXT } from '../../../utils/colorConstants'
 
 export default function EpisodeCard({ episode }: { episode: Episode }) {
     const navigate = useNavigate()
@@ -16,17 +17,17 @@ export default function EpisodeCard({ episode }: { episode: Episode }) {
             className="flex flex-col gap-3 cursor-pointer group"
             style={{ transition: 'border-color 0.15s' }}
             onMouseEnter={(e) => {
-                ; (e.currentTarget as HTMLElement).style.borderColor = '#8b1e2d'
+                ; (e.currentTarget as HTMLElement).style.borderColor = ACCENT_RED
             }}
             onMouseLeave={(e) => {
-                ; (e.currentTarget as HTMLElement).style.borderColor = '#2a2a33'
+                ; (e.currentTarget as HTMLElement).style.borderColor = ACCENT_DARK
             }}
         >
             <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                     <p
                         className="text-[10px] uppercase tracking-[0.2em] mb-0.5"
-                        style={{ color: '#b8b1a1' }}
+                        style={{ color: MUTED_TEXT }}
                     >
                         {label}
                     </p>

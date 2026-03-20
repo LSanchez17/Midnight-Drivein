@@ -4,6 +4,8 @@ import type { MediaFileSummary } from '../../../api/types'
 import type { SourceType } from '../types'
 import Button from '../../../components/ui/Button'
 import TextInput from '../../../components/ui/TextInput'
+import { ACCENT_CREAM, ACCENT_DARK, ACCENT_PINK, MUTED_TEXT } from '../../../utils/colorConstants'
+import Header from '../../../components/ui/Header'
 import { formatBytes } from '../../../utils/Files'
 
 interface RemapDialogProps {
@@ -70,22 +72,14 @@ export default function RemapDialog({
 
     return (
         <>
-            <h2
-                className="text-xl uppercase tracking-[0.15em]"
-                style={{
-                    color: '#f3ebd2',
-                    fontFamily: 'Impact, "Arial Narrow", sans-serif',
-                }}
-            >
-                Remap — {label}
-            </h2>
+            <Header title={`Remap — ${label}`} as="h2" className='text-xl uppercase tracking-[0.15em]' />
             {loading && (
-                <p className="text-sm" style={{ color: '#b8b1a1' }}>
+                <p className="text-sm" style={{ color: MUTED_TEXT }}>
                     Loading files…
                 </p>
             )}
             {loadError && (
-                <p className="text-sm" style={{ color: '#f87171' }}>
+                <p className="text-sm" style={{ color: ACCENT_PINK }}>
                     {loadError}
                 </p>
             )}
@@ -98,7 +92,7 @@ export default function RemapDialog({
                     />
 
                     {filtered.length === 0 ? (
-                        <p className="text-sm" style={{ color: '#b8b1a1' }}>
+                        <p className="text-sm" style={{ color: MUTED_TEXT }}>
                             No files found.
                         </p>
                     ) : (
@@ -106,7 +100,7 @@ export default function RemapDialog({
                             className="overflow-y-auto rounded"
                             style={{
                                 maxHeight: '320px',
-                                border: '1px solid #2a2a33',
+                                border: `1px solid ${ACCENT_DARK}`,
                             }}
                         >
                             {filtered.map((file) => (
@@ -116,26 +110,26 @@ export default function RemapDialog({
                                     style={{
                                         backgroundColor:
                                             selectedId === file.id ? '#1e1e28' : 'transparent',
-                                        borderBottom: '1px solid #2a2a33',
+                                        borderBottom: `1px solid ${ACCENT_DARK}`,
                                         cursor: 'pointer',
                                     }}
                                     onClick={() => setSelectedId(file.id)}
                                 >
                                     <p
                                         className="text-sm truncate"
-                                        style={{ color: '#f3ebd2' }}
+                                        style={{ color: ACCENT_CREAM }}
                                     >
                                         {file.displayName ?? file.filename}
                                     </p>
                                     <p
                                         className="text-xs truncate mt-0.5"
-                                        style={{ color: '#b8b1a1' }}
+                                        style={{ color: MUTED_TEXT }}
                                     >
                                         {file.path}
                                     </p>
                                     <p
                                         className="text-xs mt-0.5"
-                                        style={{ color: '#b8b1a1' }}
+                                        style={{ color: MUTED_TEXT }}
                                     >
                                         {formatBytes(file.sizeBytes)}
                                     </p>
@@ -149,7 +143,7 @@ export default function RemapDialog({
                 <p
                     className="text-sm rounded px-3 py-2"
                     style={{
-                        color: '#f87171',
+                        color: ACCENT_PINK,
                         backgroundColor: '#1a0a0a',
                         border: '1px solid #7f1d1d',
                     }}

@@ -323,29 +323,36 @@ pub(crate) async fn get_playback_plan_for_slot(
         ));
     }
 
-    let entries = cuts
-        .into_iter()
-        .map(|cut| {
-            let file_path = if cut.source_type == "movie" {
-                movie_path.clone().unwrap()
-            } else {
-                commentary_path.clone().unwrap()
-            };
-            let effective_start_ms = std::cmp::max(0, cut.start_ms + cut.user_offset_ms);
-            let effective_end_ms = std::cmp::max(effective_start_ms, cut.end_ms + cut.user_offset_ms);
+    let mut entries: Vec<PlaybackEntryRow> = Vec::with_capacity(cuts.len());
+    let mut cursor: i64 = 0;
 
-            PlaybackEntryRow {
-                order: cut.sort_order,
-                source: cut.source_type,
-                file_path,
-                start_ms: cut.start_ms,
-                end_ms: cut.end_ms,
-                effective_start_ms,
-                effective_end_ms,
-                cut_id: cut.id,
-            }
-        })
-        .collect();
+    for cut in cuts {
+        let file_path = if cut.source_type == "movie" {
+            movie_path.clone().unwrap()
+        } else {
+            commentary_path.clone().unwrap()
+        };
+        let effective_start_ms = std::cmp::max(0, cut.start_ms + cut.user_offset_ms);
+        let effective_end_ms = std::cmp::max(effective_start_ms, cut.end_ms + cut.user_offset_ms);
+        let duration = effective_end_ms - effective_start_ms;
+
+        let global_start_ms = cursor;
+        let global_end_ms = cursor + duration;
+        cursor = global_end_ms;
+
+        entries.push(PlaybackEntryRow {
+            order: cut.sort_order,
+            source: cut.source_type,
+            file_path,
+            start_ms: cut.start_ms,
+            end_ms: cut.end_ms,
+            effective_start_ms,
+            effective_end_ms,
+            cut_id: cut.id,
+            global_start_ms,
+            global_end_ms,
+        });
+    }
 
     Ok(entries)
 }
@@ -483,5 +490,74 @@ mod tests {
         assert_eq!(entries[1].source, "movie");
         assert!(entries[1].file_path.contains("deathgasm.mkv"));
         assert_eq!(entries[3].end_ms, 4_920_000);
+    }
+
+    #[tokio::test]
+    async fn get_playback_plan_global_fields_accumulate_correctly() {
+        let pool = setup().await;
+        setup_episode(&pool, "ep-1", None).await;
+        let slot_id = setup_movie_slot(&pool, "ep-1", "a", "Deathgasm", None).await;
+
+        setup_media_file(&pool, "mf-movie", "deathgasm.mkv", "movies").await;
+        setup_media_file(&pool, "mf-com", "deathgasm_commentary.mkv", "commentary").await;
+        seed_file_match(&pool, &slot_id, "movie", "mf-movie").await;
+        seed_file_match(&pool, &slot_id, "commentary", "mf-com").await;
+
+        // s01e03-a layout from episodes.json (no offsets):
+        // c1: commentary 0..30_000        → global 0..30_000
+        // c2: movie      0..300_000       → global 30_000..330_000
+        // c3: commentary 30_000..60_000   → global 330_000..360_000
+        // c4: movie      300_000..550_000 → global 360_000..610_000
+        // c5: commentary 60_000..86_000   → global 610_000..636_000
+        setup_playback_cut(&pool, &slot_id, 0, "commentary", 0, 30_000, 0).await;
+        setup_playback_cut(&pool, &slot_id, 1, "movie", 0, 300_000, 0).await;
+        setup_playback_cut(&pool, &slot_id, 2, "commentary", 30_000, 60_000, 0).await;
+        setup_playback_cut(&pool, &slot_id, 3, "movie", 300_000, 550_000, 0).await;
+        setup_playback_cut(&pool, &slot_id, 4, "commentary", 60_000, 86_000, 0).await;
+
+        let entries = get_playback_plan_for_slot(&pool, &slot_id).await.unwrap();
+        assert_eq!(entries.len(), 5);
+
+        assert_eq!(entries[0].global_start_ms, 0);
+        assert_eq!(entries[0].global_end_ms, 30_000);
+
+        assert_eq!(entries[1].global_start_ms, 30_000);
+        assert_eq!(entries[1].global_end_ms, 330_000);
+
+        assert_eq!(entries[2].global_start_ms, 330_000);
+        assert_eq!(entries[2].global_end_ms, 360_000);
+
+        assert_eq!(entries[3].global_start_ms, 360_000);
+        assert_eq!(entries[3].global_end_ms, 610_000);
+
+        assert_eq!(entries[4].global_start_ms, 610_000);
+        assert_eq!(entries[4].global_end_ms, 636_000);
+    }
+
+    #[tokio::test]
+    async fn get_playback_plan_positive_offset_shrinks_duration() {
+        let pool = setup().await;
+        setup_episode(&pool, "ep-1", None).await;
+        let slot_id = setup_movie_slot(&pool, "ep-1", "a", "Test", None).await;
+
+        setup_media_file(&pool, "mf-movie", "movie.mkv", "movies").await;
+        seed_file_match(&pool, &slot_id, "movie", "mf-movie").await;
+
+        // Two cuts; first has a positive offset (+5_000).
+        // cut1: start=0, end=30_000, offset=+5_000
+        //   effectiveStart=5_000, effectiveEnd=35_000, duration=30_000 → global 0..30_000
+        // cut2: start=30_000, end=60_000, offset=0
+        //   effectiveStart=30_000, effectiveEnd=60_000, duration=30_000 → global 30_000..60_000
+        setup_playback_cut(&pool, &slot_id, 0, "movie", 0, 30_000, 5_000).await;
+        setup_playback_cut(&pool, &slot_id, 1, "movie", 30_000, 60_000, 0).await;
+
+        let entries = get_playback_plan_for_slot(&pool, &slot_id).await.unwrap();
+        assert_eq!(entries[0].global_start_ms, 0);
+        assert_eq!(entries[0].global_end_ms, 30_000);
+        assert_eq!(entries[0].effective_start_ms, 5_000);
+        assert_eq!(entries[0].effective_end_ms, 35_000);
+
+        assert_eq!(entries[1].global_start_ms, 30_000);
+        assert_eq!(entries[1].global_end_ms, 60_000);
     }
 }

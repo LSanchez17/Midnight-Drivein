@@ -1,9 +1,5 @@
 import type { Episode, MovieSlot, FileMatch, PlaybackCut } from './types'
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 function matched(
     fileType: FileMatch['fileType'],
     filename: string,
@@ -22,10 +18,6 @@ function lowConfidence(
     confidence: number,
 ): FileMatch {
     return { fileType, filename, displayName, path, confidence, status: 'low-confidence', isUserOverridden: false }
-}
-
-function missing(fileType: FileMatch['fileType']): FileMatch {
-    return { fileType, status: 'missing', isUserOverridden: false }
 }
 
 function cut(
@@ -75,10 +67,6 @@ function slot(
         flaggedForTiming,
     }
 }
-
-// ---------------------------------------------------------------------------
-// Mock episodes
-// ---------------------------------------------------------------------------
 
 export const MOCK_EPISODES: Episode[] = [
     {

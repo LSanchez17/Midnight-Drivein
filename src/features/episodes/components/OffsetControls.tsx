@@ -1,5 +1,6 @@
 import Button from '../../../components/ui/Button'
-import { msToHMS } from '../../../utils/Time'
+import { ACCENT_CREAM, ACCENT_DARK, ACCENT_ORANGE, MUTED_TEXT, PRIMARY_BACKGROUND } from '../../../utils/colorConstants'
+import { msToHMS } from '../../../utils/time'
 import type { PlaybackCut } from '../types'
 
 interface OffsetControlsProps {
@@ -17,14 +18,14 @@ export default function OffsetControls({
 }: OffsetControlsProps) {
     return (
         <div className="space-y-4 text-sm">
-            <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#b8b1a1' }}>
+            <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: MUTED_TEXT }}>
                 Offset Adjustment
             </p>
             {cuts.map((cut) => (
                 <div key={cut.id} className="flex items-center justify-between gap-4">
-                    <span style={{ color: '#b8b1a1' }}>
+                    <span style={{ color: MUTED_TEXT }}>
                         {cut.sourceType === 'commentary' ? 'Com' : 'Mov'} {cut.sortOrder}{' '}
-                        <span style={{ color: '#2a2a33' }}>
+                        <span style={{ color: ACCENT_DARK }}>
                             ({msToHMS(cut.startMs)}–{msToHMS(cut.endMs)})
                         </span>
                     </span>
@@ -42,9 +43,9 @@ export default function OffsetControls({
                         <span
                             className="w-16 text-center text-xs px-2 py-1 rounded"
                             style={{
-                                color: (offsets[cut.id] ?? 0) !== 0 ? '#fdba74' : '#f3ebd2',
-                                backgroundColor: '#0b0b0f',
-                                border: '1px solid #2a2a33',
+                                color: (offsets[cut.id] ?? 0) !== 0 ? ACCENT_ORANGE : ACCENT_CREAM,
+                                backgroundColor: PRIMARY_BACKGROUND,
+                                border: `1px solid ${ACCENT_DARK}`,
                             }}
                         >
                             {(offsets[cut.id] ?? 0) >= 0 ? '+' : ''}
@@ -63,7 +64,7 @@ export default function OffsetControls({
                         {(offsets[cut.id] ?? 0) !== 0 && (
                             <button
                                 className="text-[10px] underline"
-                                style={{ color: '#b8b1a1' }}
+                                style={{ color: MUTED_TEXT }}
                                 onClick={() => onResetCut(cut.id)}
                             >
                                 reset

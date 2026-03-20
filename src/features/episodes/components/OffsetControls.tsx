@@ -1,6 +1,6 @@
 import Button from '../../../components/ui/Button'
 import { ACCENT_CREAM, ACCENT_DARK, ACCENT_ORANGE, MUTED_TEXT, PRIMARY_BACKGROUND } from '../../../utils/colorConstants'
-import { msToHMS } from '../../../utils/time'
+import { msToHMS } from '../../../utils/timeUtils'
 import type { PlaybackCut } from '../types'
 
 interface OffsetControlsProps {

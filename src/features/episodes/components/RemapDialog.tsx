@@ -6,7 +6,7 @@ import Button from '../../../components/ui/Button'
 import TextInput from '../../../components/ui/TextInput'
 import { ACCENT_CREAM, ACCENT_DARK, ACCENT_PINK, MUTED_TEXT } from '../../../utils/colorConstants'
 import Header from '../../../components/ui/Header'
-import { formatBytes } from '../../../utils/Files'
+import { formatBytes } from '../../../utils/file'
 
 interface RemapDialogProps {
     slotId: string

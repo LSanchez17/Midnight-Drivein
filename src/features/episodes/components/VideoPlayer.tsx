@@ -4,7 +4,7 @@ import { usePlayback } from '../usePlayback'
 import { useSettings } from '../../../context/SettingsContext'
 import { ACCENT_CREAM, ACCENT_DARK, ACCENT_PINK, ACCENT_RED, MUTED_TEXT } from '../../../utils/colorConstants'
 import LoadingSkeleton from '../../../components/ui/Loading'
-import { msToHMS } from '../../../utils/time'
+import { msToHMS } from '../../../utils/timeUtils'
 
 interface VideoPlayerProps {
     episode: Episode

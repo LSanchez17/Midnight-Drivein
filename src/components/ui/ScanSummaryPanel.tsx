@@ -1,6 +1,6 @@
 import type { ScanResult } from '../../api/types'
 import { ACCENT_ORANGE, ACCENT_PINK, MUTED_TEXT } from '../../utils/colorConstants'
-import { formatDate } from '../../utils/time'
+import { formatDate } from '../../utils/timeUtils'
 import Row from './Row'
 
 interface ScanSummaryPanelProps {

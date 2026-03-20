@@ -11,6 +11,7 @@ export interface AppSettings {
     commentaryFolder: string | null
     scanOnStartup: boolean
     theme: 'dark'
+    autoAdvanceSlots: boolean
 }
 
 export interface AppSettingsPatch {
@@ -18,6 +19,7 @@ export interface AppSettingsPatch {
     commentaryFolder?: string | null
     scanOnStartup?: boolean
     theme?: 'dark'
+    autoAdvanceSlots?: boolean
 }
 
 export interface MatchSummary {
@@ -49,8 +51,10 @@ export interface PlaybackEntry {
     source: 'movie' | 'commentary'
     filePath: string
     startMs: number
-    endMs: number | null
+    endMs: number
     effectiveStartMs: number
-    effectiveEndMs: number | null
+    effectiveEndMs: number
     cutId: string
+    globalStartMs: number
+    globalEndMs: number
 }

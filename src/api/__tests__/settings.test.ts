@@ -49,6 +49,7 @@ describe('getSettings', () => {
             commentaryFolder: null,
             scanOnStartup: false,
             theme: 'dark',
+            autoAdvanceSlots: true,
         }
         mockInvoke.mockResolvedValueOnce(ok(expected))
 
@@ -90,14 +91,19 @@ describe('mock shape compatibility', () => {
         const { getSettings: mockGetSettings } = await import('../_mock')
         const settings = await mockGetSettings()
 
-        // These assertions double as a shape check — if the interface changes
-        // and the mock is not updated, this test will fail at the property access.
         expect(typeof settings.scanOnStartup).toBe('boolean')
         expect(settings.theme).toBe('dark')
+        expect(typeof settings.autoAdvanceSlots).toBe('boolean')
+        expect(settings.autoAdvanceSlots).toBe(true)
     })
 
     it('_mock saveSettings resolves without error', async () => {
         const { saveSettings: mockSaveSettings } = await import('../_mock')
         await expect(mockSaveSettings({})).resolves.toBeUndefined()
+    })
+
+    it('_mock saveSettings accepts autoAdvanceSlots patch', async () => {
+        const { saveSettings: mockSaveSettings } = await import('../_mock')
+        await expect(mockSaveSettings({ autoAdvanceSlots: false })).resolves.toBeUndefined()
     })
 })

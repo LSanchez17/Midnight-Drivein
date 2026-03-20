@@ -1,5 +1,6 @@
 import { clsx } from 'clsx'
 import type { EpisodeStatus } from '../../features/episodes/types'
+import { ACCENT_ORANGE } from '../../utils/colorConstants'
 
 interface StatusConfig {
     label: string
@@ -30,7 +31,7 @@ const STATUS_MAP: Record<EpisodeStatus, StatusConfig> = {
     'Needs Timing Fix': {
         label: '⚠ Timing',
         bg: 'rgba(124,45,18,0.4)',
-        text: '#fdba74',
+        text: ACCENT_ORANGE,
         border: '#7c2d12',
     },
 }

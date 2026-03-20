@@ -27,7 +27,7 @@ export interface MediaFile {
     isMissing: boolean
 }
 
-/** One of the two source files per episode (movie or commentary reel). */
+/** One of the two source files per episode (movie or commentary). */
 export interface FileMatch {
     fileType: SourceType
     filename?: string
@@ -51,11 +51,10 @@ export interface PlaybackCut {
     sortOrder: number
     sourceType: SourceType
     startMs: number
-    endMs: number | undefined
+    endMs: number
     userOffsetMs: number
 }
 
-/** One movie + commentary reel pair within a broadcast episode. */
 export interface MovieSlot {
     id: string
     slot: string
@@ -84,21 +83,20 @@ export interface Episode {
 export interface PlaybackEntry {
     order: number
     source: SourceType
-    /** Absolute path to the source file */
     filePath: string
-    /** Raw start timestamp from the cut metadata (milliseconds) */
     startMs: number
-    /** Raw end timestamp from the cut metadata; undefined = play to end of file */
-    endMs: number | undefined
+    endMs: number
     /**
      * Actual seek target after applying userOffsetMs; >= 0 always
      */
     effectiveStartMs: number
     /**
-     * Actual end target after applying userOffsetMs. Undefined designates end of file.
+     * Actual end target after applying userOffsetMs.
      */
-    effectiveEndMs: number | undefined
+    effectiveEndMs: number
     cutId: string
+    globalStartMs: number
+    globalEndMs: number
 }
 
 export type PlaybackPlanErrorCode =

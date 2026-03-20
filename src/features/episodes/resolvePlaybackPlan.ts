@@ -16,19 +16,24 @@ export function resolvePlaybackPlan(slot: MovieSlot): PlaybackPlanResult {
         return { ok: false, error: { code: 'missing_commentary_file' } }
     }
 
-    const entries: PlaybackEntry[] = slot.cuts.map((cut) => {
+    const entries: PlaybackEntry[] = []
+    let cursor = 0
+
+    for (const cut of slot.cuts) {
         const filePath =
             cut.sourceType === 'movie'
                 ? slot.movieMatch.path!
                 : slot.commentaryMatch.path!
 
         const effectiveStartMs = Math.max(0, cut.startMs + cut.userOffsetMs)
-        const effectiveEndMs =
-            cut.endMs !== undefined
-                ? Math.max(effectiveStartMs, cut.endMs + cut.userOffsetMs)
-                : undefined
+        const effectiveEndMs = Math.max(effectiveStartMs, cut.endMs + cut.userOffsetMs)
+        const duration = effectiveEndMs - effectiveStartMs
 
-        return {
+        const globalStartMs = cursor
+        const globalEndMs = cursor + duration
+        cursor = globalEndMs
+
+        entries.push({
             order: cut.sortOrder,
             source: cut.sourceType,
             filePath,
@@ -37,8 +42,10 @@ export function resolvePlaybackPlan(slot: MovieSlot): PlaybackPlanResult {
             effectiveStartMs,
             effectiveEndMs,
             cutId: cut.id,
-        }
-    })
+            globalStartMs,
+            globalEndMs,
+        })
+    }
 
     return { ok: true, entries }
 }

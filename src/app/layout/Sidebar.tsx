@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { clsx } from 'clsx'
+import { ACCENT_CREAM, ACCENT_DARK, ACCENT_RED, MUTED_TEXT, SECONDARY_BACKGROUND } from '../../utils/colorConstants'
 
 const links = [
     { to: '/library', label: 'Library', icon: '🎞' },
@@ -10,23 +11,23 @@ export default function Sidebar() {
     return (
         <aside
             className="flex flex-col w-52 shrink-0 min-h-screen px-4 py-6 gap-2"
-            style={{ backgroundColor: '#15151b', borderRight: '1px solid #2a2a33' }}
+            style={{ backgroundColor: SECONDARY_BACKGROUND, borderRight: `1px solid ${ACCENT_DARK}` }}
         >
             {/* Logo / wordmark */}
             <div className="mb-8 px-1">
                 <p
                     className="text-xs tracking-[0.25em] uppercase mb-0.5"
-                    style={{ color: '#8b1e2d', fontFamily: 'Impact, "Arial Narrow", sans-serif' }}
+                    style={{ color: ACCENT_RED, fontFamily: 'Impact, "Arial Narrow", sans-serif' }}
                 >
                     Midnight
                 </p>
                 <p
                     className="text-2xl tracking-[0.2em] uppercase leading-none"
-                    style={{ color: '#f3ebd2', fontFamily: 'Impact, "Arial Narrow", sans-serif' }}
+                    style={{ color: ACCENT_CREAM, fontFamily: 'Impact, "Arial Narrow", sans-serif' }}
                 >
                     Drive‑In
                 </p>
-                <div className="mt-2 h-px w-full" style={{ backgroundColor: '#2a2a33' }} />
+                <div className="mt-2 h-px w-full" style={{ backgroundColor: ACCENT_DARK }} />
             </div>
 
             <nav className="flex flex-col gap-1">
@@ -38,13 +39,13 @@ export default function Sidebar() {
                             clsx(
                                 'flex items-center gap-2 px-3 py-2 rounded text-sm transition-colors',
                                 isActive
-                                    ? 'text-[#f3ebd2]'
-                                    : 'text-[#b8b1a1] hover:text-[#f3ebd2]'
+                                    ? `text-[${ACCENT_CREAM}]`
+                                    : `text-[${MUTED_TEXT}] hover:text-[${ACCENT_CREAM}]`
                             )
                         }
                         style={({ isActive }) =>
                             isActive
-                                ? { backgroundColor: '#8b1e2d' }
+                                ? { backgroundColor: ACCENT_RED }
                                 : undefined
                         }
                     >

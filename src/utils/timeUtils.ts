@@ -1,7 +1,4 @@
-function msToHMS(ms: number | undefined): string {
-    // If there are no milliseconds, assume its the end of the file. Display as 00:00:00 to avoid confusion with an invalid timestamp.
-    if (ms === undefined) return '00:00:00'
-
+function msToHMS(ms: number): string {
     const s = Math.floor(ms / 1000)
     const h = Math.floor(s / 3600)
     const m = Math.floor((s % 3600) / 60)

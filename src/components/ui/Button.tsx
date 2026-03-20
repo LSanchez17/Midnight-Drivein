@@ -1,5 +1,6 @@
 import { clsx } from 'clsx'
 import type { ButtonHTMLAttributes } from 'react'
+import { ACCENT_CREAM, ACCENT_DARK, ACCENT_PINK, ACCENT_RED, MUTED_TEXT } from '../../utils/colorConstants'
 
 type Variant = 'primary' | 'ghost' | 'danger'
 
@@ -14,9 +15,9 @@ export default function Button({ variant = 'primary', className, children, ...pr
         'disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer'
 
     const styles: Record<Variant, React.CSSProperties> = {
-        primary: { backgroundColor: '#8b1e2d', color: '#f3ebd2', border: '1px solid #8b1e2d' },
-        ghost: { backgroundColor: 'transparent', color: '#b8b1a1', border: '1px solid #2a2a33' },
-        danger: { backgroundColor: 'transparent', color: '#f87171', border: '1px solid #7f1d1d' },
+        primary: { backgroundColor: ACCENT_RED, color: ACCENT_CREAM, border: `1px solid ${ACCENT_RED}` },
+        ghost: { backgroundColor: 'transparent', color: MUTED_TEXT, border: `1px solid ${ACCENT_DARK}` },
+        danger: { backgroundColor: 'transparent', color: ACCENT_PINK, border: '1px solid #7f1d1d' },
     }
 
     return (
@@ -25,8 +26,8 @@ export default function Button({ variant = 'primary', className, children, ...pr
             style={styles[variant]}
             onMouseEnter={(e) => {
                 if (variant === 'ghost') {
-                    ; (e.currentTarget as HTMLElement).style.color = '#f3ebd2'
-                        ; (e.currentTarget as HTMLElement).style.borderColor = '#f3ebd2'
+                    ; (e.currentTarget as HTMLElement).style.color = ACCENT_CREAM
+                        ; (e.currentTarget as HTMLElement).style.borderColor = ACCENT_CREAM
                 }
                 if (variant === 'primary') {
                     ; (e.currentTarget as HTMLElement).style.filter = 'brightness(1.15)'
@@ -35,8 +36,8 @@ export default function Button({ variant = 'primary', className, children, ...pr
             onMouseLeave={(e) => {
                 ; (e.currentTarget as HTMLElement).style.filter = ''
                 if (variant === 'ghost') {
-                    ; (e.currentTarget as HTMLElement).style.color = '#b8b1a1'
-                        ; (e.currentTarget as HTMLElement).style.borderColor = '#2a2a33'
+                    ; (e.currentTarget as HTMLElement).style.color = MUTED_TEXT
+                        ; (e.currentTarget as HTMLElement).style.borderColor = ACCENT_DARK
                 }
             }}
             {...props}

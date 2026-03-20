@@ -43,7 +43,7 @@ export function getEpisodeById(id: string): Promise<Episode | undefined> {
 }
 
 export function getSettings(): Promise<AppSettings> {
-    return Promise.resolve({ moviesFolder: null, commentaryFolder: null, scanOnStartup: false, theme: 'dark' })
+    return Promise.resolve({ moviesFolder: null, commentaryFolder: null, scanOnStartup: false, theme: 'dark', autoAdvanceSlots: true })
 }
 
 export function saveSettings(_patch: AppSettingsPatch): Promise<void> {

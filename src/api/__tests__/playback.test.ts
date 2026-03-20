@@ -199,7 +199,14 @@ describe('mock shape compatibility', () => {
         entries.forEach((e) => {
             expect(e.filePath).toBeTruthy()
             expect(typeof e.effectiveStartMs).toBe('number')
+            expect(typeof e.globalStartMs).toBe('number')
+            expect(typeof e.globalEndMs).toBe('number')
+            expect(e.globalEndMs).toBeGreaterThan(e.globalStartMs)
         })
+        expect(entries[0].globalStartMs).toBe(0)
+        expect(entries[0].globalEndMs).toBe(entries[1].globalStartMs)
+        expect(entries[1].globalEndMs).toBe(entries[2].globalStartMs)
+        expect(entries[2].globalEndMs).toBe(entries[3].globalStartMs)
     })
 
     it('getPlaybackPlan from _mock.ts rejects for unknown episode', async () => {

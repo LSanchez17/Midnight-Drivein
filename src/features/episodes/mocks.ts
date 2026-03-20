@@ -1,9 +1,5 @@
 import type { Episode, MovieSlot, FileMatch, PlaybackCut } from './types'
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
 function matched(
     fileType: FileMatch['fileType'],
     filename: string,
@@ -24,16 +20,12 @@ function lowConfidence(
     return { fileType, filename, displayName, path, confidence, status: 'low-confidence', isUserOverridden: false }
 }
 
-function missing(fileType: FileMatch['fileType']): FileMatch {
-    return { fileType, status: 'missing', isUserOverridden: false }
-}
-
 function cut(
     id: string,
     sortOrder: number,
     sourceType: PlaybackCut['sourceType'],
     startMs: number,
-    endMs: number | undefined,
+    endMs: number,
     userOffsetMs = 0,
 ): PlaybackCut {
     return { id, sortOrder, sourceType, startMs, endMs, userOffsetMs }
@@ -75,10 +67,6 @@ function slot(
         flaggedForTiming,
     }
 }
-
-// ---------------------------------------------------------------------------
-// Mock episodes
-// ---------------------------------------------------------------------------
 
 export const MOCK_EPISODES: Episode[] = [
     {
@@ -143,7 +131,7 @@ export const MOCK_EPISODES: Episode[] = [
                     cut('s01e03-a-c1', 1, 'commentary', 0, 60_000),
                     cut('s01e03-a-c2', 2, 'movie', 60_000, 150_000),
                     cut('s01e03-a-c3', 3, 'commentary', 150_000, 210_000),
-                    cut('s01e03-a-c4', 4, 'movie', 210_000, undefined),
+                    cut('s01e03-a-c4', 4, 'movie', 210_000, 4_920_000),
                 ],
             ),
             slot(
@@ -156,7 +144,7 @@ export const MOCK_EPISODES: Episode[] = [
                     cut('s01e03-b-c1', 1, 'commentary', 0, 120_000),
                     cut('s01e03-b-c2', 2, 'movie', 120_000, 240_000),
                     cut('s01e03-b-c3', 3, 'commentary', 240_000, 300_000),
-                    cut('s01e03-b-c4', 4, 'movie', 300_000, undefined),
+                    cut('s01e03-b-c4', 4, 'movie', 300_000, 6_420_000),
                 ],
             ),
         ],

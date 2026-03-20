@@ -1,9 +1,10 @@
+import { ACCENT_CREAM, ACCENT_DARK, ACCENT_RED, MUTED_TEXT } from '../../../utils/colorConstants'
 import type { PlaybackCut } from '../types'
 
 export default function SlotTimeline({ cuts }: { cuts: PlaybackCut[] }) {
     return (
         <div className="space-y-2 mb-4">
-            <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: '#b8b1a1' }}>
+            <p className="text-[10px] uppercase tracking-[0.15em]" style={{ color: MUTED_TEXT }}>
                 Timeline
             </p>
             <div className="flex gap-1 h-8 rounded overflow-hidden">
@@ -12,9 +13,9 @@ export default function SlotTimeline({ cuts }: { cuts: PlaybackCut[] }) {
                         key={i}
                         className="flex-1 flex items-center justify-center text-[9px] uppercase tracking-widest"
                         style={{
-                            backgroundColor: i % 2 === 0 ? 'rgba(139,30,45,0.25)' : '#2a2a33',
-                            color: i % 2 === 0 ? '#f3ebd2' : '#b8b1a1',
-                            border: i % 2 === 0 ? '1px solid #8b1e2d' : '1px solid #2a2a33',
+                            backgroundColor: i % 2 === 0 ? 'rgba(139,30,45,0.25)' : ACCENT_DARK,
+                            color: i % 2 === 0 ? ACCENT_CREAM : MUTED_TEXT,
+                            border: i % 2 === 0 ? `1px solid ${ACCENT_RED}` : `1px solid ${ACCENT_DARK}`,
                         }}
                     >
                         {cut.sourceType === 'commentary' ? 'Seg' : 'Mov'} {cut.sortOrder}

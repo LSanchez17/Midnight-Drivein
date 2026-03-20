@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { getEpisodeById } from '../api'
 import type { Episode, SourceType } from '../features/episodes/types'
 import Panel from '../components/ui/Panel'
 import Button from '../components/ui/Button'
-import StatusPill from '../components/ui/StatusPill'
 import SlotSection from '../features/episodes/components/SlotSection'
 import RemapDialog from '../features/episodes/components/RemapDialog'
+import VideoPlayer from '../features/episodes/components/VideoPlayer'
+import EpisodeMetaData from '../features/episodes/components/EpisodeMetaData'
+import EpisodeHeader from '../features/episodes/components/EpisodeHeader'
+import GoBack from '../components/ui/GoBack'
+import { ACCENT_DARK, MUTED_TEXT, SECONDARY_BACKGROUND } from '../utils/colorConstants'
+import LoadingSkeleton from '../components/ui/Loading'
 
 type RemapTarget = { slotId: string; fileType: SourceType }
 
 export default function EpisodeDetailPage() {
     const { episodeId } = useParams<{ episodeId: string }>()
-    const navigate = useNavigate()
     const [episode, setEpisode] = useState<Episode | null>(null)
     const [offsets, setOffsets] = useState<Record<string, number>>({})
     const [remapTarget, setRemapTarget] = useState<RemapTarget | null>(null)
@@ -40,36 +44,20 @@ export default function EpisodeDetailPage() {
         return (
             <div className="flex flex-col items-center justify-center py-24 gap-3">
                 <span className="text-5xl">💀</span>
-                <p style={{ color: '#b8b1a1' }}>Episode not found.</p>
-                <Button variant="ghost" onClick={() => navigate('/library')}>
-                    ← Back to Library
-                </Button>
+                <p style={{ color: MUTED_TEXT }}>Episode not found.</p>
+                <GoBack url="/library" location="Library" />
             </div>
         )
     }
 
     if (!episode) {
         return (
-            <div className="space-y-4 max-w-3xl animate-pulse">
-                {[...Array(4)].map((_, i) => (
-                    <div
-                        key={i}
-                        className="rounded-lg h-24"
-                        style={{ backgroundColor: '#15151b', border: '1px solid #2a2a33' }}
-                    />
-                ))}
-            </div>
+            <LoadingSkeleton itemCount={4} className="space-y-4 max-w-3xl animate-pulse" />
         )
     }
 
     const adjust = (cutId: string, delta: number) =>
         setOffsets((o) => ({ ...o, [cutId]: (o[cutId] ?? 0) + delta }))
-
-    const episodeLabel = episode.isSpecial
-        ? '★ Special'
-        : `Season ${episode.season} · Episode ${episode.episode}`
-
-    const firstSlot = episode.slots[0]
 
     const handleConfirmedRemap = () => {
         if (episodeId) {
@@ -82,59 +70,11 @@ export default function EpisodeDetailPage() {
     return (
         <div className="space-y-5 max-w-3xl">
             <div>
-                <button
-                    className="text-xs mb-3 block transition-colors cursor-pointer"
-                    style={{ color: '#b8b1a1' }}
-                    onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = '#f3ebd2')}
-                    onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = '#b8b1a1')}
-                    onClick={() => navigate('/library')}
-                >
-                    ← Back to Library
-                </button>
-                <div className="flex items-start justify-between gap-4">
-                    <div>
-                        <p
-                            className="text-[10px] uppercase tracking-[0.2em] mb-1"
-                            style={{ color: '#b8b1a1' }}
-                        >
-                            {episodeLabel}
-                            {episode.airDate && ` · ${episode.airDate}`}
-                        </p>
-                        <h1
-                            className="text-3xl uppercase tracking-[0.1em] leading-tight"
-                            style={{
-                                color: '#f3ebd2',
-                                fontFamily: 'Impact, "Arial Narrow", sans-serif',
-                            }}
-                        >
-                            {episode.title}
-                        </h1>
-                        <p className="text-sm mt-2" style={{ color: '#b8b1a1' }}>
-                            {episode.description}
-                        </p>
-                    </div>
-                    <StatusPill status={episode.status} className="mt-1 shrink-0" />
-                </div>
+                <GoBack url="/library" location="Library" />
+                <EpisodeHeader episode={episode} />
             </div>
             <Panel title="Metadata">
-                <dl className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
-                    <dt style={{ color: '#b8b1a1' }}>Type</dt>
-                    <dd style={{ color: '#f3ebd2' }}>{episode.isSpecial ? 'Special' : 'Episode'}</dd>
-                    {!episode.isSpecial && (
-                        <>
-                            <dt style={{ color: '#b8b1a1' }}>Season / Episode</dt>
-                            <dd style={{ color: '#f3ebd2' }}>
-                                S{episode.season} E{episode.episode}
-                            </dd>
-                        </>
-                    )}
-                    <dt style={{ color: '#b8b1a1' }}>Air Date</dt>
-                    <dd style={{ color: '#f3ebd2' }}>{episode.airDate ?? '—'}</dd>
-                    <dt style={{ color: '#b8b1a1' }}>Status</dt>
-                    <dd>
-                        <StatusPill status={episode.status} />
-                    </dd>
-                </dl>
+                <EpisodeMetaData episode={episode} />
             </Panel>
             {episode.slots.map((slot) => (
                 <SlotSection
@@ -147,51 +87,7 @@ export default function EpisodeDetailPage() {
                 />
             ))}
             <Panel title="Playback">
-                <div
-                    className="rounded-lg p-6 flex flex-col items-center gap-4"
-                    style={{ backgroundColor: '#0b0b0f', border: '1px solid #2a2a33' }}
-                >
-                    <p
-                        className="text-[10px] uppercase tracking-[0.25em]"
-                        style={{ color: '#b8b1a1' }}
-                    >
-                        Player Shell — Mocked
-                    </p>
-                    <p
-                        className="text-xl uppercase tracking-[0.1em]"
-                        style={{
-                            color: '#f3ebd2',
-                            fontFamily: 'Impact, "Arial Narrow", sans-serif',
-                        }}
-                    >
-                        {episode.title}
-                    </p>
-                    <p className="text-sm" style={{ color: '#b8b1a1' }}>
-                        ▶{' '}
-                        {firstSlot?.movieTitle ??
-                            firstSlot?.movieMatch.displayName ??
-                            firstSlot?.movieMatch.filename ??
-                            'Unknown Film'}
-                    </p>
-                    <div className="flex gap-3">
-                        <Button variant="ghost">⏮</Button>
-                        <Button variant="primary">▶ Play</Button>
-                        <Button variant="ghost">⏭</Button>
-                    </div>
-                    {/* TODO: Remove Mock progress bar */}
-                    <div
-                        className="w-full rounded-full h-1.5 mt-1 overflow-hidden"
-                        style={{ backgroundColor: '#2a2a33' }}
-                    >
-                        <div
-                            className="h-1.5 rounded-full"
-                            style={{ backgroundColor: '#8b1e2d', width: '33%' }}
-                        />
-                    </div>
-                    <p className="text-[10px]" style={{ color: '#2a2a33' }}>
-                        00:42:17 / 02:04:00
-                    </p>
-                </div>
+                <VideoPlayer episode={episode} />
             </Panel>
             <div className="flex gap-3 flex-wrap">
                 <Button variant="primary">▶ Play Episode</Button>
@@ -220,8 +116,8 @@ export default function EpisodeDetailPage() {
                     <div
                         className="w-full max-w-lg rounded-lg p-6 space-y-4"
                         style={{
-                            backgroundColor: '#15151b',
-                            border: '1px solid #2a2a33',
+                            backgroundColor: SECONDARY_BACKGROUND,
+                            border: `1px solid ${ACCENT_DARK}`,
                         }}
                     >
                         <RemapDialog

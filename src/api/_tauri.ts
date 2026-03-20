@@ -5,7 +5,6 @@ import type { Episode, MovieSlot, FileMatch, PlaybackCut, SourceType, MatchStatu
 import type { AppSettings, AppSettingsPatch, EpisodeFilters, ScanResult, MediaFileSummary, PlaybackEntry as PlaybackEntryWire } from './types'
 import { ApiError, type ErrorCode } from './errors'
 
-// Error parsing — Rust errors use "ERROR_CODE: message" prefix convention
 function parseError(raw: unknown): ApiError {
     const msg = String(raw)
     const match = msg.match(
@@ -17,7 +16,6 @@ function parseError(raw: unknown): ApiError {
     return new ApiError('UNKNOWN', msg)
 }
 
-// Wire types — JSON shape as sent by Rust (null for missing Option<T> values)
 interface FileMatchWire {
     fileType: SourceType
     filename: string | null
@@ -34,7 +32,7 @@ interface PlaybackCutWire {
     sortOrder: number
     sourceType: SourceType
     startMs: number
-    endMs: number | null
+    endMs: number
     userOffsetMs: number
 }
 
@@ -62,7 +60,6 @@ interface EpisodeRowWire {
     slots: MovieSlotWire[]
 }
 
-// Domain type conversions
 function toFileMatch(w: FileMatchWire): FileMatch {
     return {
         fileType: w.fileType,
@@ -82,7 +79,7 @@ function toCut(wire: PlaybackCutWire): PlaybackCut {
         sortOrder: wire.sortOrder,
         sourceType: wire.sourceType,
         startMs: wire.startMs,
-        endMs: wire.endMs ?? undefined,
+        endMs: wire.endMs,
         userOffsetMs: wire.userOffsetMs,
     }
 }
@@ -117,7 +114,6 @@ function toEpisode(row: EpisodeRowWire): Episode {
     return { ...partial, status: deriveEpisodeStatus(partial) }
 }
 
-// Exported API — matches the shape of _mock.ts at all times
 export async function getSettings(): Promise<AppSettings> {
     try {
         return await invoke<AppSettings>('get_settings')
@@ -227,10 +223,12 @@ export async function getPlaybackPlan(
             source: row.source,
             filePath: row.filePath,
             startMs: row.startMs,
-            endMs: row.endMs ?? undefined,
+            endMs: row.endMs,
             effectiveStartMs: row.effectiveStartMs,
-            effectiveEndMs: row.effectiveEndMs ?? undefined,
+            effectiveEndMs: row.effectiveEndMs,
             cutId: row.cutId,
+            globalStartMs: row.globalStartMs,
+            globalEndMs: row.globalEndMs,
         }))
     } catch (e) {
         throw parseError(e)

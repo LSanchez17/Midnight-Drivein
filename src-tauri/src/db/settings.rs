@@ -18,7 +18,7 @@ async fn set_defaults(pool: &SqlitePool) -> Result<(), String> {
 pub(crate) async fn get_settings(pool: &SqlitePool) -> Result<AppSettings, String> {
     set_defaults(pool).await?;
     sqlx::query_as(
-        "SELECT movies_folder, commentary_folder, scan_on_startup, theme
+        "SELECT movies_folder, commentary_folder, scan_on_startup, theme, auto_advance_slots
          FROM app_settings WHERE id = 1",
     )
     .fetch_one(pool)
@@ -46,6 +46,9 @@ pub(crate) async fn save_settings(
     if settings.theme.is_some() {
         fragments.push("theme = ?");
     }
+    if settings.auto_advance_slots.is_some() {
+        fragments.push("auto_advance_slots = ?");
+    }
 
     if fragments.is_empty() {
         return Ok(());
@@ -72,6 +75,9 @@ pub(crate) async fn save_settings(
     if let Some(v) = settings.theme {
         query = query.bind(v);
     }
+    if let Some(v) = settings.auto_advance_slots {
+        query = query.bind(v);
+    }
     query = query.bind(&now);
 
     query.execute(pool).await.map_err(|e| e.to_string())?;
@@ -91,6 +97,7 @@ mod tests {
         assert!(s.commentary_folder.is_none());
         assert!(!s.scan_on_startup);
         assert_eq!(s.theme, "dark");
+        assert!(s.auto_advance_slots, "auto_advance_slots should default to true");
     }
 
     #[tokio::test]
@@ -103,6 +110,7 @@ mod tests {
                 commentary_folder: None,
                 scan_on_startup: Some(true),
                 theme: None,
+                auto_advance_slots: None,
             },
         )
         .await
@@ -122,6 +130,7 @@ mod tests {
                 commentary_folder: None,
                 scan_on_startup: Some(true),
                 theme: None,
+                auto_advance_slots: None,
             },
         )
         .await
@@ -133,6 +142,7 @@ mod tests {
                 commentary_folder: None,
                 scan_on_startup: None,
                 theme: None,
+                auto_advance_slots: None,
             },
         )
         .await
@@ -152,6 +162,7 @@ mod tests {
                 commentary_folder: None,
                 scan_on_startup: None,
                 theme: None,
+                auto_advance_slots: None,
             },
         )
         .await
@@ -163,6 +174,7 @@ mod tests {
                 commentary_folder: None,
                 scan_on_startup: None,
                 theme: None,
+                auto_advance_slots: None,
             },
         )
         .await
@@ -172,5 +184,24 @@ mod tests {
             s.movies_folder.is_none(),
             "movies_folder must be NULL after explicit clear"
         );
+    }
+
+    #[tokio::test]
+    async fn save_settings_auto_advance_slots_persists() {
+        let pool = setup().await;
+        save_settings(
+            &pool,
+            AppSettingsPatch {
+                movies_folder: None,
+                commentary_folder: None,
+                scan_on_startup: None,
+                theme: None,
+                auto_advance_slots: Some(false),
+            },
+        )
+        .await
+        .unwrap();
+        let s = get_settings(&pool).await.unwrap();
+        assert!(!s.auto_advance_slots);
     }
 }

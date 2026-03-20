@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { msToHMS, formatDate } from '../time'
+import { formatDate, msToHMS } from '../timeUtils'
 
 describe('msToHMS', () => {
     it('formats zero milliseconds as 00:00:00', () => {

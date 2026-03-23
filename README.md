@@ -74,3 +74,23 @@ yarn test:watch
 ```bash
 yarn lint
 ```
+
+### Rust (backend) checks
+
+Run these from inside the `src-tauri` directory:
+
+```bash
+cd src-tauri
+```
+
+Check that the Rust code compiles without building a binary:
+
+```bash
+cargo check
+```
+
+Run the Rust test suite:
+
+```bash
+cargo test
+```
